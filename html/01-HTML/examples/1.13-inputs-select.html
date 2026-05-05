@@ -1,0 +1,227 @@
+<!--
+  =====================================================
+  示例文件：1.13 表单控件（下）—— 选择类输入
+  对应教程：1.13-表单控件下.md
+
+  这个文件展示了各种选择类输入控件：
+  - radio 单选按钮（同一 name 互斥）
+  - checkbox 多选框
+  - select + option 下拉框
+  - datalist 输入建议
+  - checked / selected 默认选中
+  =====================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.13 选择类输入控件——示例</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 0 15px;
+      line-height: 1.8;
+    }
+    hr {
+      margin: 25px 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+    fieldset {
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 15px 20px;
+      margin: 15px 0;
+      background: #fafafa;
+    }
+    legend {
+      font-weight: bold;
+      padding: 0 10px;
+    }
+    label {
+      margin-right: 15px;
+      cursor: pointer;
+    }
+    select {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    input[type="text"] {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      width: 200px;
+    }
+    .note {
+      background: #e7f3ff;
+      padding: 10px 15px;
+      border-radius: 4px;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>选择类输入控件</h1>
+  <p>不是所有输入都要敲键盘——让用户"选"往往比"敲"更快更准。</p>
+
+  <!-- ===== 一、radio 单选 ===== -->
+  <h2>一、radio——单选题</h2>
+
+  <!--
+    fieldset 和 legend 用来分组表单控件，
+    语义上表示"一组相关的表单字段"。
+    这在无障碍阅读中很有用。
+  -->
+  <fieldset>
+    <legend>请选择性别（radio，单选）：</legend>
+    <!--
+      关键：两个 radio 的 name 必须相同（都是 gender），这样它们才能互斥。
+      如果 name 不同，两个都能被选中，就不是单选题了。
+    -->
+    <label>
+      <input type="radio" name="gender" value="male" checked> 男
+    </label>
+    <label>
+      <input type="radio" name="gender" value="female"> 女
+    </label>
+    <p style="font-size: 13px; color: #888;">注意：它们的 name 都是 "gender"，所以互斥。试试把其中一个 name 改成别的，看看还能互斥吗？</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>年龄段（radio，单选）：</legend>
+    <label><input type="radio" name="age_group" value="under18"> 18 岁以下</label>
+    <label><input type="radio" name="age_group" value="18-30" checked> 18-30 岁</label>
+    <label><input type="radio" name="age_group" value="31-50"> 31-50 岁</label>
+    <label><input type="radio" name="age_group" value="above50"> 50 岁以上</label>
+  </fieldset>
+
+  <hr>
+
+  <!-- ===== 二、checkbox 多选 ===== -->
+  <h2>二、checkbox——多选题</h2>
+
+  <fieldset>
+    <legend>爱好（checkbox，可以多选）：</legend>
+    <!--
+      每个 checkbox 都是独立的，可以全勾，也可以全不勾。
+      checked 属性表示"默认已选中"。
+    -->
+    <label><input type="checkbox" name="hobby" value="basketball"> 篮球</label>
+    <label><input type="checkbox" name="hobby" value="music" checked> 音乐</label>
+    <label><input type="checkbox" name="hobby" value="gaming"> 游戏</label>
+    <label><input type="checkbox" name="hobby" value="travel"> 旅游</label>
+    <label><input type="checkbox" name="hobby" value="reading" checked> 阅读</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>学过的语言（checkbox）：</legend>
+    <label><input type="checkbox" name="language" value="c" checked> C</label>
+    <label><input type="checkbox" name="language" value="html"> HTML</label>
+    <label><input type="checkbox" name="language" value="css"> CSS</label>
+    <label><input type="checkbox" name="language" value="js"> JavaScript</label>
+    <label><input type="checkbox" name="language" value="python"> Python</label>
+  </fieldset>
+
+  <!-- 单用 checkbox：常见于"同意协议" -->
+  <div class="note">
+    <p><strong>checkbox 的特别用法：</strong>单个 checkbox 常用于"我同意"开关。</p>
+    <label>
+      <input type="checkbox" name="agree" value="yes">
+      我已阅读并同意《用户协议》（单个 checkbox，没有互斥关系）
+    </label>
+  </div>
+
+  <hr>
+
+  <!-- ===== 三、select 下拉 ===== -->
+  <h2>三、select——下拉框（折叠的单选题）</h2>
+
+  <p>
+    <label for="city-sel">所在城市：</label>
+    <select id="city-sel" name="city">
+      <!--
+        option 的 value 是提交给服务器的值，
+        标签之间的文字是用户看到的。
+        两者可以不同！
+      -->
+      <option value="">-- 请选择城市 --</option>
+      <option value="beijing">北京</option>
+      <option value="shanghai" selected>上海</option>
+      <option value="guangzhou">广州</option>
+      <option value="shenzhen">深圳</option>
+      <option value="hangzhou">杭州</option>
+      <option value="chengdu">成都</option>
+    </select>
+  </p>
+  <p style="font-size: 13px; color: #888;">selected 属性让"上海"成为默认选中项。下拉框适合选项很多时，比 radio 省空间。</p>
+
+  <hr>
+
+  <!-- ===== 四、datalist 建议 ===== -->
+  <h2>四、datalist——输入建议（半输入半选择）</h2>
+
+  <p>
+    <label for="major">专业：</label>
+    <!--
+      input 的 list 属性值必须和 datalist 的 id 值相同。
+      用户在输入框打字时，浏览器会弹出 datalist 中匹配的选项。
+    -->
+    <input type="text" id="major" name="major" list="major-list" placeholder="输入或选择专业">
+    <datalist id="major-list">
+      <option value="计算机科学与技术">
+      <option value="软件工程">
+      <option value="数学与应用数学">
+      <option value="电子信息工程">
+      <option value="英语">
+      <option value="工商管理">
+      <option value="法学">
+    </datalist>
+  </p>
+  <p style="font-size: 13px; color: #888;">在输入框里敲"计"，试试看？datalist 像一个"智能提示"。</p>
+
+  <hr>
+
+  <!-- ===== 速查表 ===== -->
+  <h2>速查表</h2>
+  <table style="border-collapse: collapse; width: 100%;">
+    <thead>
+      <tr style="background: #f0f0f0;">
+        <th style="border: 1px solid #ccc; padding: 8px;">控件</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">选几项</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">关键点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">radio</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">单选</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">name 相同才能互斥</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">checkbox</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">多选</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">每个独立，可全勾可不勾</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">select</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">单选</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">折叠省空间，适合选项多的场景</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">datalist</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">半选半输</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">打字时弹出建议，也可自填</td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>

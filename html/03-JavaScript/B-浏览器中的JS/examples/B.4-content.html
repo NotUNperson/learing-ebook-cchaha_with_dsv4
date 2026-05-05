@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.4 修改元素内容</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    button { margin: 4px; padding: 6px 14px; cursor: pointer; }
+    .box { border: 2px solid #333; padding: 12px; margin: 10px 0; border-radius: 4px; }
+    .result-area {
+      min-height: 60px; padding: 12px; border: 2px dashed #999; margin: 8px 0;
+      background: #fafafa; border-radius: 4px;
+    }
+    .hidden-area { display: none; }
+    input[type="text"] { padding: 6px; width: 300px; font-size: 14px; }
+    .warning { color: #d63384; font-weight: bold; }
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; }
+  </style>
+</head>
+<body>
+
+  <h1>B.4 修改元素内容</h1>
+
+  <!-- ===== textContent 演示 ===== -->
+  <h2>一、textContent（纯文本，安全，首选）</h2>
+  <p>textContent 只设置纯文本——即使你传入 HTML 标签，它也会原样显示尖括号。</p>
+  <div id="text-demo" class="result-area">这是初始文字。</div>
+  <button onclick="demoTextContent()">用 textContent 修改（传了 HTML 标签）</button>
+
+  <!-- ===== innerHTML 演示 ===== -->
+  <h2>二、innerHTML（能解析 HTML——但要小心）</h2>
+  <p>innerHTML 会把字符串当 HTML 解析——尖括号内的标签会被渲染出来。</p>
+  <div id="html-demo" class="result-area">这是初始文字。</div>
+  <button onclick="demoInnerHTML()">用 innerHTML 修改（传了 HTML 标签）</button>
+
+  <!-- ===== XSS 警告演示 ===== -->
+  <h2 class="warning">三、innerHTML 的 XSS 风险演示</h2>
+  <p>在下方输入框中输入一行恶意代码，然后用 innerHTML 插入，看看会发生什么：</p>
+  <input type="text" id="xss-input" placeholder='试试输入：<img src=x onerror="alert(1)">'>
+  <button onclick="demoXSS()">用 innerHTML 插入（危险！）</button>
+  <button onclick="demoSafe()">用 textContent 插入（安全）</button>
+  <div id="xss-demo" class="result-area">等待输入...</div>
+
+  <!-- ===== 取值对比：隐藏元素 ===== -->
+  <h2>四、取值对比：隐藏元素中的文字</h2>
+  <div id="read-demo" class="box">
+    <p>可见文字一</p>
+    <p class="hidden-area">这段文字被 display:none 隐藏了。</p>
+    <p>可见文字二</p>
+  </div>
+  <button onclick="demoRead()">分别用三种方式读取内容</button>
+  <div id="read-result" class="result-area">等待读取...</div>
+
+  <!-- ===== 三者对比表 ===== -->
+  <h2>五、三者对比</h2>
+  <table>
+    <thead>
+      <tr><th>属性</th><th>解析 HTML</th><th>取隐藏文本</th><th>写性能</th><th>使用场景</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>textContent</code></td><td>不解析</td><td>能取到</td><td>快</td><td>日常改文字（首选）</td></tr>
+      <tr><td><code>innerHTML</code></td><td>解析</td><td>能取到</td><td>快</td><td>需要插入 HTML 结构时</td></tr>
+      <tr><td><code>innerText</code></td><td>不解析</td><td>取不到</td><td>慢（触发回流）</td><td>极少使用</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    // 获取三个展示区域的引用
+    var textDemo = document.getElementById("text-demo");
+    var htmlDemo = document.getElementById("html-demo");
+    var xssDemo = document.getElementById("xss-demo");
+    var readResult = document.getElementById("read-result");
+
+    // ===== textContent 演示 =====
+    function demoTextContent() {
+      // textContent 传入 HTML 标签——尖括号会被原样显示
+      textDemo.textContent = "<strong>这是加粗吗？</strong> 不——尖括号原样输出！";
+      console.log("textContent 把 HTML 标签当纯文本处理");
+    }
+
+    // ===== innerHTML 演示 =====
+    function demoInnerHTML() {
+      // innerHTML 会解析 HTML 标签——尖括号内的内容会被渲染
+      htmlDemo.innerHTML = "<strong>这是加粗吗？</strong> 是的——尖括号被当成 HTML 解析！<br>还可以换行、插入<span style='color:red'>红色文字</span>。";
+      console.log("innerHTML 解析了 HTML 标签");
+    }
+
+    // ===== XSS 风险演示 =====
+    function demoXSS() {
+      var userInput = document.getElementById("xss-input").value;
+      if (!userInput) {
+        xssDemo.textContent = "请先在输入框中输入内容！";
+        return;
+      }
+      // 危险！直接把用户输入赋值给 innerHTML
+      xssDemo.innerHTML = "<strong>危险演示：</strong>" + userInput;
+      console.warn("innerHTML 执行了用户输入的内容！这是 XSS 攻击的原理！");
+    }
+
+    function demoSafe() {
+      var userInput = document.getElementById("xss-input").value;
+      if (!userInput) {
+        xssDemo.textContent = "请先在输入框中输入内容！";
+        return;
+      }
+      // 安全：textContent 不会解析 HTML
+      xssDemo.textContent = "安全演示：" + userInput;
+      console.log("textContent 安全地显示了用户输入，尖括号被转义");
+    }
+
+    // ===== 取值对比 =====
+    function demoRead() {
+      var container = document.getElementById("read-demo");
+
+      var tc = container.textContent;
+      var ih = container.innerHTML;
+      var it = container.innerText;
+
+      readResult.innerHTML =
+        "<strong>textContent 读取：</strong><br><code>" + escapeHtml(tc) + "</code><br>" +
+        "（包含隐藏元素的文字）<br><br>" +
+        "<strong>innerHTML 读取：</strong><br><code>" + escapeHtml(ih) + "</code><br>" +
+        "（返回了完整的 HTML 结构）<br><br>" +
+        "<strong>innerText 读取：</strong><br><code>" + it.trim() + "</code><br>" +
+        "（隐藏元素的文字没有被取到！）";
+
+      console.log("textContent:" , tc);
+      console.log("innerHTML:" , ih);
+      console.log("innerText:" , it);
+    }
+
+    // 辅助函数：把 HTML 特殊字符转义，防止被渲染
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+  </script>
+
+</body>
+</html>

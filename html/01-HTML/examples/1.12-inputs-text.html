@@ -1,0 +1,202 @@
+<!--
+  =====================================================
+  示例文件：1.12 表单控件（上）—— 文本类输入
+  对应教程：1.12-表单控件上.md
+
+  这个文件展示了各种文本类输入控件：
+  - text / password / email / number / tel / url / search
+  - textarea 多行文本
+  - placeholder 占位提示
+  - value / readonly / disabled
+  请在手机上打开并观察不同 type 弹出的不同键盘！
+  =====================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.12 文本类输入控件——示例</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 0 15px;
+      line-height: 1.8;
+    }
+    hr {
+      margin: 25px 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: inline-block;
+      width: 100px;
+      font-weight: bold;
+      vertical-align: top;
+    }
+    .form-group input,
+    .form-group textarea {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      width: 250px;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #007acc;
+      box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+    }
+    textarea {
+      resize: vertical;  /* 只允许竖直方向拖拽大小 */
+    }
+    .note {
+      background: #e7f3ff;
+      padding: 10px 15px;
+      border-radius: 4px;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+    .demo-box {
+      background: #f8f9fa;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>文本类输入控件</h1>
+
+  <!-- ===== 一、7 种文本类型 ===== -->
+  <h2>一、input type 的七种文本家族</h2>
+
+  <div class="demo-box">
+    <!-- 1. 普通文本 -->
+    <div class="form-group">
+      <label for="t1">普通文本：</label>
+      <input type="text" id="t1" name="text" placeholder="随便写什么">
+    </div>
+
+    <!-- 2. 密码 -->
+    <div class="form-group">
+      <label for="t2">密码：</label>
+      <input type="password" id="t2" name="password" placeholder="输入时显示为圆点">
+    </div>
+
+    <!-- 3. 邮箱 -->
+    <div class="form-group">
+      <label for="t3">邮箱：</label>
+      <input type="email" id="t3" name="email" placeholder="name@example.com">
+    </div>
+
+    <!-- 4. 数字 -->
+    <div class="form-group">
+      <label for="t4">年龄：</label>
+      <input type="number" id="t4" name="age" min="0" max="150" placeholder="0-150">
+    </div>
+
+    <!-- 5. 电话号码 -->
+    <div class="form-group">
+      <label for="t5">手机号：</label>
+      <input type="tel" id="t5" name="phone" placeholder="请输入手机号">
+    </div>
+
+    <!-- 6. 网址 -->
+    <div class="form-group">
+      <label for="t6">个人网站：</label>
+      <input type="url" id="t6" name="website" placeholder="https://example.com">
+    </div>
+
+    <!-- 7. 搜索 -->
+    <div class="form-group">
+      <label for="t7">搜索：</label>
+      <input type="search" id="t7" name="q" placeholder="搜索关键词">
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>请在手机或 Chrome 移动模拟器上打开这个页面！</strong><br>
+    点击不同的输入框，你会发现弹出的键盘不一样：<br>
+    email → 带 @ 的键盘 | number → 纯数字键盘 | tel → 电话拨号盘 | url → 带 .com 的键盘
+  </div>
+
+  <hr>
+
+  <!-- ===== 二、textarea 多行文本 ===== -->
+  <h2>二、textarea——多行文本输入</h2>
+  <div class="form-group">
+    <label for="comment">评论：</label>
+    <textarea id="comment" name="comment" rows="5" cols="40" placeholder="写下你对这篇文章的看法..."></textarea>
+  </div>
+  <p><strong>注意：</strong>textarea 不是空标签，内容写在开始标签和结束标签之间，而不是 value 属性里。</p>
+
+  <hr>
+
+  <!-- ===== 三、value / readonly / disabled ===== -->
+  <h2>三、value / readonly / disabled 三态</h2>
+
+  <div class="demo-box">
+    <!-- value：有默认值，可以改 -->
+    <div class="form-group">
+      <label for="v1">城市：</label>
+      <input type="text" id="v1" name="city" value="北京">
+      <span style="font-size: 13px; color: #888;">（有默认值"北京"，可以改）</span>
+    </div>
+
+    <!-- readonly：看得见，改不了，但会提交 -->
+    <div class="form-group">
+      <label for="v2">用户编号：</label>
+      <input type="text" id="v2" name="user_id" value="USR20240001" readonly>
+      <span style="font-size: 13px; color: #888;">（readonly：改不了，会提交）</span>
+    </div>
+
+    <!-- disabled：灰色，改不了，也不提交 -->
+    <div class="form-group">
+      <label for="v3">优惠码：</label>
+      <input type="text" id="v3" name="coupon" value="已过期" disabled>
+      <span style="font-size: 13px; color: #888;">（disabled：灰色，改不了，也不提交）</span>
+    </div>
+  </div>
+
+  <table style="border-collapse: collapse; width: 100%; margin: 10px 0;">
+    <thead>
+      <tr style="background: #f0f0f0;">
+        <th style="border: 1px solid #ccc; padding: 8px;">属性</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">能编辑？</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">能复制？</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">表单提交时会传递？</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">（无）</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">能</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">能</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">会</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">readonly</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">不能</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">能</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">会</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">disabled</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">不能</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">不能</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">不会</td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>

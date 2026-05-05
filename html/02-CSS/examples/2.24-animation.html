@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2.24 动画 - @keyframes 演示</title>
+  <style>
+    /* ========== 公共样式 ========== */
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 0 15px 50px 15px;
+      line-height: 1.8;
+    }
+    h2 {
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 5px;
+      margin-top: 40px;
+    }
+    .note {
+      color: #888;
+      font-size: 0.875rem;
+      margin: 8px 0;
+    }
+    .demo-area {
+      border: 1px dashed #999;
+      padding: 25px;
+      margin: 15px 0;
+      background: #fafafa;
+      text-align: center;
+    }
+
+    /* ================================================================ */
+    /* 一、呼吸灯动画 @keyframes                                        */
+    /* ================================================================ */
+    @keyframes pulse {
+      0%   {
+        opacity: 0.3;
+        transform: scale(1);
+      }
+      50%  {
+        opacity: 1;
+        transform: scale(1.08);
+      }
+      100% {
+        opacity: 0.3;
+        transform: scale(1);
+      }
+    }
+    .breathing-dot {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      background: #e74c3c;
+      border-radius: 50%;
+      /* animation: name duration timing-function iteration-count direction */
+      animation: pulse 2s ease-in-out infinite;
+      margin: 10px;
+    }
+    .breathing-dot.green {
+      background: #27ae60;
+      animation-duration: 3s;   /* 绿点慢一些 */
+    }
+    .breathing-dot.blue {
+      background: #3498db;
+      animation-duration: 1.5s;  /* 蓝点快一些 */
+    }
+
+    /* ================================================================ */
+    /* 二、加载旋转圈 @keyframes                                        */
+    /* ================================================================ */
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    .loader {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border: 5px solid #e0e0e0;
+      border-top-color: #3498db;      /* 只有顶部是蓝色 */
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 10px;
+    }
+    .loader.fast {
+      animation-duration: 0.4s;
+      border-top-color: #e74c3c;
+    }
+    .loader.slow {
+      animation-duration: 2s;
+      border-top-color: #27ae60;
+    }
+    .loader.double {
+      width: 60px;
+      height: 60px;
+      border-width: 6px;
+      border-top-color: #3498db;
+      border-right-color: #3498db;    /* 右半边也有颜色 */
+    }
+
+    /* ================================================================ */
+    /* 三、滑入动画 @keyframes                                          */
+    /* ================================================================ */
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);   /* 从左边50px外 */
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);       /* 滑入原位 */
+      }
+    }
+    .slide-in {
+      display: inline-block;
+      background: #8e44ad;
+      color: #fff;
+      padding: 15px 30px;
+      border-radius: 8px;
+      animation: slideIn 0.8s ease-out;
+    }
+    /* 让多个元素错开时间入场 */
+    .slide-in:nth-child(2) { animation-delay: 0.2s; animation-fill-mode: backwards; }
+    .slide-in:nth-child(3) { animation-delay: 0.4s; animation-fill-mode: backwards; }
+
+    /* ================================================================ */
+    /* 四、弹跳动画 @keyframes                                          */
+    /* ================================================================ */
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      40%      { transform: translateY(-30px); }
+      60%      { transform: translateY(-15px); }
+    }
+    .bounce-ball {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      background: #f39c12;
+      border-radius: 50%;
+      margin: 10px 20px;
+      animation: bounce 1s ease infinite;
+    }
+    .bounce-ball:nth-child(2) { animation-delay: 0.2s; background: #e74c3c; }
+    .bounce-ball:nth-child(3) { animation-delay: 0.4s; background: #3498db; }
+
+    /* ================================================================ */
+    /* 五、闪烁文字动画                                                */
+    /* ================================================================ */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.2; }
+    }
+    .blink-text {
+      font-size: 1.2rem;
+      color: #e74c3c;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    /* ================================================================ */
+    /* 六、骨架屏占位动画                                              */
+    /* ================================================================ */
+    @keyframes shimmer {
+      0%   { background-position: -200px 0; }
+      100% { background-position: 200px 0; }
+    }
+    .skeleton {
+      width: 100%;
+      height: 18px;
+      border-radius: 4px;
+      margin: 8px 0;
+      background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.5s ease-in-out infinite;
+    }
+    .skeleton.short { width: 60%; }
+    .skeleton.title { width: 80%; height: 24px; }
+
+    /* ================================================================ */
+    /* 七、animation-direction: alternate 演示                          */
+    /* ================================================================ */
+    @keyframes stretch {
+      from { transform: scaleX(1); }
+      to   { transform: scaleX(2); }
+    }
+    .alternate-bar {
+      display: inline-block;
+      width: 60px;
+      height: 20px;
+      background: #27ae60;
+      border-radius: 3px;
+      margin: 8px;
+      /* alternate：正反交替播放 */
+      animation: stretch 1s ease-in-out infinite alternate;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CSS 动画演示 —— @keyframes 关键帧动画</h1>
+
+  <!-- ============ 一、呼吸灯 ============ -->
+  <h2>一、呼吸灯 —— @keyframes pulse</h2>
+  <div class="demo-area">
+    <div class="breathing-dot"></div>
+    <div class="breathing-dot green"></div>
+    <div class="breathing-dot blue"></div>
+  </div>
+  <p class="note">三个呼吸灯用同一个 @keyframes pulse，但设置了不同的 duration（2s / 3s / 1.5s），所以呼吸节奏不一样。红点 2 秒一轮，绿点慢悠悠，蓝点急促。</p>
+
+  <!-- ============ 二、加载旋转 ============ -->
+  <h2>二、加载旋转圈 —— @keyframes spin</h2>
+  <div class="demo-area">
+    <div class="loader"></div>
+    <div class="loader fast"></div>
+    <div class="loader slow"></div>
+    <div class="loader double"></div>
+  </div>
+  <p class="note">圆圈的动画原理：整个 div 是圆形 border，但只有顶部（border-top）有颜色，然后让整个 div 旋转——看起来就是一圈在转。四个圈不同速度：正常 0.8s、快 0.4s、慢 2s、双色圈。</p>
+
+  <!-- ============ 三、滑入动画 ============ -->
+  <h2>三、滑入动画 —— @keyframes slideIn</h2>
+  <div class="demo-area">
+    <div class="slide-in" style="margin:5px;">第一个入场</div>
+    <div class="slide-in" style="margin:5px;">第二个入场（延迟0.2s）</div>
+    <div class="slide-in" style="margin:5px;">第三个入场（延迟0.4s）</div>
+  </div>
+  <p class="note">刷新页面观察入场效果！三个元素用 animation-delay 错开时间，形成依次入场的节奏感。<code>animation-fill-mode: backwards</code> 确保延迟期间也保持透明（否则它们会先闪现一下）。</p>
+
+  <!-- ============ 四、弹跳 ============ -->
+  <h2>四、弹跳小球 —— @keyframes bounce</h2>
+  <div class="demo-area" style="min-height: 120px; display: flex; align-items: flex-end; justify-content: center;">
+    <div class="bounce-ball"></div>
+    <div class="bounce-ball"></div>
+    <div class="bounce-ball"></div>
+  </div>
+  <p class="note">三个小球依次弹跳，各有 0.2s 的延迟，形成了波浪般的效果。关键帧 40% 弹到最高点，60% 轻微回弹——这是模拟真实的物理弹跳。</p>
+
+  <!-- ============ 五、闪烁 ============ -->
+  <h2>五、闪烁文字</h2>
+  <div class="demo-area">
+    <p>这是一个 <span class="blink-text">闪烁的提示</span>，用了 animation: blink 1.5s infinite。</p>
+  </div>
+
+  <!-- ============ 六、骨架屏 ============ -->
+  <h2>六、骨架屏占位动画 —— @keyframes shimmer</h2>
+  <div class="demo-area" style="text-align:left;">
+    <div class="skeleton title"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton short"></div>
+  </div>
+  <p class="note">骨架屏（Skeleton Screen）是页面加载时的占位动画。原理：渐变背景 + 移动 background-position，产生"光条扫过"的效果。YouTube、Facebook 等网站都在用这种技术。</p>
+
+  <!-- ============ 七、alternate ============ -->
+  <h2>七、alternate 方向 —— 来回拉伸</h2>
+  <div class="demo-area">
+    <div class="alternate-bar"></div>
+    <div class="alternate-bar" style="animation-delay: 0.3s;"></div>
+    <div class="alternate-bar" style="animation-delay: 0.6s;"></div>
+  </div>
+  <p class="note">animation-direction: alternate 让动画正反交替播放——从 scaleX(1) 到 scaleX(2) 然后平滑地倒回去。和 infinite 搭配就是无限来回。</p>
+
+  <h2>transition vs animation 对比</h2>
+  <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; margin-bottom: 30px;">
+    <tr style="background: #f0f0f0;">
+      <th>维度</th>
+      <th>transition</th>
+      <th>animation</th>
+    </tr>
+    <tr>
+      <td>触发方式</td>
+      <td>需要触发（hover 等）</td>
+      <td>自动运行</td>
+    </tr>
+    <tr>
+      <td>关键帧</td>
+      <td>只有开始和结束</td>
+      <td>任意多个关键帧（0%, 25%, 50%...）</td>
+    </tr>
+    <tr>
+      <td>循环</td>
+      <td>不支持</td>
+      <td>支持（infinite、指定次数）</td>
+    </tr>
+    <tr>
+      <td>往返</td>
+      <td>自动</td>
+      <td>需设 alternate</td>
+    </tr>
+    <tr>
+      <td>典型场景</td>
+      <td>hover 效果、交互反馈</td>
+      <td>加载动画、呼吸灯、入场动画</td>
+    </tr>
+  </table>
+
+</body>
+</html>

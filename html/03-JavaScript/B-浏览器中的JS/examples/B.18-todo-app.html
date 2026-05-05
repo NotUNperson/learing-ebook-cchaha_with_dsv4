@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.18 综合练习：Todo App</title>
+  <style>
+    /* ===== 全局样式 ===== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* ===== 主卡片 ===== */
+    .app-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 480px;
+      padding: 32px 28px;
+    }
+
+    .app-title {
+      text-align: center;
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .app-subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 24px;
+    }
+
+    /* ===== 输入区域 ===== */
+    /* 用 form 包装，方便监听 submit 事件并 preventDefault */
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    #task-input {
+      flex: 1;
+      padding: 10px 14px;
+      font-size: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    #task-input:focus {
+      border-color: #667eea;
+    }
+
+    /* ===== 通用按钮 ===== */
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5a6fd6;
+    }
+
+    .btn-sm {
+      padding: 3px 10px;
+      font-size: 12px;
+      border-radius: 4px;
+    }
+
+    .btn-success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .btn-success:hover {
+      background: #c3e6cb;
+    }
+
+    .btn-danger {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .btn-danger:hover {
+      background: #f5c6cb;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #ccc;
+      color: #666;
+    }
+
+    .btn-outline:hover {
+      background: #f5f5f5;
+    }
+
+    /* ===== 任务列表 ===== */
+    #task-list {
+      list-style: none;
+      margin-bottom: 16px;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .todo-item:hover {
+      background: #f0f0ff;
+      border-color: #cfe2ff;
+    }
+
+    /* 完成状态 —— CSS 定义样式，JS 只切换类名 */
+    .todo-item.done .task-text {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+
+    .todo-item.done {
+      background: #f0fdf0;
+      opacity: 0.75;
+    }
+
+    .task-checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ccc;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .todo-item.done .task-checkbox {
+      background: #28a745;
+      border-color: #28a745;
+      color: white;
+    }
+
+    /* 用 ::after 伪元素显示打勾 */
+    .todo-item.done .task-checkbox::after {
+      content: "✓";
+    }
+
+    .task-text {
+      flex: 1;
+      font-size: 15px;
+      word-break: break-all;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    /* ===== 底部操作栏 ===== */
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+    }
+
+    .stats {
+      font-size: 13px;
+      color: #999;
+    }
+
+    .footer-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    /* ===== 空列表提示 ===== */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #ccc;
+      font-size: 15px;
+    }
+
+    /* ===== 过渡动画 ===== */
+    /* 任务项出现/消失的简单效果 */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .todo-item {
+      animation: slideIn 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <h1 class="app-title">Todo App</h1>
+    <p class="app-subtitle">B 篇综合练习 -- 数据持久化，刷新不丢失</p>
+
+    <!--
+      ===== 输入区域 =====
+      用 form 标签包装，监听 submit 事件并 preventDefault
+      这样按回车也能添加任务（B.10/B.12 知识）
+    -->
+    <form class="input-group" id="todo-form">
+      <input
+        type="text"
+        id="task-input"
+        placeholder="输入新任务，按回车添加..."
+        autocomplete="off"
+      >
+      <button type="submit" class="btn btn-primary">添加</button>
+    </form>
+
+    <!--
+      ===== 任务列表 =====
+      这里只放一个 ul，所有 li 由 JS 动态渲染
+      事件委托：只在 ul 上注册一个 click 监听器（B.9）
+    -->
+    <ul id="task-list">
+      <!-- JS 动态填充 -->
+    </ul>
+
+    <!-- ===== 底部操作栏 ===== -->
+    <div class="footer">
+      <span class="stats" id="task-stats">共 0 项，0 项未完成</span>
+      <div class="footer-actions">
+        <button class="btn btn-sm btn-outline" id="clear-done-btn">清除已完成</button>
+        <button class="btn btn-sm btn-outline" id="toggle-all-btn">全部完成/取消</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /*
+     * ========================================
+     *  B.18 综合练习：Todo App
+     *
+     *  使用的 B 篇知识点：
+     *  - B.3  选择 DOM 元素 (querySelector / getElementById)
+     *  - B.4  修改内容 (textContent)
+     *  - B.6  创建与插入节点 (createElement + append)
+     *  - B.7  删除节点 (element.remove())
+     *  - B.9  事件委托 (在 ul 上监听点击)
+     *  - B.11 操作 class (classList.toggle)
+     *  - B.17 localStorage 持久化存储
+     *  - B.10 表单事件 (submit + preventDefault)
+     * ========================================
+     */
+
+    // ----- 数据层：核心数据存储 -----
+    // 数据结构：{ id: 唯一编号, text: 任务文字, done: 是否完成 }
+
+    // 从 localStorage 读取保存的数据（如果没有则初始化为空数组）
+    var todos = loadTodos();
+
+    function loadTodos() {
+      var stored = localStorage.getItem("todo-app-data");
+      if (stored) {
+        // JSON.parse 把字符串还原为数组（B.17）
+        return JSON.parse(stored);
+      }
+      // 首次打开，返回空数组
+      return [];
+    }
+
+    function saveTodos() {
+      // JSON.stringify 把数组转为字符串存入 localStorage（B.17）
+      localStorage.setItem("todo-app-data", JSON.stringify(todos));
+    }
+
+    // 生成一个简单的唯一 ID（自增）
+    function nextId() {
+      if (todos.length === 0) return 1;
+      var maxId = 0;
+      todos.forEach(function(t) {
+        if (t.id > maxId) maxId = t.id;
+      });
+      return maxId + 1;
+    }
+
+    // ----- 视图层：渲染函数 -----
+    // 这是整个应用的核心 —— 所有数据变化后都调一次 render()
+    // 它负责把 todos 数组变成页面上的列表项
+
+    function render() {
+      var list = document.getElementById("task-list");
+      // 清空当前列表（B.7）
+      list.innerHTML = "";
+
+      if (todos.length === 0) {
+        // 空状态提示
+        var empty = document.createElement("div");
+        empty.className = "empty-state";
+        empty.textContent = "还没有任务，添加一个吧！";
+        list.append(empty);
+      }
+
+      // 遍历数据，为每个任务创建 li 元素
+      todos.forEach(function(todo, index) {
+        var li = document.createElement("li");       // B.6 createElement
+        li.className = "todo-item";
+        if (todo.done) {
+          li.classList.add("done");                  // B.11 classList
+        }
+        li.dataset.id = todo.id;                     // B.5 dataset 存放任务 ID
+        li.dataset.index = index;                     // 存放数组下标
+
+        // 复选框圆形图标
+        var checkbox = document.createElement("span");
+        checkbox.className = "task-checkbox";
+
+        // 任务文字
+        var textEl = document.createElement("span");
+        textEl.className = "task-text";
+        textEl.textContent = todo.text;               // B.4 textContent（纯文本，安全）
+
+        // 操作按钮容器
+        var actions = document.createElement("span");
+        actions.className = "task-actions";
+
+        // "完成/取消"按钮
+        var toggleBtn = document.createElement("button");
+        toggleBtn.className = "btn btn-sm btn-success";
+        toggleBtn.textContent = todo.done ? "取消" : "完成";
+        toggleBtn.dataset.action = "toggle";          // B.9 事件委托标识
+
+        // "删除"按钮
+        var deleteBtn = document.createElement("button");
+        deleteBtn.className = "btn btn-sm btn-danger";
+        deleteBtn.textContent = "删除";
+        deleteBtn.dataset.action = "delete";          // B.9 事件委托标识
+
+        actions.append(toggleBtn, deleteBtn);         // B.6 append 多参数
+        li.append(checkbox, textEl, actions);
+        list.append(li);
+      });
+
+      // 更新统计信息
+      updateStats();
+    }
+
+    function updateStats() {
+      var total = todos.length;
+      var doneCount = 0;
+      todos.forEach(function(t) {
+        if (t.done) doneCount++;
+      });
+      var undone = total - doneCount;
+
+      document.getElementById("task-stats").textContent =
+        "共 " + total + " 项，" + undone + " 项未完成";
+    }
+
+    // ----- 控制层：添加任务 -----
+
+    var form = document.getElementById("todo-form");
+    var input = document.getElementById("task-input");
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();  // B.10/B.12 阻止表单默认提交（防止页面刷新）
+
+      var text = input.value.trim();
+      if (!text) {
+        // 什么都不输入，忽略
+        return;
+      }
+
+      // 创建新任务对象
+      var newTodo = {
+        id: nextId(),
+        text: text,
+        done: false
+      };
+
+      // 加入数据
+      todos.push(newTodo);       // JS-A 篇：数组操作
+      saveTodos();               // 持久化
+      render();                  // 重新渲染
+
+      // 清空输入框并聚焦，方便连续添加
+      input.value = "";
+      input.focus();
+    });
+
+    // ----- 控制层：事件委托 -----
+    // 只在 ul 上注册一个 click 监听器（B.9 事件委托）
+    var taskList = document.getElementById("task-list");
+
+    taskList.addEventListener("click", function(event) {
+      var target = event.target;
+
+      // 获取点击的按钮的 data-action 属性
+      var action = target.dataset.action;
+      if (!action) {
+        // 不是有效按钮，可能点到了空白区域
+        return;
+      }
+
+      // 找到按钮所在的 li 元素（closest 向上查找最近的匹配祖先）
+      var li = target.closest(".todo-item");
+      if (!li) return;
+
+      // 从 dataset 中读取任务在数组中的下标
+      var index = parseInt(li.dataset.index, 10);
+      if (isNaN(index) || index < 0 || index >= todos.length) return;
+
+      if (action === "toggle") {
+        // 切换完成状态
+        todos[index].done = !todos[index].done;  // JS-A 篇：取反
+        saveTodos();
+        render();
+
+      } else if (action === "delete") {
+        // 删除任务
+        if (confirm("确定要删除 \"" + todos[index].text + "\" 吗？")) {
+          todos.splice(index, 1);  // JS-A 篇：数组删除
+          saveTodos();
+          render();
+        }
+      }
+    });
+
+    // ----- 控制层：底部操作按钮 -----
+
+    // "清除已完成"按钮
+    document.getElementById("clear-done-btn").addEventListener("click", function() {
+      var before = todos.length;
+      // 过滤掉已完成的（JS-A 篇：filter 方法）
+      todos = todos.filter(function(t) {
+        return !t.done;
+      });
+
+      if (todos.length === before) {
+        alert("没有已完成的任务！");
+        return;
+      }
+
+      saveTodos();
+      render();
+    });
+
+    // "全部完成/取消"按钮
+    var allDone = false;  // 当前是否处于全部完成状态
+    document.getElementById("toggle-all-btn").addEventListener("click", function() {
+      if (todos.length === 0) {
+        alert("任务列表为空！");
+        return;
+      }
+
+      // 检查当前是不是全部已完成 —— 如果是，就全部取消
+      var allAreDone = todos.every(function(t) {
+        return t.done;
+      });
+
+      var newStatus = !allAreDone;
+      todos.forEach(function(t) {
+        t.done = newStatus;
+      });
+
+      allDone = newStatus;
+      saveTodos();
+      render();
+    });
+
+    // ----- 初始化渲染 -----
+    // 页面加载时，把 localStorage 中的数据渲染出来
+    render();
+
+    // 初始聚焦输入框
+    input.focus();
+
+    /*
+     * ===== 控制台欢迎信息 =====
+     * 打开 F12 查看这些内容
+     */
+    console.log("===== B.18 综合练习：Todo App =====");
+    console.log("这是一个完整的前端小应用！");
+    console.log("功能：添加、完成、删除、统计、持久化");
+    console.log("");
+    console.log("使用的 B 篇知识点：");
+    console.log("  B.3  选择 DOM 元素");
+    console.log("  B.4  修改元素内容（textContent）");
+    console.log("  B.5  修改属性（dataset）");
+    console.log("  B.6  创建与插入节点（createElement + append）");
+    console.log("  B.7  删除节点（remove / innerHTML=''）");
+    console.log("  B.9  事件委托（在 ul 上监听所有点击）");
+    console.log("  B.11 操作 class（classList.toggle）");
+    console.log("  B.10 表单事件（submit + preventDefault）");
+    console.log("  B.17 localStorage 持久化存储");
+    console.log("");
+    console.log("当前存储的数据：", todos);
+    console.log("试试添加任务，然后刷新页面——数据不会丢失！");
+    console.log("打开 F12 → Application → Local Storage 查看 'todo-app-data'");
+  </script>
+
+</body>
+</html>

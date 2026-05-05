@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="back-link">
+    <a href="{% url 'index' %}">&larr; 返回首页</a>
+</div>
+
+<h1>{{ post.title }}</h1>
+<p class="date">发布于：{{ post.created_date|date:"Y年m月d日 H:i" }}</p>
+
+<div class="post-content">
+    {{ post.content }}
+</div>
+
+<div class="back-link" style="margin-top: 20px;">
+    <a href="{% url 'index' %}">&larr; 返回文章列表</a>
+</div>
+{% endblock %}

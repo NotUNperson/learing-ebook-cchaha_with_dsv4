@@ -1,0 +1,203 @@
+<!--
+  =====================================================
+  示例文件：1.16 多媒体
+  对应教程：1.16-多媒体.md
+
+  这个文件展示了 HTML 的多媒体元素：
+  - audio 音频（controls、autoplay、muted、loop）
+  - video 视频（source 多格式备胎机制）
+  - iframe 嵌入外部页面
+  - canvas 画布（基础标签，功能需 JavaScript）
+  =====================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.16 多媒体——示例</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 750px;
+      margin: 30px auto;
+      padding: 0 15px;
+      line-height: 1.8;
+    }
+    hr {
+      margin: 25px 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+    .demo-box {
+      background: #f8f9fa;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      margin: 15px 0;
+      text-align: center;
+    }
+    video, audio {
+      margin: 10px 0;
+    }
+    canvas {
+      border: 2px dashed #ccc;
+      display: block;
+      margin: 10px auto;
+    }
+    .note {
+      background: #e7f3ff;
+      padding: 10px 15px;
+      border-radius: 4px;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>多媒体：音频、视频、嵌入</h1>
+  <p>让你的页面"有声有色"。下面所有示例在浏览器中可以直接打开体验。</p>
+
+  <!-- ===== 一、audio 音频 ===== -->
+  <h2>一、audio——音频播放器</h2>
+
+  <div class="demo-box">
+    <p><strong>基础音频播放：</strong></p>
+    <!--
+      controls：显示播放控制条（播放/暂停/进度/音量）
+      没有 controls，用户什么都看不到、操作不了。
+      下面的音频文件是示例路径，实际不存在，但你可以看到浏览器的音频控件样式。
+    -->
+    <audio src="sample-music.mp3" controls>
+      <!-- 降级提示：浏览器不支持 audio 标签时显示 -->
+      你的浏览器不支持 audio 标签。
+    </audio>
+    <p style="font-size: 13px; color: #888;">
+      如果没有 controls，这个播放器就是"隐形"的——用户无法操作。
+    </p>
+  </div>
+
+  <div class="note">
+    <p><strong>常用音频属性速查：</strong></p>
+    <ul>
+      <li><code>controls</code>：显示控制条（必须有，除非你想自定义 UI）</li>
+      <li><code>autoplay</code>：自动播放（浏览器通常会阻止，除非同时设置 muted）</li>
+      <li><code>muted</code>：静音播放</li>
+      <li><code>loop</code>：循环播放</li>
+    </ul>
+  </div>
+
+  <hr>
+
+  <!-- ===== 二、video 视频 + source 多格式 ===== -->
+  <h2>二、video——视频播放器 + source 多格式备胎</h2>
+
+  <div class="demo-box">
+    <p><strong>基础视频播放：</strong></p>
+    <!--
+      width 和 height 控制视频显示区域大小。
+      controls 让用户能播放/暂停/拖动进度条。
+    -->
+    <video controls width="640" height="360">
+      <!--
+        source 标签按顺序尝试：
+        1. 先试 WebM
+        2. 不行试 MP4
+        3. 都不行就显示降级提示
+      -->
+      <source src="sample-video.webm" type="video/webm">
+      <source src="sample-video.mp4" type="video/mp4">
+      <!-- 降级提示：浏览器不支持 video 标签 -->
+      你的浏览器不支持 HTML5 视频播放，请升级浏览器。
+    </video>
+    <p style="font-size: 13px; color: #888;">
+      上面给了两个 source：WebM 和 MP4。浏览器从上往下选第一个能播的格式。
+    </p>
+  </div>
+
+  <div class="note">
+    <p><strong>常用视频格式兼容性：</strong></p>
+    <ul>
+      <li><strong>MP4 (H.264)</strong>：最通用，几乎所有浏览器都支持</li>
+      <li><strong>WebM (VP8/VP9)</strong>：压缩率高，Chrome/Firefox 支持好，Safari 支持较晚</li>
+      <li><strong>OGG (Theora)</strong>：开源格式，兼容性一般</li>
+    </ul>
+    <p>推荐：提供 MP4 + WebM 两个版本，覆盖所有主流浏览器。</p>
+  </div>
+
+  <hr>
+
+  <!-- ===== 三、iframe 嵌入外部页面 ===== -->
+  <h2>三、iframe——页面里开一扇窗</h2>
+
+  <div class="demo-box">
+    <p><strong>嵌入 MDN HTML 文档页面：</strong></p>
+    <!--
+      iframe 把另一个完整的网页嵌入到你的页面里。
+      就像一个"画中画"小窗。
+      title 属性为屏幕阅读器提供描述（无障碍必须）。
+      注意：很多网站为了防止被恶意嵌入，设置了 X-Frame-Options 禁止 iframe。
+    -->
+    <iframe
+      src="https://example.com"
+      width="100%"
+      height="300"
+      title="示例网站——iframe 嵌入演示"
+      style="border: 1px solid #ccc; border-radius: 4px;"
+    ></iframe>
+    <p style="font-size: 13px; color: #888;">
+      iframe 就是"窗中窗"。上面嵌入的是 example.com（如果该网站禁止被嵌入，这里就显示不了）。
+      视频网站的"分享 -> 嵌入代码"得到的就是一个 iframe。
+    </p>
+  </div>
+
+  <hr>
+
+  <!-- ===== 四、canvas 简介 ===== -->
+  <h2>四、canvas——画布（预告）</h2>
+
+  <div class="demo-box">
+    <p><strong>canvas 是一个画板，本身不画任何东西：</strong></p>
+    <!--
+      canvas 只是一个"画布"。
+      要在上面画线条、图形、动画，需要 JavaScript。
+      这里只是展示标签的模样，后续 JavaScript 章节会深入讲解。
+    -->
+    <canvas id="demoCanvas" width="400" height="200"></canvas>
+    <p style="font-size: 13px; color: #888;">
+      上面那个虚线框就是 canvas 画布。现在它是空白的——就像刚买来的画板。<br>
+      要画画，需要 JavaScript 来操作它。在 JavaScript 章节我们会学习 canvas 的各种用法。
+    </p>
+  </div>
+
+  <!-- 给 canvas 画一点东西，展示基本用法 -->
+  <script>
+    // 这段 JS 只是给 canvas 画一个简单的圆和文字，
+    // 展示 canvas 不是完全空白的纸——它可以被 JavaScript 操作。
+    // 不用深究这些代码，JavaScript 章节会系统讲解。
+    (function() {
+      var canvas = document.getElementById('demoCanvas');
+      if (canvas && canvas.getContext) {
+        var ctx = canvas.getContext('2d');
+        // 画一个浅蓝色矩形
+        ctx.fillStyle = '#e3f2fd';
+        ctx.fillRect(0, 0, 400, 200);
+        // 画一个蓝色圆
+        ctx.beginPath();
+        ctx.arc(200, 85, 40, 0, Math.PI * 2);
+        ctx.fillStyle = '#1976d2';
+        ctx.fill();
+        // 写文字
+        ctx.fillStyle = '#333';
+        ctx.font = '16px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('我是用 JS 画上去的！', 200, 155);
+        ctx.font = '12px sans-serif';
+        ctx.fillText('canvas 本身是空白的，需要 JavaScript 来画画', 200, 178);
+      }
+    })();
+  </script>
+
+</body>
+</html>

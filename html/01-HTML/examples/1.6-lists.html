@@ -1,0 +1,128 @@
+<!--
+  =====================================================
+  示例文件：1.6 列表
+  对应教程：1.6-列表.md
+
+  这个文件展示了 HTML 中三种列表：
+  - ul（无序列表）—— 像购物清单，圆点标记
+  - ol（有序列表）—— 像步骤说明，数字序号
+  - dl（描述列表）—— 像词典，词条-释义对
+  以及列表的嵌套。
+  =====================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.6 列表——示例</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 650px;
+      margin: 30px auto;
+      padding: 0 15px;
+      line-height: 1.8;
+    }
+    hr {
+      margin: 25px 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+    /* 给 dl 域加一点样式，让它看起来更像词典 */
+    dl {
+      background: #f8f9fa;
+      padding: 15px 20px;
+      border-radius: 4px;
+    }
+    dt {
+      font-weight: bold;
+      margin-top: 10px;
+      color: #007acc;
+    }
+    dd {
+      margin-left: 20px;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>HTML 列表的三种形态</h1>
+
+  <!-- ===== 一、无序列表 ul ===== -->
+  <h2>一、无序列表 ul —— 像购物清单</h2>
+  <p>下面是我的购物清单，每项前面的小圆点是浏览器自动加上的。</p>
+  <ul>
+    <li>鸡蛋</li>
+    <li>牛奶</li>
+    <li>全麦面包</li>
+    <li>苹果</li>
+  </ul>
+  <p><strong>特点：</strong>ul 表示这些项是并列关系，顺序不重要。先买鸡蛋还是先买牛奶无所谓。</p>
+
+  <hr>
+
+  <!-- ===== 二、有序列表 ol ===== -->
+  <h2>二、有序列表 ol —— 像操作步骤</h2>
+  <p>下面是泡面的正确步骤，数字序号也是浏览器自动加的。</p>
+  <ol>
+    <li>撕开包装，取出面饼和调料包</li>
+    <li>把面饼放入碗中，倒入调料</li>
+    <li>倒入沸水至刻度线</li>
+    <li>盖上盖子，等待 3 分钟</li>
+    <li>搅拌均匀，开吃！</li>
+  </ol>
+  <p><strong>特点：</strong>ol 表示步骤有先后，顺序不能乱。你不可能先吃再泡。</p>
+
+  <hr>
+
+  <!-- ===== 三、描述列表 dl ===== -->
+  <h2>三、描述列表 dl —— 像词典</h2>
+  <p>下面是一个迷你编程词典：</p>
+  <dl>
+    <dt>HTML</dt>
+    <dd>超文本标记语言（HyperText Markup Language），用来描述网页的结构和内容。</dd>
+
+    <dt>CSS</dt>
+    <dd>层叠样式表（Cascading Style Sheets），用来控制网页的外观、颜色、布局。</dd>
+
+    <dt>JavaScript</dt>
+    <dd>一种运行在浏览器里的脚本语言，用来给网页添加交互：点击按钮、弹出提示、更新数据等。</dd>
+  </dl>
+  <p><strong>特点：</strong>dl 是一个"词条-释义"对列表。一个词条（dt）可以有多个释义（dd）。</p>
+
+  <hr>
+
+  <!-- ===== 四、嵌套列表 ===== -->
+  <h2>四、嵌套列表 —— 像文章大纲</h2>
+  <p>列表中套列表，形成层级结构：</p>
+  <ul>
+    <li>
+      第一章：HTML 基础
+      <ul>
+        <li>1.1 HTML 是什么</li>
+        <li>1.2 文档骨架</li>
+        <li>1.3 head 元信息</li>
+      </ul>
+    </li>
+    <li>
+      第二章：CSS 入门
+      <ul>
+        <li>2.1 选择器</li>
+        <li>2.2 颜色与字体</li>
+      </ul>
+    </li>
+    <li>
+      第三章：JavaScript 基础
+      <ul>
+        <li>3.1 变量与类型</li>
+        <li>3.2 函数</li>
+        <li>3.3 DOM 操作</li>
+      </ul>
+    </li>
+  </ul>
+  <p><strong>注意：</strong>内层的 ul 是放在外层 li 的<strong>里面</strong>的。结构是 ul > li > ul > li，不能写成 ul > ul。</p>
+
+</body>
+</html>

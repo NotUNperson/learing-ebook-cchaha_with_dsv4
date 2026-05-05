@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+{% if posts %}
+    {% for post in posts %}
+    <div class="post-item">
+        <h2>
+            <a href="{% url 'detail' post.id %}">{{ post.title }}</a>
+        </h2>
+        <p class="date">{{ post.created_date|date:"Y-m-d H:i" }}</p>
+        <p class="summary">{{ post.summary }}</p>
+        <a href="{% url 'detail' post.id %}">阅读全文 &rarr;</a>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="empty">
+        <p>还没有文章，来写第一篇吧！</p>
+        <a href="{% url 'create_post' %}" class="btn">写文章</a>
+    </div>
+{% endif %}
+{% endblock %}

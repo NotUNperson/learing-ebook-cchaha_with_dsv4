@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.10 常用事件类型</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    .box { border: 2px solid #333; padding: 12px; margin: 10px 0; border-radius: 4px; }
+    table { border-collapse: collapse; margin: 8px 0; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; font-size: 14px; }
+    button { margin: 4px; padding: 6px 14px; cursor: pointer; }
+    .mouse-zone {
+      display: inline-block; background: #e8f4fd; padding: 20px 40px;
+      border: 3px dashed #4a90d9; border-radius: 8px; text-align: center;
+    }
+    .mouse-inner {
+      display: inline-block; background: #d4edda; padding: 10px 20px;
+      border-radius: 4px; margin-top: 8px;
+    }
+    .key-display {
+      font-size: 48px; font-family: Consolas, monospace;
+      text-align: center; padding: 20px; background: #1e1e1e; color: #4ec9b0;
+      border-radius: 8px; min-height: 60px;
+    }
+    .log-line {
+      font-family: Consolas, monospace; font-size: 12px; margin: 2px 0;
+      padding: 2px 6px; border-radius: 3px;
+    }
+    .log-click { background: #cfe2ff; }
+    .log-key { background: #fff3cd; }
+    .log-form { background: #d4edda; }
+    .log-doc { background: #f8d7da; }
+    input[type="text"], select { padding: 6px; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <h1>B.10 常用事件类型</h1>
+
+  <!-- ===== 鼠标事件 ===== -->
+  <h2>一、鼠标事件</h2>
+
+  <div class="box">
+    <h3>click / dblclick</h3>
+    <button id="click-btn">点我（click）</button>
+    <button id="dblclick-btn">快速双击我（dblclick）</button>
+    <p id="click-result">等待操作...</p>
+  </div>
+
+  <div class="box">
+    <h3>mouseenter / mouseleave（推荐，不冒泡）vs mouseover / mouseout（冒泡）</h3>
+    <div id="mouse-zone" class="mouse-zone">
+      将鼠标移入/移出这个区域（mouseenter/mouseleave）
+      <div id="mouse-inner" class="mouse-inner">
+        内部子元素（试试在内外之间移动）
+      </div>
+    </div>
+    <p id="mouse-result">等待鼠标操作...</p>
+    <p class="info">
+      mouseenter/mouseleave：只在进出外层时触发一次（不冒泡）。<br>
+      mouseover/mouseout：在内部子元素之间移动也会反复触发（冒泡）。
+    </p>
+  </div>
+
+  <div class="box">
+    <h3>mousemove（频率极高）</h3>
+    <div id="mousemove-zone" style="background: #f5f5f5; padding: 30px; text-align: center; border-radius: 4px;">
+      在这个区域内移动鼠标
+    </div>
+    <p>坐标：<span id="mousemove-coords">--</span></p>
+  </div>
+
+  <!-- ===== 键盘事件 ===== -->
+  <h2>二、键盘事件</h2>
+  <div class="box">
+    <p>按下任意键（此处需先点击聚焦到此区域）：</p>
+    <div id="key-display" class="key-display" tabindex="0">点击此处，然后按键</div>
+    <p>
+      event.key = <strong id="key-value">--</strong><br>
+      event.code = <strong id="key-code">--</strong><br>
+      Ctrl: <span id="key-ctrl">false</span> | Shift: <span id="key-shift">false</span> | Alt: <span id="key-alt">false</span>
+    </p>
+    <p class="info">
+      试试按方向键、Esc、Enter，观察 event.key 的值。再试试 Ctrl+S，看组合键检测。<br>
+      注意：keypress 已废弃，不要再用。用 keydown 代替。
+    </p>
+  </div>
+
+  <!-- ===== 表单事件 ===== -->
+  <h2>三、表单事件</h2>
+  <div class="box">
+    <h3>input vs change</h3>
+    <label>实时触发（input）：<input type="text" id="input-demo" placeholder="每输入一个字都触发"></label>
+    <p>input 事件计数：<strong id="input-count">0</strong></p>
+
+    <label>失焦触发（change）：<input type="text" id="change-demo" placeholder="输入完离开才触发"></label>
+    <p>change 事件值：<strong id="change-value">--</strong></p>
+
+    <h3>focus / blur</h3>
+    <input type="text" id="focus-demo" placeholder="点我获取焦点，点别处失去焦点" style="width: 300px;">
+    <p>焦点状态：<strong id="focus-status">blurred</strong></p>
+
+    <h3>表单 submit</h3>
+    <form id="demo-form">
+      <input type="text" name="demo" placeholder="输入点什么" required>
+      <button type="submit">提交（实际上会阻止默认提交）</button>
+    </form>
+    <p id="submit-result"></p>
+  </div>
+
+  <!-- ===== 文档事件 ===== -->
+  <h2>四、文档生命周期事件</h2>
+  <div class="box">
+    <p>打开控制台查看这两个事件的触发时机：</p>
+    <ul>
+      <li><strong>DOMContentLoaded</strong>：DOM 树构建完毕即触发（不等图片）</li>
+      <li><strong>load</strong>：所有资源（图片、CSS、JS）全部加载完毕才触发</li>
+    </ul>
+    <p id="doc-event-log"></p>
+  </div>
+
+  <script>
+    // ===== 鼠标事件 =====
+    // click / dblclick
+    document.getElementById("click-btn").addEventListener("click", function(e) {
+      document.getElementById("click-result").textContent =
+        "click 事件触发！时间：" + new Date().toLocaleTimeString();
+      addGlobalLog("click", "log-click");
+    });
+
+    document.getElementById("dblclick-btn").addEventListener("dblclick", function(e) {
+      document.getElementById("click-result").textContent =
+        "dblclick 事件触发！时间：" + new Date().toLocaleTimeString();
+      addGlobalLog("dblclick", "log-click");
+    });
+
+    // mouseenter / mouseleave（不冒泡）
+    var mouseZone = document.getElementById("mouse-zone");
+    var enterCount = 0;
+    var leaveCount = 0;
+
+    mouseZone.addEventListener("mouseenter", function() {
+      enterCount++;
+      document.getElementById("mouse-result").innerHTML =
+        "<strong>mouseenter</strong>（不冒泡）触发 " + enterCount + " 次 | mouseleave 触发 " + leaveCount + " 次";
+    });
+
+    mouseZone.addEventListener("mouseleave", function() {
+      leaveCount++;
+      document.getElementById("mouse-result").innerHTML =
+        "<strong>mouseleave</strong>（不冒泡）触发 " + leaveCount + " 次 | mouseenter 触发 " + enterCount + " 次";
+    });
+
+    // 对比：mouseover / mouseout（冒泡）
+    var overCount = 0;
+    var outCount = 0;
+    mouseZone.addEventListener("mouseover", function() {
+      overCount++;
+      console.log("mouseover 触发，" + overCount + " 次（冒泡！在子元素间移动也会触发）");
+    });
+    mouseZone.addEventListener("mouseout", function() {
+      outCount++;
+      console.log("mouseout 触发，" + outCount + " 次（冒泡！在子元素间移动也会触发）");
+    });
+
+    // mousemove
+    var mousemoveZone = document.getElementById("mousemove-zone");
+    mousemoveZone.addEventListener("mousemove", function(e) {
+      document.getElementById("mousemove-coords").textContent =
+        "X: " + e.clientX + ", Y: " + e.clientY;
+    });
+
+    // ===== 键盘事件 =====
+    var keyDisplay = document.getElementById("key-display");
+    keyDisplay.addEventListener("keydown", function(e) {
+      e.preventDefault();  // 阻止默认行为（比如按 Tab 切换焦点）
+      document.getElementById("key-display").textContent = e.key === " " ? "[空格]" : e.key;
+      document.getElementById("key-value").textContent = e.key;
+      document.getElementById("key-code").textContent = e.code;
+      document.getElementById("key-ctrl").textContent = e.ctrlKey;
+      document.getElementById("key-shift").textContent = e.shiftKey;
+      document.getElementById("key-alt").textContent = e.altKey;
+
+      addGlobalLog("keydown: key=" + e.key + " ctrl=" + e.ctrlKey, "log-key");
+
+      // 演示组合键
+      if (e.ctrlKey && e.key === "s") {
+        e.preventDefault();
+        console.log("Ctrl+S 被按下——通常用于保存");
+      }
+    });
+
+    // ===== 表单事件 =====
+    // input vs change
+    var inputCount = 0;
+    document.getElementById("input-demo").addEventListener("input", function(e) {
+      inputCount++;
+      document.getElementById("input-count").textContent = inputCount + " (当前值: " + e.target.value + ")";
+      addGlobalLog("input #" + inputCount + ": " + e.target.value, "log-form");
+    });
+
+    document.getElementById("change-demo").addEventListener("change", function(e) {
+      document.getElementById("change-value").textContent = e.target.value || "(空)";
+      addGlobalLog("change: " + e.target.value + " (失焦后触发)", "log-form");
+    });
+
+    // focus / blur
+    var focusDemo = document.getElementById("focus-demo");
+    focusDemo.addEventListener("focus", function() {
+      document.getElementById("focus-status").textContent = "focused (获得焦点)";
+      addGlobalLog("focus", "log-form");
+    });
+    focusDemo.addEventListener("blur", function() {
+      document.getElementById("focus-status").textContent = "blurred (失去焦点)";
+      addGlobalLog("blur", "log-form");
+    });
+
+    // submit
+    document.getElementById("demo-form").addEventListener("submit", function(e) {
+      e.preventDefault();  // 阻止表单默认提交（B.12 详讲）
+      var formData = new FormData(e.target);
+      document.getElementById("submit-result").textContent =
+        "表单提交被阻止（preventDefault）。输入的值：" + formData.get("demo");
+      addGlobalLog("submit 被阻止，值：" + formData.get("demo"), "log-form");
+    });
+
+    // ===== 文档生命周期 =====
+    var docLog = document.getElementById("doc-event-log");
+    docLog.innerHTML = "<strong>DOMContentLoaded</strong> 已触发（你能看到这个页面就说明 DOM 已就绪）<br>";
+
+    document.addEventListener("DOMContentLoaded", function() {
+      docLog.innerHTML += "<strong>DOMContentLoaded</strong> 事件监听器回调执行完毕<br>";
+      addGlobalLog("DOMContentLoaded——DOM 构建完成", "log-doc");
+    });
+
+    window.addEventListener("load", function() {
+      docLog.innerHTML += "<strong>load</strong> 已触发——所有资源（包括图片）都加载完了";
+      addGlobalLog("load——页面一切资源加载完毕", "log-doc");
+      console.log("load 事件：页面全部加载完毕（包括图片）");
+    });
+
+    // ===== 全局日志辅助 =====
+    function addGlobalLog(message, cssClass) {
+      var container = document.querySelector("body");
+      // 检查是否已有日志容器，没有则创建
+      var logContainer = document.getElementById("global-log");
+      if (!logContainer) {
+        // 在最底部添加日志区域
+        // 这里简化处理，只在控制台输出
+      }
+      console.log("[" + cssClass + "] " + message);
+    }
+  </script>
+
+</body>
+</html>

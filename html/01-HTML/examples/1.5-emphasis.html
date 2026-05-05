@@ -1,0 +1,153 @@
+<!--
+  =====================================================
+  示例文件：1.5 强调与语义化文本
+  对应教程：1.5-强调与语义化文本.md
+
+  这个文件展示了文本语义标签的用法：
+  - strong（强重要性） vs b（仅粗体）
+  - em（语气强调） vs i（仅斜体）
+  - mark（高亮，像荧光笔）
+  - small（小字/脚注）
+
+  核心概念：语义——标签不只是样子，更重要的是含义。
+  搜索引擎和屏幕阅读器（盲人用的读屏软件）靠这些标签理解页面。
+  =====================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.5 强调与语义化文本——示例</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 650px;
+      margin: 30px auto;
+      padding: 0 15px;
+      line-height: 1.8;
+    }
+    hr {
+      margin: 25px 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+    .compare {
+      background: #f8f9fa;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+    .compare p {
+      margin: 5px 0;
+    }
+    /* 浏览器默认会给 mark 加上黄色背景，这里只是确保一下 */
+    mark {
+      background-color: #fff176;
+      padding: 0 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>文本强调与语义标签</h1>
+  <p>有些标签<strong>看起来一样</strong>，但<strong>含义完全不同</strong>。这一节我们来区分它们。</p>
+
+  <!-- ===== 一、strong vs b ===== -->
+  <h2>一、strong（强重要性） vs b（粗体样式）</h2>
+  <div class="compare">
+    <p><strong>strong 标签：</strong>这个按钮 <strong>千万不要</strong> 按！毁灭性操作，不可恢复。</p>
+    <p><strong>解读：</strong>"千万不要"被语义标记为重要——搜索引擎和读屏软件会重视这几个字。</p>
+  </div>
+  <div class="compare">
+    <p><strong>b 标签：</strong>这个词来自拉丁语 <b>Algorismus</b>，意思是"算法"。</p>
+    <p><strong>解读：</strong>"Algorismus"只是单纯加粗显示，没有语义上的"重要"——它只是一个外文词。</p>
+  </div>
+
+  <hr>
+
+  <!-- ===== 二、em vs i ===== -->
+  <h2>二、em（语气强调） vs i（斜体/专有名词）</h2>
+  <div class="compare">
+    <p><strong>em 标签：</strong>我 <em>真的</em> 很想去，别拒绝我。</p>
+    <p><strong>解读：</strong>"真的"被语义强调，读屏软件会用加重语气读它。</p>
+  </div>
+  <div class="compare">
+    <p><strong>i 标签：</strong>我最近在读 <i>JavaScript 高级程序设计</i>，这本书很好。</p>
+    <p><strong>解读：</strong>书名只是用斜体排版，不是语义强调。i 常用来标记书名、电影名、术语。</p>
+  </div>
+
+  <hr>
+
+  <!-- ===== 三、mark ===== -->
+  <h2>三、mark——荧光笔高亮</h2>
+  <p>
+    搜索关键词"HTML 教程"，找到以下结果：<br>
+    《零基础学 <mark>HTML</mark>》——适合刚入门的同学。<br>
+    《<mark>HTML</mark> 高级应用》——适合有经验的开发者。
+  </p>
+  <p>mark 就像你在纸上用荧光笔划重点。常用于搜索结果页，把用户搜索的关键词高亮出来。</p>
+
+  <hr>
+
+  <!-- ===== 四、small ===== -->
+  <h2>四、small——小字 / 脚注 / 附加说明</h2>
+  <p>本课程售价 <strong>199 元</strong> <small>（学生凭学生证半价）</small></p>
+  <p>© 2026 HTML 教程 <small>保留所有权利</small></p>
+  <p>small 不是把字变小那么简单——它传达"这些是次要信息"的语义。搜索引擎也会把小字内容视为低权重。</p>
+
+  <hr>
+
+  <!-- ===== 总结表格 ===== -->
+  <h2>速查：看起来一样，含义不同</h2>
+  <table style="border-collapse: collapse; width: 100%;">
+    <thead>
+      <tr style="background: #f0f0f0;">
+        <th style="border: 1px solid #ccc; padding: 8px;">标签</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">视觉效果</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">语义含义</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">使用场景</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">strong</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">粗体</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">重要、紧急</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">警告、关键信息</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">b</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">粗体</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">无语义，仅样式</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">专有名词、产品名</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">em</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">斜体</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">语气强调</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">说话重音、情绪</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">i</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">斜体</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">无语义，仅样式</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">书名、电影名、术语</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">mark</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">黄色高亮</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">关联/匹配内容</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">搜索结果关键词</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">small</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">小号字体</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">次要/附加信息</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">脚注、版权声明</td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2.16 浮动与清除 - float 演示</title>
+  <style>
+    /* ========== 公共样式 ========== */
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 0 15px;
+      line-height: 1.8;
+    }
+    h2 {
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 5px;
+      margin-top: 40px;
+    }
+    .note {
+      color: #888;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+
+    /* ========== 一、文字环绕图片 —— float 的本意 ========== */
+    .float-img {
+      float: left;                /* 图片浮到左边 */
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(135deg, #3498db, #2ecc71);
+      color: #fff;
+      text-align: center;
+      line-height: 150px;
+      font-size: 18px;
+      margin-right: 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+    }
+    .wrap-text {
+      border: 1px dashed #999;
+      padding: 15px;
+      background: #fafafa;
+      overflow: hidden; /* 防止文字溢出 */
+    }
+
+    /* ========== 二、float: left 让盒子横向排列 ========== */
+    .float-row {
+      border: 1px dashed #999;
+      padding: 15px;
+      margin: 10px 0;
+      background: #fafafa;
+      /* 试试取消下面这行的注释，看看效果 */
+      /* overflow: hidden; */
+    }
+    .float-box {
+      float: left;
+      width: 100px;
+      height: 100px;
+      margin: 5px;
+      background: #3498db;
+      color: #fff;
+      text-align: center;
+      line-height: 100px;
+      font-size: 14px;
+      border-radius: 5px;
+    }
+
+    /* ========== 三、高度塌陷演示 ========== */
+    .collapse-parent {
+      border: 3px solid #e74c3c;   /* 红框，观察高度变化 */
+      padding: 15px;
+      margin: 10px 0;
+      background: #fdecea;
+    }
+    .collapse-child {
+      float: left;
+      width: 23%;         /* 四个子元素横向排列 */
+      margin: 1%;
+      height: 80px;
+      background: #e74c3c;
+      color: #fff;
+      text-align: center;
+      line-height: 80px;
+      border-radius: 5px;
+    }
+
+    /* ========== 四、clear 属性 ========== */
+    .float-left-demo {
+      float: left;
+      width: 200px;
+      height: 60px;
+      background: #3498db;
+      color: #fff;
+      text-align: center;
+      line-height: 60px;
+      margin: 5px;
+      border-radius: 5px;
+    }
+    .clear-element {
+      clear: both;       /* 强制换到浮动元素下方 */
+    }
+
+    /* ========== 五、clearfix —— 经典的伪元素清除法 ========== */
+    .clearfix::after {
+      content: "";           /* 必须有 content */
+      display: block;        /* 改为块级 */
+      clear: both;           /* 清除浮动 */
+      /* 下面这行可选，展示"清洁工"的存在 */
+      /* height: 10px; background: red; */
+    }
+
+    /* 修复后的父容器 */
+    .fixed-parent {
+      border: 3px solid #27ae60;   /* 绿框，正常撑开 */
+      padding: 15px;
+      margin: 10px 0;
+      background: #eafaf1;
+    }
+    .fixed-child {
+      float: left;
+      width: 23%;
+      margin: 1%;
+      height: 80px;
+      background: #27ae60;
+      color: #fff;
+      text-align: center;
+      line-height: 80px;
+      border-radius: 5px;
+    }
+
+    /* ========== 对比：overflow: hidden 也能修复塌陷 ========== */
+    .overflow-fix {
+      border: 3px solid #8e44ad;
+      padding: 15px;
+      margin: 10px 0;
+      background: #f4ecf7;
+      overflow: hidden;  /* 另一种修复高度塌陷的方式 */
+    }
+    .overflow-child {
+      float: left;
+      width: 23%;
+      margin: 1%;
+      height: 80px;
+      background: #8e44ad;
+      color: #fff;
+      text-align: center;
+      line-height: 80px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>float 浮动演示 —— 从报纸排版到高度塌陷</h1>
+
+  <!-- ============ 一、文字环绕图片 ============ -->
+  <h2>一、float 的本意 —— 文字环绕图片</h2>
+  <div class="wrap-text">
+    <div class="float-img">浮动图片</div>
+    <p>这是一段围绕在浮动元素旁边的文字。就像报纸上经常看到的排版：左边放一张图片，右边的文字自然地环绕着图片排列。这段文字会一直往下排，直到超过图片的高度，然后才会延伸到图片下方的整个宽度。</p>
+    <p>float 最初就是为了实现这种"文字环绕"效果而设计的。你看到的这个蓝色方块用 float:left 浮到了左边，它后面的文字就自动绕到右边去了。</p>
+  </div>
+
+  <!-- ============ 二、float 排列盒子 ============ -->
+  <h2>二、连续 float 让盒子横向排列</h2>
+  <div class="float-row">
+    <div class="float-box">盒子1</div>
+    <div class="float-box">盒子2</div>
+    <div class="float-box">盒子3</div>
+    <div class="float-box">盒子4</div>
+    <div class="float-box">盒子5</div>
+  </div>
+  <p class="note">五个盒子全部 float:left，它们自然地排成了一行。在 Flexbox 出现之前，人们就是用这种方式来做横向排列的。</p>
+  <p class="note" style="color:#e74c3c;">注意看：父容器的虚线边框是不是缩成一条线了？这就是"高度塌陷"！往下看。</p>
+
+  <!-- ============ 三、高度塌陷 ============ -->
+  <h2>三、高度塌陷 —— 浮动的副作用</h2>
+  <div class="collapse-parent">
+    <div class="collapse-child">子元素1</div>
+    <div class="collapse-child">子元素2</div>
+    <div class="collapse-child">子元素3</div>
+    <div class="collapse-child">子元素4</div>
+  </div>
+  <p class="note" style="color:#e74c3c;">上面这个父元素的红色边框变成了一条线！四个子元素全部浮动，脱离了文档流，父元素"看不到"它们，高度就塌陷了。背景色也几乎看不见。</p>
+
+  <!-- ============ 三之修复：clearfix ============ -->
+  <h2>四、修复方案一：clearfix（最推荐）</h2>
+  <div class="fixed-parent clearfix">
+    <div class="fixed-child">子元素1</div>
+    <div class="fixed-child">子元素2</div>
+    <div class="fixed-child">子元素3</div>
+    <div class="fixed-child">子元素4</div>
+  </div>
+  <p class="note" style="color:#27ae60;">同样的浮动子元素，但父元素加了 clearfix 类。绿色边框正常撑开了！clearfix 的 ::after 伪元素就像在最后放了一个隐形的"托底木板"。</p>
+
+  <!-- ============ 三之修复：overflow ============ -->
+  <h2>五、修复方案二：overflow: hidden（备选方案）</h2>
+  <div class="overflow-fix">
+    <div class="overflow-child">子元素1</div>
+    <div class="overflow-child">子元素2</div>
+    <div class="overflow-child">子元素3</div>
+    <div class="overflow-child">子元素4</div>
+  </div>
+  <p class="note" style="color:#8e44ad;">使用 overflow: hidden 也能触发 BFC（块级格式化上下文），从而修复高度塌陷。比 clearfix 简单，但副作用是会裁剪溢出的内容。</p>
+
+  <!-- ============ 四、clear 属性 ============ -->
+  <h2>六、clear 属性 —— 手动清除浮动</h2>
+  <div style="border:1px dashed #999; padding:15px; background:#fafafa; margin:10px 0;">
+    <div class="float-left-demo">我是浮动元素 A</div>
+    <div class="float-left-demo">我是浮动元素 B</div>
+    <div class="clear-element"></div>  <!-- 这个空 div 用 clear:both 强制换行 -->
+    <div style="background:#f1c40f; padding:10px; border-radius:5px;">
+      我使用了 clear:both，所以我能落在浮动元素的下方，而不是和他们排在一起。
+    </div>
+  </div>
+
+  <h2>总结</h2>
+  <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; margin-bottom: 30px;">
+    <tr style="background: #f0f0f0;">
+      <th>概念</th>
+      <th>作用</th>
+      <th>比喻</th>
+    </tr>
+    <tr>
+      <td>float</td>
+      <td>元素浮动，文字环绕</td>
+      <td>叶子浮在水面上，水绕道流</td>
+    </tr>
+    <tr>
+      <td>高度塌陷</td>
+      <td>父元素高度变成 0</td>
+      <td>气球里的小球飞走了，气球瘪了</td>
+    </tr>
+    <tr>
+      <td>clear</td>
+      <td>强制换到浮动元素下方</td>
+      <td>"前面有人漂着，我等他们漂完再过"</td>
+    </tr>
+    <tr>
+      <td>clearfix</td>
+      <td>自动修复塌陷</td>
+      <td>自动在最后放一个隐形托底木板</td>
+    </tr>
+  </table>
+
+</body>
+</html>

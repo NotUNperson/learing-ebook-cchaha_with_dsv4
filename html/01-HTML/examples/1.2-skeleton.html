@@ -1,0 +1,86 @@
+<!--
+  =====================================================
+  示例文件：1.2 文档骨架
+  对应教程：1.2-文档骨架.md
+
+  这个文件展示了：
+  - HTML 页面最基本的骨架结构
+  - DOCTYPE 声明
+  - html / head / body 的分工
+  - meta charset 防止乱码
+  - lang 属性的作用
+  =====================================================
+-->
+<!DOCTYPE html>
+<!--
+  DOCTYPE 必须写在第一行，告诉浏览器："用标准模式渲染我！"
+  如果少了这一行，浏览器会进入"怪异模式"，可能导致页面显示异常。
+-->
+<html lang="zh-CN">
+<!--
+  html 是整个页面的根元素，所有内容都包在里面。
+  lang="zh-CN" 告诉浏览器使用的语言是简体中文。
+  这对搜索引擎和无障碍阅读（屏幕阅读器）很有帮助。
+-->
+
+<head>
+  <!--
+    head = 大脑
+    这里放的是给浏览器和搜索引擎看的"元信息"，
+    用户不会在页面上直接看到这些内容（title 除外）。
+  -->
+
+  <!-- 第一步：声明字符编码，防止中文乱码 -->
+  <meta charset="UTF-8">
+
+  <!-- 让手机端正确缩放 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 页面标题：显示在浏览器标签页上 -->
+  <title>1.2 文档骨架——示例</title>
+
+  <!-- 为了方便展示，加一点简单的样式 -->
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 0 15px;
+      line-height: 1.8;
+    }
+    .note {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      padding: 10px 15px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <!--
+    body = 身体
+    所有用户能看到的内容都写在这里。
+  -->
+
+  <h1>最小可运行的 HTML 页面</h1>
+
+  <p>恭喜！你在浏览器里看到了这段文字，说明这个 HTML 文件已经成功运行了。</p>
+
+  <p>这个页面包含了 HTML 文档最基本的骨架：</p>
+  <ul>
+    <li><strong>DOCTYPE</strong>：告诉浏览器用标准模式渲染</li>
+    <li><strong>html</strong>：根元素，包裹一切</li>
+    <li><strong>head</strong>：大脑，放元信息（charset、title 等）</li>
+    <li><strong>body</strong>：身体，放用户能看到的内容</li>
+  </ul>
+
+  <div class="note">
+    <p><strong>自检题：</strong>head 和 body 的区别是什么？</p>
+    <p>
+      head 里的内容（除了 title）不会直接显示在页面上，是给浏览器看的说明书。<br>
+      body 里的内容会实实在在地显示出来，是给用户看的。
+    </p>
+  </div>
+</body>
+</html>

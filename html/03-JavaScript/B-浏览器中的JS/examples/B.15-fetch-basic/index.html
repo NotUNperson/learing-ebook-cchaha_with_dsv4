@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.15 fetch 基础</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    button { margin: 4px; padding: 8px 16px; cursor: pointer; font-size: 14px; }
+    .box { border: 2px solid #333; padding: 12px; margin: 10px 0; border-radius: 4px; }
+    .result-area {
+      background: #f5f5f5; padding: 12px; border-radius: 4px;
+      font-family: Consolas, monospace; font-size: 13px;
+      max-height: 300px; overflow-y: auto; white-space: pre-wrap; margin-top: 8px;
+    }
+    .error-msg { color: #e94e77; }
+    .success-msg { color: #28a745; }
+    .loading { color: #856404; }
+    .info { color: #666; font-size: 14px; }
+    .server-notice {
+      background: #fff3cd; border: 1px solid #ffc107; padding: 12px;
+      border-radius: 4px; margin: 10px 0;
+    }
+    table { border-collapse: collapse; margin: 8px 0; }
+    th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; font-size: 14px; }
+    pre { background: #1e1e1e; color: #d4d4d4; padding: 12px; border-radius: 4px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+
+  <h1>B.15 fetch 基础</h1>
+
+  <!--
+    ========================================
+    重要提示：fetch 需要 HTTP 服务器环境！
+    直接用浏览器打开 file:// 协议会受跨域限制。
+    ========================================
+  -->
+  <div class="server-notice">
+    <strong>重要：运行此页面需要 HTTP 服务器！</strong><br>
+    在项目目录下运行：
+    <code>python -m http.server 8000</code><br>
+    然后浏览器访问：
+    <code>http://localhost:8000</code><br>
+    直接双击打开 HTML 文件（file:// 协议）在请求本地 JSON 时会出错。
+  </div>
+
+  <!-- ===== 获取本地 JSON ===== -->
+  <h2>一、fetch 获取本地 JSON（需要服务器）</h2>
+  <div class="box">
+    <p>从同目录下的 <code>data.json</code> 文件加载数据：</p>
+    <button onclick="fetchLocalJSON()">fetch("data.json")</button>
+    <div id="local-result" class="result-area">点击按钮发起请求...</div>
+  </div>
+
+  <!-- ===== 调用公开 API ===== -->
+  <h2>二、fetch 调用公开 API（不需要本地服务器）</h2>
+  <div class="box">
+    <p>调用免费公开的 JSON API：</p>
+    <button onclick="fetchPublicAPI()">获取示例数据</button>
+    <button onclick="fetchText()">获取纯文本</button>
+    <div id="api-result" class="result-area">点击按钮发起请求...</div>
+  </div>
+
+  <!-- ===== 错误处理演示 ===== -->
+  <h2>三、HTTP 错误处理 —— 检查 res.ok</h2>
+  <div class="box">
+    <p>fetch 只在网络故障时才 reject。HTTP 404/500 不会 reject，需要手动检查：</p>
+    <button onclick="fetch404()">请求一个不存在的地址（模拟 404）</button>
+    <button onclick="fetchError()">请求一个无法访问的地址（网络错误）</button>
+    <div id="error-result" class="result-area">点击按钮测试...</div>
+  </div>
+
+  <!-- ===== Response 方法速查 ===== -->
+  <h2>四、Response 对象解析方法</h2>
+  <table>
+    <thead>
+      <tr><th>方法</th><th>返回值</th><th>适用场景</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>response.json()</code></td><td>JS 对象/数组</td><td>JSON API（最常见）</td></tr>
+      <tr><td><code>response.text()</code></td><td>字符串</td><td>纯文本、HTML</td></tr>
+      <tr><td><code>response.blob()</code></td><td>Blob 对象</td><td>图片、文件下载</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===== 流程图 ===== -->
+  <h2>五、fetch 请求流程图</h2>
+  <pre>
+fetch(url)
+  |
+  +-- [网络成功]
+  |     |
+  |     +-- response.ok === true  →  response.json() → 使用数据
+  |     |
+  |     +-- response.ok === false →  手动 throw Error → .catch()
+  |
+  +-- [网络失败]
+        |
+        +-- 自动 reject → .catch()
+  </pre>
+
+  <script>
+    // 获取结果展示元素的辅助函数
+    function showResult(elementId, message, cssClass) {
+      var el = document.getElementById(elementId);
+      el.className = "result-area " + (cssClass || "");
+      el.textContent = message;
+    }
+
+    function showLoading(elementId) {
+      var el = document.getElementById(elementId);
+      el.className = "result-area loading";
+      el.textContent = "加载中...";
+    }
+
+    // ===== 获取本地 JSON =====
+    function fetchLocalJSON() {
+      showLoading("local-result");
+
+      fetch("data.json")
+        .then(function(response) {
+          console.log("Status:", response.status);
+          console.log("ok:", response.ok);
+
+          if (!response.ok) {
+            throw new Error("HTTP 错误：" + response.status);
+          }
+          return response.json();
+        })
+        .then(function(data) {
+          console.log("数据：", data);
+          var text = "获取成功！\n\n";
+          text += "状态消息：" + data.message + "\n\n";
+          text += "用户列表（" + data.total + " 人）：\n";
+          data.users.forEach(function(user) {
+            text += "  [" + user.id + "] " + user.name + " — " + user.role + " (" + user.email + ")\n";
+          });
+          showResult("local-result", text, "success-msg");
+        })
+        .catch(function(error) {
+          console.error("错误：", error);
+          if (error.message.indexOf("HTTP") !== -1) {
+            showResult("local-result", "HTTP 错误：" + error.message, "error-msg");
+          } else {
+            showResult("local-result",
+              "请求失败：" + error.message + "\n\n" +
+              "可能原因：\n" +
+              "1. 没有启动 HTTP 服务器（python -m http.server 8000）\n" +
+              "2. 文件名大小写错误\n" +
+              "3. 网络连接问题",
+              "error-msg");
+          }
+        });
+    }
+
+    // ===== 调用公开 API =====
+    function fetchPublicAPI() {
+      showLoading("api-result");
+
+      // 使用 jsonplaceholder 这个免费的假数据 API
+      // 不需要本地服务器，因为它是一个真正的 HTTP 服务
+      fetch("https://jsonplaceholder.typicode.com/users?_limit=3")
+        .then(function(response) {
+          console.log("公开 API Status:", response.status);
+          if (!response.ok) {
+            throw new Error("HTTP 错误：" + response.status);
+          }
+          return response.json();
+        })
+        .then(function(users) {
+          var text = "从公开 API 获取到 " + users.length + " 个用户：\n\n";
+          users.forEach(function(user) {
+            text += "  [" + user.id + "] " + user.name +
+              " — @" + user.username + " — " + user.email + "\n";
+          });
+          text += "\nAPI 来源：jsonplaceholder.typicode.com\n";
+          showResult("api-result", text, "success-msg");
+          console.log("公开 API 数据：", users);
+        })
+        .catch(function(error) {
+          showResult("api-result", "请求失败：" + error.message + "\n\n" +
+            "请检查网络连接。这是一个真实的网络请求。", "error-msg");
+        });
+    }
+
+    function fetchText() {
+      showLoading("api-result");
+
+      fetch("https://jsonplaceholder.typicode.com/posts/1")
+        .then(function(response) {
+          if (!response.ok) throw new Error("HTTP " + response.status);
+          return response.json();  // 虽然源是 JSON，但我们可以看它的结构
+        })
+        .then(function(post) {
+          var text = "获取到一篇文章（JSON 格式）：\n\n";
+          text += "  标题：" + post.title + "\n";
+          text += "  内容：" + post.body + "\n";
+          text += "  用户ID：" + post.userId + "\n";
+          showResult("api-result", text, "success-msg");
+        })
+        .catch(function(error) {
+          showResult("api-result", "请求失败：" + error.message, "error-msg");
+        });
+    }
+
+    // ===== 错误处理演示 =====
+    function fetch404() {
+      showLoading("error-result");
+
+      fetch("data/nonexistent-file.json")
+        .then(function(response) {
+          console.log("404 响应：status=" + response.status + ", ok=" + response.ok);
+          // 注意：即使 status=404，代码也会走到这里！不会进 .catch！
+
+          if (!response.ok) {
+            throw new Error("HTTP " + response.status + " Not Found");
+          }
+          return response.json();
+        })
+        .then(function(data) {
+          showResult("error-result", "获取成功（这不可能发生）", "success-msg");
+        })
+        .catch(function(error) {
+          // 这个 .catch 捕获的是我们自己 throw 的 Error！
+          showResult("error-result",
+            "捕获到错误：" + error.message + "\n\n" +
+            "注意：fetch 没有因为 404 而 reject！\n" +
+            "是我们自己检查了 res.ok，然后手动 throw 的。\n" +
+            "这就是为什么检查 res.ok 很重要！",
+            "error-msg");
+        });
+    }
+
+    function fetchError() {
+      showLoading("error-result");
+
+      // 请求一个不存在的域名（网络层面失败）
+      fetch("https://this-domain-definitely-does-not-exist-12345.com/api")
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          showResult("error-result", "获取成功（这不可能发生）", "success-msg");
+        })
+        .catch(function(error) {
+          // 这里的 .catch 是 fetch 自动 reject 触发的！
+          showResult("error-result",
+            "网络错误（fetch 自动 reject）：\n" + error.message + "\n\n" +
+            "对比：404 不会进 .catch，但网络故障会！\n" +
+            "这就是 fetch 的错误处理机制。",
+            "error-msg");
+        });
+    }
+  </script>
+
+</body>
+</html>

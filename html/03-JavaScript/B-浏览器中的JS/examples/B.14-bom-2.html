@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.14 BOM（下）—— location、history、navigator</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    button { margin: 4px; padding: 6px 14px; cursor: pointer; }
+    .box { border: 2px solid #333; padding: 12px; margin: 10px 0; border-radius: 4px; }
+    .info { color: #666; font-size: 14px; }
+    pre { background: #f5f5f5; padding: 12px; border-radius: 4px; overflow-x: auto; font-size: 13px; }
+    .nav-btn { font-size: 16px; padding: 8px 20px; }
+    .state-display {
+      font-family: monospace; background: #e8f4fd; padding: 12px;
+      border-radius: 4px; margin: 8px 0;
+    }
+    table { border-collapse: collapse; margin: 8px 0; }
+    th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <h1>B.14 BOM（下）—— location、history、navigator</h1>
+
+  <!-- ===== location 演示 ===== -->
+  <h2>一、location —— 当前 URL 的一切</h2>
+  <div class="box" id="location-demo">
+    <p>当前页面 URL 的分解：</p>
+    <div id="location-info" style="font-family: monospace; font-size: 13px;">
+      加载中...
+    </div>
+    <p>
+      <button onclick="showLocation()">刷新 location 信息</button>
+      <button onclick="demoSearchParams()">解析 URL 参数（模拟）</button>
+      <button onclick="demoReload()">location.reload()</button>
+    </p>
+    <p id="search-params-result"></p>
+  </div>
+
+  <!-- ===== history 演示 ===== -->
+  <h2>二、history —— 浏览历史与 SPA 路由基础</h2>
+  <div class="box">
+    <h3>pushState / replaceState 演示</h3>
+    <p>观察地址栏 URL 的变化——<strong>页面不会刷新！</strong></p>
+    <p>
+      <button class="nav-btn" onclick="goHome()">首页（/）</button>
+      <button class="nav-btn" onclick="goAbout()">关于（/about）</button>
+      <button class="nav-btn" onclick="goContact()">联系（/contact?id=5）</button>
+      <button onclick="simulateBack()">模拟后退</button>
+      <button onclick="simulateForward()">模拟前进</button>
+    </p>
+    <div id="history-state" class="state-display">
+      当前状态：首页<br>
+      历史记录数：<span id="history-length">-</span><br>
+      pushState 的 state 数据：<span id="state-data">无</span>
+    </div>
+    <p class="info">点击上面的按钮后，试试点浏览器的"后退"按钮，看 popstate 事件触发。</p>
+  </div>
+
+  <!-- ===== navigator 演示 ===== -->
+  <h2>三、navigator —— 浏览器/设备档案</h2>
+  <div class="box">
+    <div id="navigator-info" style="font-family: monospace; font-size: 13px;">
+      加载中...
+    </div>
+    <p>
+      <button onclick="checkOnline()">检查是否联网</button>
+      <button onclick="copyToClipboard()">复制一段文字到剪贴板</button>
+    </p>
+    <p id="navigator-extra-result"></p>
+  </div>
+
+  <!-- ===== BOM 全貌总结 ===== -->
+  <h2>四、BOM 核心对象速查</h2>
+  <table>
+    <thead>
+      <tr><th>对象</th><th>核心职责</th><th>最常用方法</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>window</code></td><td>全局对象，浏览器窗口</td><td>alert/prompt/confirm, setTimeout/setInterval, requestAnimationFrame</td></tr>
+      <tr><td><code>location</code></td><td>URL 信息与跳转</td><td>href, assign/replace/reload, URLSearchParams</td></tr>
+      <tr><td><code>history</code></td><td>浏览历史与路由</td><td>back/forward/go, pushState/replaceState</td></tr>
+      <tr><td><code>navigator</code></td><td>浏览器/设备信息</td><td>language, onLine, clipboard</td></tr>
+      <tr><td><code>document</code></td><td>页面 DOM（严格说属 DOM）</td><td>querySelector, createElement, addEventListener</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    // ===== location 演示 =====
+    function showLocation() {
+      var loc = window.location;
+      var info = document.getElementById("location-info");
+      info.innerHTML =
+        "href: " + loc.href + "<br>" +
+        "protocol: " + loc.protocol + "<br>" +
+        "host: " + loc.host + "<br>" +
+        "hostname: " + loc.hostname + "<br>" +
+        "port: " + (loc.port || "(默认端口)") + "<br>" +
+        "pathname: " + loc.pathname + "<br>" +
+        "search: " + (loc.search || "(无查询参数)") + "<br>" +
+        "hash: " + (loc.hash || "(无锚点)") + "<br>" +
+        "origin: " + loc.origin;
+    }
+
+    function demoSearchParams() {
+      // 模拟一个带参数的 URL
+      var fakeUrl = "https://example.com/page?name=小明&age=20&city=北京";
+      // 提取 search 部分
+      var searchPart = "?name=小明&age=20&city=北京";
+      var params = new URLSearchParams(searchPart);
+
+      var result = document.getElementById("search-params-result");
+      result.innerHTML =
+        "<strong>URLSearchParams 解析结果：</strong><br>" +
+        "name = " + params.get("name") + "<br>" +
+        "age = " + params.get("age") + "<br>" +
+        "city = " + params.get("city") + "<br>" +
+        "has('name') = " + params.has("name") + "<br>" +
+        "has('nonexist') = " + params.has("nonexist");
+      console.log("URLSearchParams 演示：", params.toString());
+    }
+
+    function demoReload() {
+      if (confirm("确定要重新加载页面吗？")) {
+        location.reload();
+      }
+    }
+
+    // 初始化显示 location
+    showLocation();
+
+    // ===== history 演示 =====
+    var stateDisplay = document.getElementById("history-state");
+    var stateDataEl = document.getElementById("state-data");
+
+    function updateHistoryDisplay(action, page, stateData) {
+      stateDisplay.innerHTML =
+        "<strong>" + action + " → 当前页面：</strong>" + page + "<br>" +
+        "历史记录数：<span id='history-length'>" + history.length + "</span><br>" +
+        "pushState 的 state 数据：" + (stateData ? JSON.stringify(stateData) : "无");
+
+      document.getElementById("state-data").textContent = stateData ? JSON.stringify(stateData) : "无";
+    }
+
+    function goHome() {
+      var state = { page: "home", time: new Date().toLocaleTimeString() };
+      history.pushState(state, "", "?page=home");
+      updateHistoryDisplay("pushState", "首页 (/ ?page=home)", state);
+    }
+
+    function goAbout() {
+      var state = { page: "about", time: new Date().toLocaleTimeString() };
+      history.pushState(state, "", "?page=about");
+      updateHistoryDisplay("pushState", "关于 (/ ?page=about)", state);
+    }
+
+    function goContact() {
+      var state = { page: "contact", id: 5, time: new Date().toLocaleTimeString() };
+      history.pushState(state, "", "?page=contact&id=5");
+      updateHistoryDisplay("pushState", "联系 (/ ?page=contact&id=5)", state);
+    }
+
+    function simulateBack() {
+      history.back();
+      // popstate 事件会自动更新显示
+    }
+
+    function simulateForward() {
+      history.forward();
+    }
+
+    // 监听 popstate 事件（用户点后退/前进按钮时触发）
+    window.addEventListener("popstate", function(event) {
+      console.log("popstate 事件触发！");
+      console.log("event.state:", event.state);
+
+      if (event.state) {
+        updateHistoryDisplay("popstate（用户导航）", event.state.page, event.state);
+      } else {
+        // 回到初始状态
+        stateDisplay.innerHTML =
+          "<strong>popstate → 回到初始页面</strong><br>" +
+          "历史记录数：<span id='history-length'>" + history.length + "</span><br>" +
+          "state 数据：无（回到了 pushState 之前的状态）";
+      }
+    });
+
+    // 初始显示
+    document.getElementById("history-length").textContent = history.length;
+
+    // ===== navigator 演示 =====
+    function showNavigatorInfo() {
+      var nav = navigator;
+      var info = document.getElementById("navigator-info");
+      info.innerHTML =
+        "language: " + nav.language + "<br>" +
+        "languages: " + nav.languages + "<br>" +
+        "onLine: " + nav.onLine + "<br>" +
+        "cookieEnabled: " + nav.cookieEnabled + "<br>" +
+        "platform: " + nav.platform + "<br>" +
+        "hardwareConcurrency: " + nav.hardwareConcurrency + " 核<br>" +
+        "userAgent (不推荐用于判断浏览器): " + nav.userAgent.substring(0, 80) + "...<br>" +
+        "<em>请不要用 userAgent 判断浏览器——用"特性检测"代替</em>";
+    }
+
+    function checkOnline() {
+      var result = document.getElementById("navigator-extra-result");
+      if (navigator.onLine) {
+        result.innerHTML = "<span style='color:#28a745;'>当前已联网</span>";
+      } else {
+        result.innerHTML = "<span style='color:#e94e77;'>当前未联网</span>";
+      }
+    }
+
+    function copyToClipboard() {
+      // 使用现代 clipboard API
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText("这是通过 JS 复制的文字！")
+          .then(function() {
+            document.getElementById("navigator-extra-result").textContent =
+              "已复制到剪贴板！";
+          })
+          .catch(function() {
+            document.getElementById("navigator-extra-result").textContent =
+              "剪贴板写入失败（可能需要用户授权）";
+          });
+      } else {
+        document.getElementById("navigator-extra-result").textContent =
+          "当前浏览器不支持 clipboard API";
+      }
+    }
+
+    // 初始化显示
+    showNavigatorInfo();
+
+    console.log("===== B.14 BOM（下）=====");
+    console.log("location.href:", location.href);
+    console.log("history.length:", history.length);
+    console.log("navigator.language:", navigator.language);
+    console.log("试试点击页面上的 pushState 按钮，然后点浏览器的后退按钮");
+  </script>
+
+</body>
+</html>

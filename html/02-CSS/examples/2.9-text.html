@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2.9 文字样式</title>
+  <style>
+    /* ===== 全局基础 ===== */
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+      font-size: 16px;
+      line-height: 1.8;
+      color: #333;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: #34495e;
+      margin-top: 35px;
+    }
+
+    /* ===== 1. font-family：后备字体列表 ===== */
+    .demo-serif {
+      font-family: "Georgia", "Times New Roman", "宋体", serif;
+      /* Georgia 是经典的衬线字体，适合打印/长篇阅读 */
+    }
+
+    .demo-sans {
+      font-family: "Arial", "Helvetica", "PingFang SC", "Microsoft YaHei", sans-serif;
+      /* 无衬线字体，屏幕阅读更清爽 */
+    }
+
+    .demo-mono {
+      font-family: "Courier New", "Consolas", "SimHei", monospace;
+      /* 等宽字体，每个字母宽度一样，适合显示代码 */
+    }
+
+    /* ===== 2. font-size：px vs em vs rem ===== */
+    .fs-px {
+      font-size: 24px;  /* 绝对大小 */
+    }
+
+    .fs-em-demo {
+      font-size: 20px;  /* 父元素 20px */
+    }
+    .fs-em-demo span {
+      font-size: 1.5em;  /* 1.5 * 20px = 30px */
+    }
+    .fs-em-demo span span {
+      font-size: 1.5em;  /* 1.5 * 30px = 45px — 层层叠加上去了！ */
+    }
+
+    .fs-rem {
+      font-size: 1.2rem;  /* 1.2 * 根字号(16px) = 19.2px，不管嵌套多深都不变 */
+    }
+
+    .fs-rem-demo {
+      font-size: 1rem;
+    }
+
+    /* ===== 3. font-weight：粗细 ===== */
+    .fw-300 { font-weight: 300; }  /* Light 细 */
+    .fw-400 { font-weight: 400; }  /* Normal 正常 */
+    .fw-700 { font-weight: 700; }  /* Bold 粗 */
+    .fw-900 { font-weight: 900; }  /* Black 超粗 */
+
+    /* ===== 4. font-style：斜体 ===== */
+    .fs-italic {
+      font-style: italic;
+      color: #888;
+    }
+
+    /* ===== 5. line-height：行高 ===== */
+    .lh-tight {
+      line-height: 1.2;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+
+    .lh-normal {
+      line-height: 1.8;
+      border: 1px solid #78c5a0;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      background: #f9fdfb;
+    }
+
+    .lh-loose {
+      line-height: 2.8;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+
+    /* ===== 6. text-align：对齐 ===== */
+    .ta-left    { text-align: left; }
+    .ta-center  { text-align: center; }
+    .ta-right   { text-align: right; }
+    .ta-justify {
+      text-align: justify;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 4px;
+      width: 380px;
+    }
+
+    /* ===== 7. text-decoration：装饰线 ===== */
+    .td-underline    { text-decoration: underline; }
+    .td-line-through { text-decoration: line-through; color: #999; }
+
+    /* 给链接自定义下划线样式 */
+    a.custom-link {
+      text-decoration: none;
+      color: #3498db;
+      border-bottom: 2px dotted #3498db; /* 用 border-bottom 替代默认下划线，更好看 */
+    }
+
+    /* ===== 8. text-transform：大小写转换 ===== */
+    .tt-upper { text-transform: uppercase; }
+    .tt-lower { text-transform: lowercase; }
+    .tt-cap   { text-transform: capitalize; }
+
+    /* ===== 9. letter-spacing / word-spacing ===== */
+    .ls-wide {
+      letter-spacing: 4px;  /* 字间距加大，标题常用 */
+    }
+
+    .ls-tight {
+      letter-spacing: -1px;  /* 字间距收紧（谨慎使用） */
+    }
+
+    /* ===== 辅助：演示卡片 ===== */
+    .demo-card {
+      border: 1px solid #e0e0e0;
+      padding: 15px;
+      margin: 12px 0;
+      border-radius: 6px;
+      position: relative;
+    }
+
+    .demo-label {
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      background: #f0f0f0;
+      padding: 0 8px;
+      font-size: 12px;
+      color: #888;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CSS 文字样式演示</h1>
+
+  <!-- ===== 1. font-family ===== -->
+  <h2>一、font-family：字体系列</h2>
+
+  <h3>衬线字体（serif）—— 笔划有"小脚脚"</h3>
+  <div class="demo-card">
+    <span class="demo-label">serif 衬线</span>
+    <p class="demo-serif" style="font-size:1.2rem;">
+      ABCDEFGHIJKLM 衬线字体——笔划末端有装饰脚。适合印刷和长篇阅读。
+    </p>
+  </div>
+
+  <h3>无衬线字体（sans-serif）—— 干干净净</h3>
+  <div class="demo-card">
+    <span class="demo-label">sans-serif 无衬线</span>
+    <p class="demo-sans" style="font-size:1.2rem;">
+      ABCDEFGHIJKLM 无衬线字体——笔划简洁无装饰。屏幕阅读更清爽。
+    </p>
+  </div>
+
+  <h3>等宽字体（monospace）—— 每个字等宽</h3>
+  <div class="demo-card">
+    <span class="demo-label">monospace 等宽</span>
+    <p class="demo-mono">
+      iiiimmmmWWWW —— 每个字符宽度相同。适合显示代码和对齐数据。
+    </p>
+  </div>
+
+  <!-- ===== 2. font-size ===== -->
+  <h2>二、font-size：字号（px / em / rem）</h2>
+
+  <h3>px（像素，绝对值）</h3>
+  <p class="fs-px">这段文字是 24px —— 不管在哪都一样大。</p>
+
+  <h3>em（相对父元素）—— 小心层层叠加</h3>
+  <div class="fs-em-demo demo-card">
+    <span class="demo-label">父元素 20px</span>
+    我是 20px 的文字。
+    <span>我是 span，1.5em = 30px。</span>
+    <span><span>我是嵌套 span，1.5em * 1.5em = 45px —— 越来越大了！</span></span>
+  </div>
+
+  <h3>rem（相对根元素）—— 推荐！</h3>
+  <div class="fs-rem-demo demo-card">
+    <span class="demo-label">根字号 16px</span>
+    <p class="fs-rem">1.2rem = 19.2px</p>
+    <div style="font-size:1rem;">
+      <div style="font-size:1rem;">
+        <p class="fs-rem">嵌套三层仍然是 1.2rem = 19.2px，不受父元素影响！</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 3. font-weight ===== -->
+  <h2>三、font-weight：粗细</h2>
+  <p><span class="fw-300">Light(300) 纤细</span> |
+     <span class="fw-400">Normal(400) 正常</span> |
+     <span class="fw-700">Bold(700) 粗体</span> |
+     <span class="fw-900">Black(900) 超粗</span></p>
+
+  <!-- ===== 4. font-style ===== -->
+  <h2>四、font-style：斜体</h2>
+  <p>正常文字 vs <span class="fs-italic">这段是斜体（italic）——常用于引用和强调。</span></p>
+
+  <!-- ===== 5. line-height ===== -->
+  <h2>五、line-height：行高（读得舒服的关键）</h2>
+
+  <div class="lh-tight">
+    <strong>line-height: 1.2（太紧）</strong><br>
+    CSS 是一门声明式语言，用于描述网页的视觉样式。它与 HTML 配合使用，控制布局、颜色、字体等页面元素的外观表现。
+  </div>
+
+  <div class="lh-normal">
+    <strong>line-height: 1.8（推荐，舒适）</strong><br>
+    CSS 是一门声明式语言，用于描述网页的视觉样式。它与 HTML 配合使用，控制布局、颜色、字体等页面元素的外观表现。
+  </div>
+
+  <div class="lh-loose">
+    <strong>line-height: 2.8（太松）</strong><br>
+    CSS 是一门声明式语言，用于描述网页的视觉样式。它与 HTML 配合使用，控制布局、颜色、字体等页面元素的外观表现。
+  </div>
+
+  <!-- ===== 6. text-align ===== -->
+  <h2>六、text-align：对齐方式</h2>
+  <p class="ta-left">左对齐 —— 这是默认方式。</p>
+  <p class="ta-center">居中 —— 常用于标题和诗歌。</p>
+  <p class="ta-right">右对齐 —— 偶尔用于特殊设计。</p>
+  <div class="ta-justify">
+    <strong>两端对齐（justify）：</strong>CSS 是一门声明式语言，用于描述网页的视觉样式。
+    它与 HTML 配合使用，控制布局、颜色、字体等页面元素的外观表现。CSS 允许开发者
+    将样式与内容分离，从而提高代码的可维护性和复用性。
+  </div>
+
+  <!-- ===== 7. text-decoration ===== -->
+  <h2>七、text-decoration：装饰线</h2>
+  <p>普通文字 |
+     <span class="td-underline">有下划线</span> |
+     <span class="td-line-through">有删除线（这条信息已过时）</span></p>
+  <p>
+    <a href="#" class="custom-link">我用 border-bottom 模拟下划线，比默认的更好看</a>
+  </p>
+
+  <!-- ===== 8. text-transform ===== -->
+  <h2>八、text-transform：大小写转换（对英文）</h2>
+  <p><span class="tt-upper">hello world</span> → uppercase 全大写</p>
+  <p><span class="tt-cap">hello world from css</span> → capitalize 首字母大写</p>
+
+  <!-- ===== 9. letter-spacing ===== -->
+  <h2>九、letter-spacing：字间距</h2>
+  <p>正常间距：ABCDEFG 这是一段中文</p>
+  <p class="ls-wide">加宽间距（letter-spacing: 4px）：ABCDEFG 标题感更大气</p>
+  <p class="ls-tight" style="font-size: 14px; color: #888;">收紧间距（-1px）：ABCDEFG（谨慎使用，太小影响阅读）</p>
+
+</body>
+</html>

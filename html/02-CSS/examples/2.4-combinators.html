@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2.4 组合器与群组</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      padding: 20px;
+      line-height: 1.8;
+      color: #333;
+    }
+
+    h1 {
+      color: #2c3e50;
+    }
+
+    /* ===== 1. 后代选择器：空格 "A B" ===== */
+    /* "div 里面所有的 p" —— 儿子、孙子、不管多深都选中 */
+    /*
+    .demo-descendant p {
+      background-color: #fff3cd;
+      padding: 5px 10px;
+    }
+    */
+    /* 上面的规则被注释掉了，改用下面更精确的规则来区分 */
+
+    /* ===== 2. 子代选择器：大于号 "A > B" ===== */
+    /* 只选 .demo-child 的直接儿子 p */
+    .demo-child > p {
+      background-color: #d1ecf1;
+      padding: 5px 10px;
+      border-radius: 3px;
+    }
+
+    /* ===== 3. 相邻兄弟选择器：加号 "A + B" ===== */
+    /* 紧挨在 h2 后面的那一个 p */
+    h2 + p {
+      border-left: 3px solid #e74c3c;
+      padding-left: 10px;
+      font-weight: bold;
+    }
+
+    /* ===== 4. 通用兄弟选择器：波浪号 "A ~ B" ===== */
+    /* h2 后面所有的 p 兄弟 */
+    .demo-sibling h2 ~ p {
+      color: #8e44ad;
+    }
+
+    /* ===== 5. 选择器列表：逗号 "," ===== */
+    /* h2 和 h3 一起设置相同样式 */
+    h2, h3 {
+      margin-top: 25px;
+    }
+
+    /* ===== 辅助样式：把示例区块框起来 ===== */
+    .demo {
+      border: 1px dashed #ccc;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 5px;
+    }
+
+    .demo p, .demo span {
+      margin: 5px 0;
+    }
+
+    /* 经典技巧：li + li 选中除第一个外的所有 li */
+    .classic-trick li + li {
+      margin-top: 5px;
+      border-top: 1px solid #eee;
+      padding-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CSS 组合器与群组演示</h1>
+
+  <p>HTML 元素之间有"辈分"关系：<strong>祖先-后代</strong>、<strong>父子</strong>、<strong>兄弟</strong>。组合器利用这些关系来精确定位。</p>
+
+  <!-- ===== 后代 vs 子代 ===== -->
+  <h2>后代选择器 vs 子代选择器</h2>
+
+  <div class="demo demo-child">
+    <p>我是 div 的直接儿子 p —— 我有浅蓝色背景（子代选择器 div > p 选中了我）。</p>
+    <p>我也是 div 的直接儿子 p —— 同样被选中。</p>
+    <div>
+      <p>我是孙子辈的 p —— 我在内层 div 里面，不是外层 div 的直接儿子，<strong>所以我没有浅蓝色背景</strong>。</p>
+    </div>
+    <p>我又是一个直接儿子 p —— 有浅蓝色背景。</p>
+  </div>
+
+  <p style="color: #888; font-size: 14px;">
+    解释：<code>div &gt; p</code> 只选中 div 的<strong>直接</strong>儿子 p。孙子辈的 p 不受影响。
+    如果把 <code>&gt;</code> 去掉变成 <code>div p</code>（后代选择器），那连孙子辈也会被选中。
+  </p>
+
+  <!-- ===== 相邻兄弟 ===== -->
+  <h2>相邻兄弟选择器（h2 + p）</h2>
+
+  <div class="demo">
+    <h2>我是 h2 标题</h2>
+    <p>我是紧挨着 h2 后面的第一个 p —— 我有红色左边框（h2 + p 选中了我）。</p>
+    <p>我是第二个 p —— 我不紧挨 h2，所以没有红色边框。</p>
+    <p>我是第三个 p —— 也没有红色边框。</p>
+  </div>
+
+  <!-- ===== 通用兄弟 ===== -->
+  <h2>通用兄弟选择器（h2 ~ p）</h2>
+
+  <div class="demo demo-sibling">
+    <h2>我是 h2 标题</h2>
+    <p>我是 h2 后面的第一个 p —— 紫色文字（h2 ~ p 选中了我）。</p>
+    <span>我是一个 span，打断了 p 兄弟序列</span>
+    <p>我虽然是第三个元素，但仍然是 h2 后面的 p 兄弟 —— 也是紫色文字。</p>
+    <p>我也是 —— 也是紫色。通用兄弟 ~ 把 h2 后面的<strong>所有</strong> p 一网打尽。</p>
+  </div>
+
+  <!-- ===== 经典技巧：li + li ===== -->
+  <h2>经典技巧：li + li 选中"除第一个外的所有项"</h2>
+
+  <div class="demo">
+    <ul class="classic-trick">
+      <li>第一个列表项（没有顶部分割线）</li>
+      <li>第二个列表项（有分割线）
+        <ul>
+          <li>嵌套子列表第一项（注意这里不会添加分割线，因为 ul > li 只找第一层）</li>
+          <li>嵌套子列表第二项</li>
+        </ul>
+      </li>
+      <li>第三个列表项（有分割线）</li>
+      <li>第四个列表项</li>
+    </ul>
+  </div>
+
+  <h2>四种组合器速查</h2>
+  <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+    <tr style="background: #f0f0f0;">
+      <th>组合器</th><th>符号</th><th>含义</th><th>记忆</th>
+    </tr>
+    <tr>
+      <td>后代</td><td>A B</td><td>A 里所有 B（不限深度）</td><td>空格最宽，全兜住</td>
+    </tr>
+    <tr>
+      <td>子代</td><td>A > B</td><td>A 的亲生 B 儿子</td><td>箭头只指下一代</td>
+    </tr>
+    <tr>
+      <td>相邻兄弟</td><td>A + B</td><td>紧挨 A 后面的一个 B</td><td>加号紧挨着</td>
+    </tr>
+    <tr>
+      <td>通用兄弟</td><td>A ~ B</td><td>A 后面所有 B 兄弟</td><td>波浪打完一排</td>
+    </tr>
+    <tr>
+      <td>选择器列表</td><td>A, B</td><td>A 和 B 一起选</td><td>逗号=和</td>
+    </tr>
+  </table>
+
+</body>
+</html>

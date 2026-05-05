@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="back-link">
+    <a href="{% url 'index' %}">&larr; 返回首页</a>
+</div>
+
+<h1>{{ title }}</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">发布文章</button>
+</form>
+{% endblock %}

@@ -1,0 +1,241 @@
+<!--
+  =====================================================
+  示例文件：1.10 表格进阶
+  对应教程：1.10-表格进阶.md
+
+  这个文件展示了表格的高级用法：
+  - thead / tbody / tfoot 逻辑分区
+  - colspan 跨列合并（横着推）
+  - rowspan 跨行合并（竖着推）
+  - 购物小票和复杂课表实战
+  =====================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.10 表格进阶——示例</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 750px;
+      margin: 30px auto;
+      padding: 0 15px;
+      line-height: 1.8;
+    }
+    hr {
+      margin: 25px 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 15px 0;
+    }
+    th, td {
+      border: 1px solid #aaa;
+      padding: 8px 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #e8e8e8;
+    }
+    thead th {
+      background-color: #d0d0d0;
+    }
+    tfoot td {
+      font-weight: bold;
+      background-color: #f5f5f5;
+    }
+    caption {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>表格进阶：分区与合并单元格</h1>
+
+  <!-- ===== 一、thead/tbody/tfoot 分区 ===== -->
+  <h2>一、表格分区：thead、tbody、tfoot</h2>
+  <p>下面是一张购物小票，展示了三个分区：</p>
+
+  <table>
+    <!-- 表头——快递单抬头 -->
+    <thead>
+      <tr>
+        <th>商品名称</th>
+        <th>单价（元）</th>
+        <th>数量</th>
+        <th>小计（元）</th>
+      </tr>
+    </thead>
+
+    <!-- 表体——订单明细 -->
+    <tbody>
+      <tr>
+        <td>机械键盘</td>
+        <td>299</td>
+        <td>1</td>
+        <td>299</td>
+      </tr>
+      <tr>
+        <td>无线鼠标</td>
+        <td>149</td>
+        <td>2</td>
+        <td>298</td>
+      </tr>
+      <tr>
+        <td>鼠标垫</td>
+        <td>39</td>
+        <td>1</td>
+        <td>39</td>
+      </tr>
+    </tbody>
+
+    <!-- 表尾——合计 -->
+    <tfoot>
+      <tr>
+        <td colspan="3">合计</td>
+        <td>636 元</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <p><strong>注意：</strong>thead 和 tfoot 在代码里写在 tbody 前面（或后面都可以），但浏览器始终把 tfoot 显示在最后。</p>
+
+  <hr>
+
+  <!-- ===== 二、colspan 横向合并 ===== -->
+  <h2>二、colspan——横向合并（跨列）</h2>
+
+  <table>
+    <tr>
+      <th>节次</th>
+      <th>星期一</th>
+      <th>星期二</th>
+      <th>星期三</th>
+    </tr>
+    <tr>
+      <td>1-2 节</td>
+      <td>数据结构</td>
+      <td>英语</td>
+      <td>操作系统</td>
+    </tr>
+    <tr>
+      <td>3-4 节</td>
+      <td>高等数学</td>
+      <td>计算机组成</td>
+      <td>线性代数</td>
+    </tr>
+    <!-- colspan="4"：这一个格横跨 4 列 -->
+    <tr>
+      <td colspan="4" style="background: #fff3cd;">午休（12:00 - 14:00）</td>
+    </tr>
+    <tr>
+      <td>5-6 节</td>
+      <td>体育</td>
+      <td>数据结构</td>
+      <td>英语</td>
+    </tr>
+  </table>
+
+  <p><strong>colspan 原理：</strong>原来的位置 + 右边 N-1 个位置，合并成一个宽格。写法是 `colspan="N"`。</p>
+
+  <hr>
+
+  <!-- ===== 三、rowspan 纵向合并 ===== -->
+  <h2>三、rowspan——纵向合并（跨行）</h2>
+
+  <table>
+    <tr>
+      <th>课程</th>
+      <th>时间</th>
+      <th>类型</th>
+    </tr>
+    <!-- rowspan="2"：数据结构这个格占据 2 行 -->
+    <tr>
+      <td rowspan="2">数据结构</td>
+      <td>8:00 - 8:45</td>
+      <td>理论课</td>
+    </tr>
+    <tr>
+      <!-- 第一格已被上一行的 rowspan 占据，本行只写 2 个 td -->
+      <td>8:55 - 9:40</td>
+      <td>习题课</td>
+    </tr>
+    <tr>
+      <td>高等数学</td>
+      <td colspan="2">10:00 - 11:40（连上两小节）</td>
+    </tr>
+  </table>
+
+  <p><strong>rowspan 原理：</strong>当前格 + 下面 N-1 行的同位格，合并成一个高格。下一行对应的那个位置不用再写 td。</p>
+
+  <hr>
+
+  <!-- ===== 四、综合：复杂报销单 ===== -->
+  <h2>四、综合实战：差旅报销单</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>日期</th>
+        <th>类别</th>
+        <th>项目</th>
+        <th>金额（元）</th>
+        <th>备注</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td rowspan="2">4月20日</td>
+        <td rowspan="2">交通</td>
+        <td>高铁票（北京-上海）</td>
+        <td>553</td>
+        <td>二等座</td>
+      </tr>
+      <tr>
+        <!-- 前两格被上一行 rowspan 占用了 -->
+        <td>市内出租车</td>
+        <td>45</td>
+        <td>酒店→客户</td>
+      </tr>
+      <tr>
+        <td>4月20日</td>
+        <td>餐饮</td>
+        <td>午餐</td>
+        <td>35</td>
+        <td>工作餐</td>
+      </tr>
+      <tr>
+        <td rowspan="2">4月21日</td>
+        <td>住宿</td>
+        <td>快捷酒店</td>
+        <td>298</td>
+        <td>一晚</td>
+      </tr>
+      <tr>
+        <!-- 日期格被上一行 rowspan 占用了 -->
+        <td>交通</td>
+        <td>高铁票（上海-北京）</td>
+        <td>553</td>
+        <td>二等座</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3">合计</td>
+        <td>1484 元</td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <p>这个报销单同时使用了 rowspan（同一天的日期和类别）和 colspan（合计横跨）。在写之前，先画草图确定每个格的跨度。</p>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+    "name": "a29-modules-demo",
+    "version": "1.0.0",
+    "description": "A.29 模块化示例——演示 ESM 导入导出",
+    "type": "module",
+    "main": "main.js"
+}

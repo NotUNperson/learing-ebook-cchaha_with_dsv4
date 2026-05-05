@@ -1,0 +1,157 @@
+<!--
+  =====================================================
+  示例文件：1.11 表单基础
+  对应教程：1.11-表单基础.md
+
+  这个文件展示了表单最基本的元素：
+  - form 标签（action、method 属性）
+  - GET vs POST：明信片 vs 密封信封
+  - input 基础用法
+  - label 标签（for 属性关联 input）
+  - button 提交按钮
+  - 一个完整的登录表单
+  =====================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.11 表单基础——示例</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 0 15px;
+      line-height: 1.8;
+    }
+    hr {
+      margin: 25px 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+    form {
+      background: #f8f9fa;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      margin: 15px 0;
+    }
+    label {
+      display: inline-block;
+      width: 80px;
+      font-weight: bold;
+    }
+    input {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    button {
+      padding: 8px 20px;
+      background: #007acc;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005fa3;
+    }
+    .note {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      padding: 10px 15px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>表单（Form）基础</h1>
+  <p>表单是用户输入数据的区域。登录、搜索、评论——都靠它。</p>
+
+  <!-- ===== 一、GET 示例：搜索表单 ===== -->
+  <h2>一、GET 方式——明信片</h2>
+  <p>搜索表单用 GET，数据会出现在浏览器地址栏上，像明信片一样公开可见。</p>
+
+  <!--
+    action="/search" 表示提交到 /search 这个地址
+    method="GET" 表示数据跟在 URL 后面
+    name="q" 是 search query 的缩写，约定俗成
+  -->
+  <form action="/search" method="GET">
+    <p>
+      <label for="search-input">搜索：</label>
+      <input type="text" id="search-input" name="q" placeholder="请输入关键词">
+    </p>
+    <p>
+      <button type="submit">搜索</button>
+    </p>
+  </form>
+
+  <div class="note">
+    <p><strong>试试看：</strong>随便输入几个字，点击"搜索"。浏览器地址栏会变成 <code>/search?q=你输入的字</code>。</p>
+    <p>因为这里没有真实的后端服务器，所以会显示找不到页面——但你能看到 URL 变化，这就是 GET 方式的特征。</p>
+  </div>
+
+  <hr>
+
+  <!-- ===== 二、POST 示例：登录表单 ===== -->
+  <h2>二、POST 方式——密封信封</h2>
+  <p>登录表单用 POST，密码不会出现在 URL 上，像密封信封一样安全。</p>
+
+  <!--
+    action="/login" 表示提交到 /login
+    method="POST" 表示数据藏在 HTTP 请求体里，URL 上看不到
+  -->
+  <form action="/login" method="POST">
+    <p>
+      <!--
+        label 的 for 和 input 的 id 要一致，这样点击标签文字就能聚焦输入框。
+        这对手机用户和手不太灵活的人非常友好。
+      -->
+      <label for="username">用户名：</label>
+      <input type="text" id="username" name="username" placeholder="请输入用户名">
+    </p>
+    <p>
+      <label for="password">密码：</label>
+      <!--
+        type="password"：输入的内容会显示为圆点，防偷窥。
+        后面章节会详细介绍各种 type。
+      -->
+      <input type="password" id="password" name="password" placeholder="请输入密码">
+    </p>
+    <p>
+      <!-- type="submit" 的按钮：点击后提交整个表单 -->
+      <button type="submit">登录</button>
+    </p>
+  </form>
+
+  <hr>
+
+  <!-- ===== 三、label 的另一种写法 ===== -->
+  <h2>三、label 的两种写法</h2>
+
+  <p><strong>方式一（推荐）：</strong>用 for 和 id 关联</p>
+  <p>
+    <label for="demo1">姓名：</label>
+    <input type="text" id="demo1" name="demo1">
+  </p>
+
+  <p><strong>方式二：</strong>把 input 包在 label 里面</p>
+  <p>
+    <label>
+      姓名：
+      <input type="text" name="demo2">
+    </label>
+  </p>
+
+  <p>两种写法效果一样——点击"姓名"就能聚焦输入框。方式一更灵活（label 和 input 可以分开放）。</p>
+
+</body>
+</html>

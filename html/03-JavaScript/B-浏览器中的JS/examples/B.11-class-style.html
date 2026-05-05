@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.11 操作 class 与 style</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    button { margin: 4px; padding: 6px 14px; cursor: pointer; }
+    .box { border: 2px solid #333; padding: 12px; margin: 10px 0; border-radius: 4px; }
+
+    /* CSS 里定义好各种"戏服" */
+    .highlight { background: #fff3cd; font-weight: bold; }
+    .active { background: #4a90d9; color: white; transform: scale(1.02); }
+    .error { border: 3px solid #e94e77; color: #e94e77; }
+    .success { border: 3px solid #28a745; color: #28a745; }
+    .shaking {
+      animation: shake 0.3s ease-in-out;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .card {
+      background: #f5f5f5; padding: 12px; border-radius: 4px;
+      transition: all 0.3s ease;  /* CSS 管理过渡动画 */
+    }
+
+    .toggle-demo {
+      padding: 12px; background: #e8f4fd; border-radius: 4px;
+      transition: all 0.3s ease; text-align: center;
+    }
+    .toggle-demo.active {
+      background: #ff5722; color: white;
+      box-shadow: 0 4px 12px rgba(255,87,34,0.4);
+    }
+
+    .progress-bar {
+      width: 100%; height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; background: #4a90d9; border-radius: 10px;
+      transition: width 0.3s ease;  /* 宽度变化由 CSS transition 管理 */
+    }
+
+    table { border-collapse: collapse; margin: 8px 0; }
+    th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <h1>B.11 操作 class 与 style</h1>
+
+  <!-- ===== classList 基本操作 ===== -->
+  <h2>一、classList API（推荐）</h2>
+
+  <div class="box">
+    <h3>add / remove / toggle</h3>
+    <div id="cls-demo" class="card">
+      我是演示元素 —— 当前 class：<code id="cls-display">card</code>
+    </div>
+    <p>
+      <button onclick="addClass()">add("highlight")</button>
+      <button onclick="removeClass()">remove("highlight")</button>
+      <button onclick="toggleClass()">toggle("active") —— 开关</button>
+      <button onclick="checkClass()">contains("highlight")?</button>
+      <button onclick="replaceClass()">replace("error", "success")</button>
+      <button onclick="resetClass()">重置</button>
+    </p>
+    <p id="cls-result"></p>
+  </div>
+
+  <!-- ===== toggle 的作用 ===== -->
+  <h2>二、toggle 的常见用法</h2>
+  <div class="box">
+    <p>点击卡片本身来切换 active 状态（toggle 开关）：</p>
+    <div id="toggle-card" class="toggle-demo">
+      点我切换状态
+    </div>
+    <p>当前状态：<strong id="toggle-status">未激活</strong></p>
+  </div>
+
+  <!-- ===== style 对象 ===== -->
+  <h2>三、style 对象 —— 动态计算的值</h2>
+  <div class="box">
+    <h3>用 style 控制进度条（值是动态计算的，适合用 style）</h3>
+    <div class="progress-bar">
+      <div id="progress-fill" class="progress-fill" style="width: 30%;"></div>
+    </div>
+    <p>
+      进度：<span id="progress-value">30%</span>
+      <input type="range" id="progress-slider" min="0" max="100" value="30" style="width: 200px; vertical-align: middle;">
+    </p>
+    <p class="info">进度条宽度是运行时动态计算的——这种场景适合用 style.width。</p>
+  </div>
+
+  <!-- ===== getComputedStyle ===== -->
+  <h2>四、getComputedStyle —— 读取最终样式（只读）</h2>
+  <div class="box">
+    <p id="computed-demo" style="color: blue; font-size: 18px; padding: 12px; background: #f5f5f5; border-radius: 4px;">
+      我有内联样式，也有 CSS 文件定义的样式
+    </p>
+    <button onclick="showComputedStyle()">读取 computed style</button>
+    <div id="computed-result" style="font-family: monospace; font-size: 13px; margin-top: 8px;"></div>
+  </div>
+
+  <!-- ===== 最佳实践对比 ===== -->
+  <h2>五、最佳实践：职责分离</h2>
+  <table>
+    <thead>
+      <tr><th>职责</th><th>负责方</th><th>方式</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>定义样式（颜色、大小、布局）</td><td>CSS</td><td>写 <code>.class { ... }</code></td></tr>
+      <tr><td>切换状态（亮/暗、显示/隐藏）</td><td>JS</td><td><code>classList.toggle/add/remove</code></td></tr>
+      <tr><td>动态计算值（进度条、拖拽位置）</td><td>JS</td><td><code>style.width = ...</code></td></tr>
+    </tbody>
+  </table>
+  <p>记住：<strong>CSS 定长相，JS 管行为。</strong></p>
+
+  <script>
+    // ===== classList 基本操作 =====
+    var clsDemo = document.getElementById("cls-demo");
+    var clsDisplay = document.getElementById("cls-display");
+    var clsResult = document.getElementById("cls-result");
+
+    function updateClsDisplay() {
+      clsDisplay.textContent = clsDemo.className;
+    }
+
+    function addClass() {
+      clsDemo.classList.add("highlight");
+      clsResult.textContent = "add('highlight') — 类已添加";
+      updateClsDisplay();
+    }
+
+    function removeClass() {
+      clsDemo.classList.remove("highlight");
+      clsResult.textContent = "remove('highlight') — 类已移除";
+      updateClsDisplay();
+    }
+
+    function toggleClass() {
+      var added = clsDemo.classList.toggle("active");
+      clsResult.textContent = "toggle('active') — 现在 active 是 " + (added ? "有的" : "没的");
+      updateClsDisplay();
+    }
+
+    function checkClass() {
+      var has = clsDemo.classList.contains("highlight");
+      clsResult.textContent = "contains('highlight') → " + has;
+      alert("contains('highlight') = " + has);
+    }
+
+    function replaceClass() {
+      if (clsDemo.classList.contains("error")) {
+        clsDemo.classList.replace("error", "success");
+        clsResult.textContent = "replace('error', 'success') — 替换成功";
+      } else if (clsDemo.classList.contains("success")) {
+        clsDemo.classList.replace("success", "error");
+        clsResult.textContent = "replace('success', 'error') — 替换成功";
+      } else {
+        // 先添加 error，再替换成 success
+        clsDemo.classList.add("error");
+        clsResult.textContent = "先加了 error，再点一次来替换";
+      }
+      updateClsDisplay();
+    }
+
+    function resetClass() {
+      clsDemo.className = "card";
+      clsResult.textContent = "已重置为 card";
+      updateClsDisplay();
+    }
+
+    // ===== toggle 开关 =====
+    var toggleCard = document.getElementById("toggle-card");
+    var toggleStatus = document.getElementById("toggle-status");
+
+    toggleCard.addEventListener("click", function() {
+      var isActive = toggleCard.classList.toggle("active");
+      toggleStatus.textContent = isActive ? "已激活" : "未激活";
+      toggleStatus.style.color = isActive ? "#ff5722" : "inherit";
+    });
+
+    // ===== style 对象：进度条 =====
+    var slider = document.getElementById("progress-slider");
+    var fill = document.getElementById("progress-fill");
+    var progressValue = document.getElementById("progress-value");
+
+    slider.addEventListener("input", function() {
+      var val = slider.value;
+      fill.style.width = val + "%";     // 动态计算——适合用 style
+      progressValue.textContent = val + "%";
+    });
+
+    // ===== getComputedStyle =====
+    function showComputedStyle() {
+      var el = document.getElementById("computed-demo");
+      var styles = getComputedStyle(el);
+
+      var result = document.getElementById("computed-result");
+      result.innerHTML =
+        "getComputedStyle(el) 返回：<br>" +
+        "  color: " + styles.color + "<br>" +
+        "  fontSize: " + styles.fontSize + "<br>" +
+        "  padding: " + styles.padding + "<br>" +
+        "  backgroundColor: " + styles.backgroundColor + "<br>" +
+        "  display: " + styles.display + "<br>" +
+        "  fontFamily: " + styles.fontFamily + "<br>" +
+        "<em>注意：这些都是只读的，不能通过它来修改！</em>";
+
+      console.log("getComputedStyle(el)：", styles);
+      console.log("  注意：颜色总是 rgb 格式，即使 CSS 里写的是 blue");
+    }
+  </script>
+
+</body>
+</html>

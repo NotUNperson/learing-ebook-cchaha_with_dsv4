@@ -1,0 +1,203 @@
+<!--
+  =====================================================
+  示例文件：1.15 语义化结构标签
+  对应教程：1.15-语义化结构标签.md
+
+  这个文件用一篇模拟博客页面展示了语义化结构标签：
+  - header（页面头部）
+  - nav（导航栏）
+  - main（主体区域，一个页面只有一个）
+  - article（独立文章）
+  - section（内容分组）
+  - aside（侧边栏）
+  - footer（页脚）
+
+  对比 div：如果把所有语义标签换成 div，
+  你自己三个月后回头看，还能分得清哪是哪吗？
+  =====================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的技术博客——1.15 语义化结构标签示例</title>
+  <style>
+    /* 这些 CSS 只是给各语义区域加个可见边框，方便你理解结构 */
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 15px;
+      line-height: 1.8;
+    }
+    /* 用不同颜色标识不同语义区域 */
+    header {
+      background: #e3f2fd;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 4px;
+      border-left: 4px solid #1976d2;
+    }
+    nav {
+      background: #e8f5e9;
+      padding: 12px 20px;
+      margin: 15px 0;
+      border-radius: 4px;
+      border-left: 4px solid #388e3c;
+    }
+    nav a {
+      margin-right: 20px;
+      text-decoration: none;
+      color: #1976d2;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      background: #fafafa;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 4px;
+      border-left: 4px solid #f57c00;
+    }
+    article {
+      background: #fff;
+      padding: 15px 20px;
+      margin: 10px 0;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+    }
+    section {
+      background: #fff;
+      padding: 15px 20px;
+      margin: 10px 0;
+      border: 1px dashed #ccc;
+      border-radius: 4px;
+    }
+    aside {
+      background: #f3e5f5;
+      padding: 15px 20px;
+      margin: 15px 0;
+      border-radius: 4px;
+      border-left: 4px solid #7b1fa2;
+    }
+    footer {
+      background: #eceff1;
+      padding: 15px 20px;
+      margin: 15px 0;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+    }
+    .label {
+      font-size: 11px;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 3px;
+      margin-right: 8px;
+      font-weight: normal;
+    }
+    .label-header { background: #1976d2; }
+    .label-nav { background: #388e3c; }
+    .label-main { background: #f57c00; }
+    .label-article { background: #e65100; }
+    .label-section { background: #ff9800; }
+    .label-aside { background: #7b1fa2; }
+    .label-footer { background: #546e7a; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== header：页面头部 ===== -->
+  <!-- 包含网站名称、Logo、副标题。也可以包含搜索框。 -->
+  <header>
+    <h1><span class="label label-header">header</span>小明的技术博客</h1>
+    <p>记录学习、分享心得。从 HTML 开始，一步步走向全栈。</p>
+  </header>
+
+  <!-- ===== nav：主导航区 ===== -->
+  <!-- 只放网站的主要导航链接，不是所有链接都放这里。 -->
+  <nav>
+    <span class="label label-nav">nav</span>
+    <a href="#">首页</a>
+    <a href="#">文章</a>
+    <a href="#">关于我</a>
+    <a href="#">留言</a>
+  </nav>
+
+  <!-- ===== main：主体内容区 ===== -->
+  <!-- 一个页面只有一个 main。包裹页面的核心内容。 -->
+  <main>
+    <span class="label label-main">main（一个页面只有一个）</span>
+
+    <!-- ===== article：独立文章 ===== -->
+    <!-- 一篇文章、一篇帖子，可以独立分发的内容单元。 -->
+    <article>
+      <span class="label label-article">article</span>
+      <h2>HTML 入门心得体会</h2>
+      <p><small>发布于：2026 年 4 月 26 日 | 作者：小明</small></p>
+      <p>学了这么多 HTML 标签，最大的感受就是：HTML 不是一堆标签的堆砌，而是一种<strong>结构化的思维方式</strong>。</p>
+      <p>就像写 C 语言时我们要考虑函数的组织、数据结构的设计一样，写 HTML 时我们也要考虑页面的层次：哪里是头，哪里是身子，哪里是尾巴。</p>
+      <p>以前看网页只是"好看"，现在打开一个网页就会忍不住右键"查看源代码"，看看别人是怎么搭结构的。这大概就是学编程的"职业病"吧，哈哈。</p>
+    </article>
+
+    <!-- ===== section：评论区（内容分区） ===== -->
+    <!-- section 用于把内容的某个主题分组成一个区域。 -->
+    <section>
+      <span class="label label-section">section</span>
+      <h3>评论区</h3>
+      <p><strong>网友A：</strong>写得很好！我也是从 C 转学前端的，共勉！</p>
+      <p><strong>网友B：</strong>期待后续教程。语义化这一块我一直搞不清楚。</p>
+    </section>
+  </main>
+
+  <!-- ===== aside：侧边栏 ===== -->
+  <!-- 和主体相关但不核心。去掉 aside，主体内容依然完整。 -->
+  <aside>
+    <span class="label label-aside">aside</span>
+    <h3>关于作者</h3>
+    <!-- 虚构头像 -->
+    <img
+      src="https://via.placeholder.com/80/7b1fa2/ffffff?text=%E5%B0%8F%E6%98%8E"
+      alt="小明的头像"
+      width="80"
+      height="80"
+      style="border-radius: 50%;"
+    >
+    <p>小明，正在准备考研的计算机系学生。学过 C 语言和数据结构，现在开始系统学习前端。</p>
+    <p><strong>技术栈：</strong>C、数据结构、HTML（学习中）</p>
+
+    <h3>文章归档</h3>
+    <ul>
+      <li>2026 年 4 月（3 篇）</li>
+      <li>2026 年 3 月（2 篇）</li>
+      <li>2026 年 2 月（1 篇）</li>
+    </ul>
+  </aside>
+
+  <!-- ===== footer：页脚 ===== -->
+  <!-- 页脚放版权、备案号、联系方式、隐私政策等。 -->
+  <footer>
+    <span class="label label-footer">footer</span>
+    <p>&copy; 2026 小明的技术博客. All rights reserved.</p>
+    <p>联系方式：xiaoming@example.com | 京 ICP 备 20240001 号</p>
+  </footer>
+
+  <!--
+    ===== 对比：如果全用 div =====
+    想象一下如果把这个页面所有语义标签都换成 <div>：
+    <div>（本来是 header）
+      <div>（本来是 nav）
+      <div>（本来是 main）
+        <div>（本来是 article）
+        <div>（本来是 section）
+      <div>（本来是 aside）
+    <div>（本来是 footer）
+
+    你看得出谁是谁吗？搜索引擎更看不出。
+  -->
+
+</body>
+</html>

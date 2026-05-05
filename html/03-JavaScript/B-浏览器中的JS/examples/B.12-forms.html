@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.12 表单取值与校验</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    button { margin: 4px; padding: 6px 14px; cursor: pointer; }
+    .box { border: 2px solid #333; padding: 12px; margin: 10px 0; border-radius: 4px; }
+    label { display: block; margin: 8px 0 4px; font-weight: bold; }
+    input, select, textarea {
+      padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;
+      width: 100%; box-sizing: border-box; max-width: 400px;
+    }
+    input:invalid, select:invalid, textarea:invalid {
+      border-color: #e94e77;
+    }
+    input:valid, select:valid, textarea:valid {
+      border-color: #28a745;
+    }
+    .error-msg { color: #e94e77; font-size: 13px; margin-top: 2px; }
+    .success-msg { color: #28a745; }
+    .field-group { margin-bottom: 12px; }
+    .result-area {
+      background: #f0f0f0; padding: 12px; border-radius: 4px;
+      font-family: monospace; font-size: 13px; margin-top: 12px;
+    }
+    table { border-collapse: collapse; margin: 8px 0; }
+    th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <h1>B.12 表单取值与校验</h1>
+
+  <!-- ===== 各种控件取值演示 ===== -->
+  <h2>一、各类控件如何取值</h2>
+
+  <form id="demo-form" novalidate>
+    <div class="field-group">
+      <label for="username">用户名（文本框 text）</label>
+      <input type="text" id="username" name="username"
+             required minlength="3" maxlength="20"
+             placeholder="至少 3 个字符">
+      <span class="error-msg" id="username-error"></span>
+    </div>
+
+    <div class="field-group">
+      <label for="email">邮箱（email 类型）</label>
+      <input type="email" id="email" name="email"
+             required placeholder="example@mail.com">
+      <span class="error-msg" id="email-error"></span>
+    </div>
+
+    <div class="field-group">
+      <label for="age">年龄（number 类型）</label>
+      <input type="number" id="age" name="age"
+             min="1" max="150" placeholder="1-150">
+      <span class="error-msg" id="age-error"></span>
+    </div>
+
+    <div class="field-group">
+      <label>性别（radio 单选框）</label>
+      <label style="display: inline; font-weight: normal; margin-right: 12px;">
+        <input type="radio" name="gender" value="male"> 男
+      </label>
+      <label style="display: inline; font-weight: normal; margin-right: 12px;">
+        <input type="radio" name="gender" value="female"> 女
+      </label>
+      <label style="display: inline; font-weight: normal;">
+        <input type="radio" name="gender" value="other"> 其他
+      </label>
+    </div>
+
+    <div class="field-group">
+      <label>订阅？（checkbox 复选框）</label>
+      <label style="display: inline; font-weight: normal;">
+        <input type="checkbox" name="subscribe" value="yes"> 订阅新闻简报
+      </label>
+    </div>
+
+    <div class="field-group">
+      <label for="city">城市（select 下拉框）</label>
+      <select id="city" name="city">
+        <option value="">-- 请选择 --</option>
+        <option value="beijing">北京</option>
+        <option value="shanghai">上海</option>
+        <option value="guangzhou">广州</option>
+        <option value="shenzhen">深圳</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label for="message">留言（textarea 多行文本）</label>
+      <textarea id="message" name="message" rows="3" placeholder="有什么想说的..."></textarea>
+    </div>
+
+    <p>
+      <button type="submit">提交表单</button>
+      <button type="reset">重置</button>
+      <button type="button" onclick="showFormData()">查看 FormData</button>
+      <button type="button" onclick="checkValidityDemo()">checkValidity() 检查</button>
+    </p>
+  </form>
+
+  <!-- ===== 取值/校验结果 ===== -->
+  <div id="result" class="result-area" style="display:none;"></div>
+
+  <!-- ===== 自定义校验演示 ===== -->
+  <h2>二、自定义校验（setCustomValidity）</h2>
+  <div class="box">
+    <label for="custom-input">密码（自定义校验：必须包含字母和数字，至少 8 位）</label>
+    <input type="password" id="custom-input" placeholder="输入密码" style="max-width: 300px;">
+    <button type="button" onclick="validateCustom()">自定义校验</button>
+    <p id="custom-result"></p>
+  </div>
+
+  <!-- ===== validity 对象速查 ===== -->
+  <h2>三、validity 对象属性速查</h2>
+  <table>
+    <thead>
+      <tr><th>属性</th><th>含义</th><th>对应 HTML 属性</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>valid</code></td><td>整体是否通过校验</td><td>--</td></tr>
+      <tr><td><code>valueMissing</code></td><td>必填项为空</td><td>required</td></tr>
+      <tr><td><code>typeMismatch</code></td><td>类型不匹配</td><td>type="email"/"url"</td></tr>
+      <tr><td><code>tooShort</code></td><td>长度不足</td><td>minlength</td></tr>
+      <tr><td><code>tooLong</code></td><td>长度超出</td><td>maxlength</td></tr>
+      <tr><td><code>rangeUnderflow</code></td><td>数值小于 min</td><td>min</td></tr>
+      <tr><td><code>rangeOverflow</code></td><td>数值大于 max</td><td>max</td></tr>
+      <tr><td><code>patternMismatch</code></td><td>正则不匹配</td><td>pattern</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    // ===== 表单提交：阻止默认，JS 自己处理 =====
+    var form = document.getElementById("demo-form");
+    var resultDiv = document.getElementById("result");
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();  // 阻止浏览器默认提交
+
+      // 整体校验并显示错误
+      if (!form.reportValidity()) {
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = "<strong style='color:#e94e77;'>校验不通过！请修正红色边框的字段。</strong>";
+        return;
+      }
+
+      // 校验通过，取数据
+      var formData = new FormData(form);
+
+      // 手动读取各字段
+      var data = {
+        username: formData.get("username"),
+        email: formData.get("email"),
+        age: formData.get("age"),
+        gender: formData.get("gender") || "未选择",
+        subscribe: formData.get("subscribe") ? "是" : "否",
+        city: formData.get("city") || "未选择",
+        message: formData.get("message") || "(空)"
+      };
+
+      resultDiv.style.display = "block";
+      resultDiv.innerHTML =
+        "<strong style='color:#28a745;'>提交成功！</strong><br>" +
+        "用户名：" + data.username + "<br>" +
+        "邮箱：" + data.email + "<br>" +
+        "年龄：" + data.age + "<br>" +
+        "性别：" + data.gender + "<br>" +
+        "订阅：" + data.subscribe + "<br>" +
+        "城市：" + data.city + "<br>" +
+        "留言：" + data.message + "<br>" +
+        "<em>（实际项目中这里会发 fetch 请求——B.15 详讲）</em>";
+
+      console.log("表单数据：", data);
+    });
+
+    // ===== 查看 FormData =====
+    function showFormData() {
+      var formData = new FormData(form);
+      var html = "<strong>FormData 内容：</strong><br>";
+      var hasData = false;
+
+      for (var pair of formData.entries()) {
+        hasData = true;
+        html += pair[0] + " = " + pair[1] + "<br>";
+      }
+
+      if (!hasData) {
+        html += "(表单为空)";
+      }
+
+      resultDiv.style.display = "block";
+      resultDiv.innerHTML = html;
+    }
+
+    // ===== checkValidity =====
+    function checkValidityDemo() {
+      var username = document.getElementById("username");
+      var email = document.getElementById("email");
+
+      // 静默校验，不显示错误提示
+      var usernameValid = username.checkValidity();
+      var emailValid = email.checkValidity();
+
+      resultDiv.style.display = "block";
+      resultDiv.innerHTML =
+        "checkValidity()（静默校验）：<br>" +
+        "用户名：" + (usernameValid ? "通过" : "失败 — ") +
+        (!usernameValid ? getValidityInfo(username) : "") + "<br>" +
+        "邮箱：" + (emailValid ? "通过" : "失败 — ") +
+        (!emailValid ? getValidityInfo(email) : "") + "<br>" +
+        "<em>注意：checkValidity() 不会显示错误气泡，reportValidity() 才会</em>";
+    }
+
+    function getValidityInfo(input) {
+      var v = input.validity;
+      if (v.valueMissing) return "必填项为空";
+      if (v.typeMismatch) return "类型不匹配";
+      if (v.tooShort) return "长度不足";
+      if (v.tooLong) return "长度超出";
+      if (v.rangeUnderflow) return "数值太小";
+      if (v.rangeOverflow) return "数值太大";
+      if (v.patternMismatch) return "格式不匹配";
+      if (v.valid) return "通过";
+      return "未知错误";
+    }
+
+    // ===== 自定义校验 =====
+    function validateCustom() {
+      var input = document.getElementById("custom-input");
+      var value = input.value;
+      var result = document.getElementById("custom-result");
+
+      // 自定义规则：必须包含字母和数字，至少 8 位
+      var hasLetter = /[a-zA-Z]/.test(value);
+      var hasDigit = /[0-9]/.test(value);
+      var isLongEnough = value.length >= 8;
+
+      var errors = [];
+      if (!isLongEnough) errors.push("至少 8 位");
+      if (!hasLetter) errors.push("必须包含字母");
+      if (!hasDigit) errors.push("必须包含数字");
+
+      if (errors.length > 0) {
+        input.setCustomValidity(errors.join("；"));
+        input.reportValidity();  // 显示自定义错误提示
+        result.innerHTML = "<span style='color:#e94e77;'>自定义校验失败：" + errors.join("；") + "</span>";
+      } else {
+        input.setCustomValidity("");  // 清除自定义错误
+        result.innerHTML = "<span style='color:#28a745;'>自定义校验通过！</span>";
+        console.log("密码校验通过");
+      }
+    }
+  </script>
+
+</body>
+</html>

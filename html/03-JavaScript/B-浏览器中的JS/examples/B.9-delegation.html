@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.9 事件对象与委托</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    button { cursor: pointer; }
+    .box { border: 2px solid #333; padding: 12px; margin: 10px 0; border-radius: 4px; }
+    table { border-collapse: collapse; margin: 8px 0; }
+    th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; }
+    .info { color: #666; font-size: 14px; }
+    li { margin: 4px 0; padding: 6px 10px; background: #f0f0f0; border-radius: 4px; display: flex; align-items: center; gap: 8px; }
+    li.done { background: #d4edda; text-decoration: line-through; color: #666; }
+    .btn-sm { font-size: 12px; padding: 2px 8px; margin: 0 2px; }
+    .btn-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .btn-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .task-text { flex: 1; }
+    .log-area {
+      background: #1e1e1e; color: #d4d4d4; padding: 12px;
+      border-radius: 4px; max-height: 150px; overflow-y: auto;
+      font-family: Consolas, monospace; font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>B.9 事件对象与委托</h1>
+
+  <!-- ===== event 对象基础属性演示 ===== -->
+  <h2>一、event 对象的核心属性</h2>
+  <div class="box">
+    <p>点击下面的链接和按钮，观察 event 对象的属性：</p>
+    <a id="demo-link" href="https://www.example.com">点击这个链接（默认行为会被阻止）</a>
+    <p class="info">注意：链接不会跳转——因为 JS 用 preventDefault() 阻止了默认行为。</p>
+  </div>
+
+  <div class="box">
+    <h3>点击事件详细信息：</h3>
+    <div id="event-info" style="font-family: monospace; font-size: 13px;">
+      请点击页面上的元素...
+    </div>
+    <p>当前鼠标坐标：<span id="mouse-pos">移动鼠标到这里</span></p>
+  </div>
+
+  <!-- ===== 事件委托：TODO 列表 ===== -->
+  <h2>二、事件委托 —— TODO 列表实战</h2>
+  <p>
+    下方的 TODO 列表中，<strong>只有 ul 元素上注册了一个 click 监听器</strong>。
+    所有的按钮事件（完成、删除）都通过冒泡机制在 ul 上统一处理——这就是事件委托。
+  </p>
+
+  <div class="box">
+    <input type="text" id="task-input" placeholder="输入新任务..." style="padding: 6px; width: 250px;">
+    <button id="add-task-btn">添加任务</button>
+    <button id="clear-all-btn" class="btn-danger">清空全部</button>
+
+    <h3>任务列表：</h3>
+    <ul id="task-list">
+      <li>
+        <span class="task-text">学 HTML</span>
+        <button class="btn-sm btn-success" data-action="done">完成</button>
+        <button class="btn-sm btn-danger" data-action="delete">删除</button>
+      </li>
+      <li>
+        <span class="task-text">学 CSS</span>
+        <button class="btn-sm btn-success" data-action="done">完成</button>
+        <button class="btn-sm btn-danger" data-action="delete">删除</button>
+      </li>
+      <li>
+        <span class="task-text">学 JavaScript</span>
+        <button class="btn-sm btn-success" data-action="done">完成</button>
+        <button class="btn-sm btn-danger" data-action="delete">删除</button>
+      </li>
+    </ul>
+
+    <div id="task-stats" class="info"></div>
+  </div>
+
+  <!-- ===== 事件委托原理示意 ===== -->
+  <h2>三、事件委托原理示意</h2>
+  <div class="box">
+    <p>点击任意按钮时，浏览器控制台会输出 event 对象的关键属性：</p>
+    <ul>
+      <li><code>event.type</code> —— 事件类型（总是 "click"）</li>
+      <li><code>event.target</code> —— 实际被点击的元素（某个按钮）</li>
+      <li><code>event.currentTarget</code> —— 监听器绑定的元素（#task-list 这个 ul）</li>
+    </ul>
+    <p>用<strong>水管类比</strong>：按钮是"水龙头出水口"（target），ul 是"总水阀"（currentTarget）。水流从出水口出来，顺着管道一直流到总水阀。</p>
+  </div>
+
+  <!-- ===== 事件日志 ===== -->
+  <h3>事件触发日志：</h3>
+  <div id="event-log" class="log-area">
+    <div style="color:#888;">等待操作...</div>
+  </div>
+
+  <script>
+    // ===== 一、event 对象基本属性演示 =====
+    var demoLink = document.getElementById("demo-link");
+    var eventInfo = document.getElementById("event-info");
+    var mousePos = document.getElementById("mouse-pos");
+
+    demoLink.addEventListener("click", function(event) {
+      event.preventDefault();  // 阻止链接默认跳转
+      eventInfo.innerHTML =
+        "event.type = " + event.type + "<br>" +
+        "event.target = " + event.target.tagName + " (id=" + event.target.id + ")<br>" +
+        "event.currentTarget = " + event.currentTarget.tagName + " (id=" + event.currentTarget.id + ")<br>" +
+        "event.clientX = " + event.clientX + "<br>" +
+        "event.clientY = " + event.clientY + "<br>" +
+        "preventDefault() 已调用 —— 链接不会跳转";
+    });
+
+    // 跟踪鼠标位置
+    document.addEventListener("mousemove", function(event) {
+      mousePos.textContent = "X: " + event.clientX + ", Y: " + event.clientY;
+    });
+
+    // ===== 二、事件委托：TODO 列表 =====
+    var taskList = document.getElementById("task-list");
+    var eventLog = document.getElementById("event-log");
+
+    function addLog(message) {
+      var div = document.createElement("div");
+      div.textContent = message;
+      div.style.fontSize = "12px";
+      eventLog.append(div);
+      eventLog.scrollTop = eventLog.scrollHeight;
+    }
+
+    // 核心：只在 ul 上注册一个监听器！
+    taskList.addEventListener("click", function(event) {
+      var target = event.target;
+
+      console.log("===== 事件委托捕获 =====");
+      console.log("event.type:", event.type);
+      console.log("event.target:", target.tagName, target.className);
+      console.log("event.currentTarget:", event.currentTarget.id, "(= #task-list)");
+
+      // 判断用户点的是"完成"按钮还是"删除"按钮
+      // 用 data-action 属性来区分（B.5 学的 data-* 自定义属性）
+      var action = target.dataset.action;
+
+      if (action === "done") {
+        // 找到按钮所在的 li，切换完成状态
+        var li = target.closest("li");
+        li.classList.toggle("done");
+        addLog("[委托] 切换任务状态：" + li.querySelector(".task-text").textContent);
+        updateStats();
+      } else if (action === "delete") {
+        var li = target.closest("li");
+        var taskName = li.querySelector(".task-text").textContent;
+        li.remove();
+        addLog("[委托] 删除任务：" + taskName);
+        updateStats();
+      } else {
+        // 用户可能点了 li 的其他位置（比如文字区域）
+        addLog("[委托] 点击了非按钮区域（target=" + target.tagName + "），忽略");
+      }
+    });
+
+    // 添加新任务（不需要给新按钮绑事件！委托会自动处理）
+    document.getElementById("add-task-btn").addEventListener("click", function() {
+      var input = document.getElementById("task-input");
+      var text = input.value.trim();
+      if (!text) {
+        alert("请输入任务内容！");
+        return;
+      }
+
+      var li = document.createElement("li");
+      li.innerHTML =
+        '<span class="task-text">' + escapeHtml(text) + '</span>' +
+        '<button class="btn-sm btn-success" data-action="done">完成</button>' +
+        '<button class="btn-sm btn-danger" data-action="delete">删除</button>';
+
+      taskList.append(li);
+      input.value = "";
+      input.focus();
+      addLog("[委托] 新增任务（不绑定任何事件）：" + text);
+      updateStats();
+    });
+
+    // 回车也能添加
+    document.getElementById("task-input").addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        document.getElementById("add-task-btn").click();
+      }
+    });
+
+    // 清空全部
+    document.getElementById("clear-all-btn").addEventListener("click", function() {
+      taskList.innerHTML = "";
+      addLog("[委托] 清空全部任务");
+      updateStats();
+    });
+
+    function updateStats() {
+      var total = taskList.children.length;
+      var done = taskList.querySelectorAll("li.done").length;
+      var stats = document.getElementById("task-stats");
+      stats.textContent = "共 " + total + " 个任务，已完成 " + done + " 个，未完成 " + (total - done) + " 个。";
+    }
+
+    // 辅助函数：转义 HTML 特殊字符（防止 XSS）
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    // 初始统计
+    updateStats();
+
+    console.log("===== B.9 事件对象与委托 =====");
+    console.log("TODO 列表中只有 ul 上注册了一个 click 监听器");
+    console.log("所有按钮的点击事件通过冒泡机制在 ul 上统一处理");
+    console.log("新增的任务不需要绑事件——委托自动生效！");
+  </script>
+
+</body>
+</html>

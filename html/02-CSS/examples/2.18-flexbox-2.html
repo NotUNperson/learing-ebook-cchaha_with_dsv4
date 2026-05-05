@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2.18 Flexbox（下）—— 项目属性演示</title>
+  <style>
+    /* ========== 公共样式 ========== */
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 15px 50px 15px;
+      line-height: 1.8;
+    }
+    h2 {
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 5px;
+      margin-top: 40px;
+    }
+    .note {
+      color: #888;
+      font-size: 14px;
+      margin: 8px 0;
+    }
+
+    .flex-container {
+      display: flex;
+      border: 2px dashed #3498db;
+      background: #eaf2fd;
+      padding: 10px;
+      margin: 10px 0;
+    }
+
+    .flex-item {
+      background: #3498db;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+      font-size: 14px;
+      border-radius: 5px;
+    }
+
+    /* ========== 一、flex-grow —— 分蛋糕 ========== */
+    .grow-demo .flex-item {
+      flex-basis: 50px;      /* 初始宽度一样 */
+    }
+    .grow-0 { flex-grow: 0; background: #95a5a6; }   /* 不分蛋糕 */
+    .grow-1 { flex-grow: 1; background: #3498db; }    /* 分 1 份 */
+    .grow-2 { flex-grow: 2; background: #27ae60; }    /* 分 2 份 */
+
+    /* ========== 二、flex-shrink —— 一起挨饿 ========== */
+    .shrink-demo .flex-item {
+      flex-basis: 300px;     /* 故意设大，让它们装不下 */
+    }
+    .shrink-0 { flex-shrink: 0; background: #e74c3c; }   /* 不缩小 */
+    .shrink-2 { flex-shrink: 2; background: #f39c12; }    /* 缩小得多 */
+
+    /* ========== 三、flex-basis ========== */
+    .basis-demo .flex-item {
+      flex-grow: 1;         /* 都参加增长 */
+    }
+    .basis-100 { flex-basis: 100px; background: #e74c3c; }
+    .basis-200 { flex-basis: 200px; background: #3498db; }
+    .basis-auto { flex-basis: auto;  background: #27ae60; }  /* 按内容大小 */
+
+    /* ========== 四、flex 简写 ========== */
+    .flex-shorthand-1 .flex-item { flex: 1; }       /* 均分 */
+    .flex-shorthand-auto .flex-item { flex: auto; }  /* 均分但考虑内容 */
+    .shorthand-area .flex-item:nth-child(1) { background: #e74c3c; }
+    .shorthand-area .flex-item:nth-child(2) { background: #3498db; }
+    .shorthand-area .flex-item:nth-child(3) { background: #27ae60; }
+
+    /* ========== 五、align-self ========== */
+    .align-self-demo {
+      align-items: center;   /* 容器说：全部居中 */
+      height: 150px;
+    }
+    .align-self-demo .special {
+      align-self: flex-start;  /* 但这个偏要靠上！ */
+      background: #e74c3c;
+      padding-top: 10px;
+      padding-bottom: 30px;
+    }
+
+    /* ========== 六、gap ========== */
+    .gap-demo {
+      gap: 20px;            /* 项目之间统一 20px 间距 */
+    }
+    .no-gap-demo {
+      /* 没有 gap，项目紧挨着 */
+    }
+    .no-gap-demo .flex-item {
+      margin: 0 5px;        /* 老办法：用 margin，但两端会有多余的间距 */
+    }
+
+    /* ========== 七、经典布局模式 ========== */
+    /* 模式一：水平垂直居中 */
+    .center-demo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      border: 2px dashed #e74c3c;
+      background: #fdecea;
+      margin: 10px 0;
+    }
+    .center-demo .center-box {
+      background: #e74c3c;
+      color: #fff;
+      padding: 30px;
+      border-radius: 5px;
+    }
+
+    /* 模式二：圣杯布局 */
+    .holy-grail {
+      display: flex;
+      flex-direction: column;
+      min-height: 300px;
+      border: 2px solid #333;
+      margin: 10px 0;
+    }
+    .holy-header, .holy-footer {
+      background: #2c3e50;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+    }
+    .holy-body {
+      display: flex;
+      flex: 1;
+    }
+    .holy-sidebar {
+      width: 150px;
+      background: #ecf0f1;
+      padding: 15px;
+    }
+    .holy-content {
+      flex: 1;
+      background: #fff;
+      padding: 15px;
+    }
+
+    /* 模式三：等分列 */
+    .equal-cols {
+      display: flex;
+      gap: 15px;
+      margin: 10px 0;
+    }
+    .equal-cols .card {
+      flex: 1;                    /* 关键：均分！ */
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+    .equal-cols .card h3 {
+      margin: 0 0 10px 0;
+      color: #2c3e50;
+    }
+    .equal-cols .card p {
+      color: #666;
+      font-size: 13px;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Flexbox 项目属性演示 —— 每个队员的"个性"</h1>
+
+  <!-- ============ 一、flex-grow ============ -->
+  <h2>一、flex-grow —— 分蛋糕（有多余空间时）</h2>
+  <div class="flex-container grow-demo">
+    <div class="flex-item grow-0">grow:0<br>不吃蛋糕</div>
+    <div class="flex-item grow-1">grow:1<br>吃 1 份</div>
+    <div class="flex-item grow-2">grow:2<br>吃 2 份</div>
+  </div>
+  <p class="note">三个盒子初始都是 50px（flex-basis）。剩余空间按 0:1:2 的比例分配。第一个不参与分蛋糕，保持 50px。</p>
+
+  <!-- ============ 二、flex-shrink ============ -->
+  <h2>二、flex-shrink —— 一起挨饿（空间不够时）</h2>
+  <div class="flex-container shrink-demo">
+    <div class="flex-item shrink-0">shrink:0<br>我不能缩！</div>
+    <div class="flex-item">shrink:1<br>正常缩小</div>
+    <div class="flex-item shrink-2">shrink:2<br>我缩双倍</div>
+  </div>
+  <p class="note">三个盒子初始都是 300px，容器宽度显然不够。shrink:0 的盒子保持原样不缩小，shrink:2 的缩得比 shrink:1 更多。试着缩小浏览器窗口观察效果。</p>
+
+  <!-- ============ 三、flex-basis ============ -->
+  <h2>三、flex-basis —— 初始大小</h2>
+  <div class="flex-container basis-demo">
+    <div class="flex-item basis-100">basis:100px</div>
+    <div class="flex-item basis-200">basis:200px</div>
+    <div class="flex-item basis-auto">basis:auto<br>（按内容）</div>
+  </div>
+  <p class="note">每个项目都设了 flex-grow:1。但起点不同：第一个 100px，第二个 200px，第三个按内容大小。剩余空间再均分。</p>
+
+  <!-- ============ 四、flex 简写 ============ -->
+  <h2>四、flex 简写 —— 最常用</h2>
+
+  <h3>flex: 1（均分剩余空间）</h3>
+  <div class="flex-container flex-shorthand-1 shorthand-area">
+    <div class="flex-item">flex: 1</div>
+    <div class="flex-item">flex: 1</div>
+    <div class="flex-item">flex: 1</div>
+  </div>
+  <p class="note">三个盒子等宽，自动均分。这就是最常用的写法！</p>
+
+  <h3>flex: auto（均分但考虑内容）</h3>
+  <div class="flex-container flex-shorthand-auto shorthand-area">
+    <div class="flex-item">flex:auto —— 短</div>
+    <div class="flex-item">flex:auto —— 我文字更长一些</div>
+    <div class="flex-item">flex:auto —— 我文字超级超级长长长长长</div>
+  </div>
+  <p class="note">flex:auto 也会均分，但会考虑内容——文字多的分得更多。</p>
+
+  <!-- ============ 五、align-self ============ -->
+  <h2>五、align-self —— "我偏不！"</h2>
+  <div class="flex-container align-self-demo">
+    <div class="flex-item">我服从<br>居中</div>
+    <div class="flex-item special">我偏不！<br>align-self:<br>flex-start</div>
+    <div class="flex-item">我服从<br>居中</div>
+  </div>
+  <p class="note">容器写了 align-items: center（全体居中），但中间那个盒子用 align-self 把自己调到了顶部。单个项目的叛逆！</p>
+
+  <!-- ============ 六、gap ============ -->
+  <h2>六、gap —— 项目间距</h2>
+
+  <h3>有 gap: 20px</h3>
+  <div class="flex-container gap-demo">
+    <div class="flex-item">项目 1</div>
+    <div class="flex-item">项目 2</div>
+    <div class="flex-item">项目 3</div>
+  </div>
+
+  <h3>没有 gap（用 margin 的老办法）</h3>
+  <div class="flex-container no-gap-demo">
+    <div class="flex-item" style="margin: 0 5px;">项目 1</div>
+    <div class="flex-item" style="margin: 0 5px;">项目 2</div>
+    <div class="flex-item" style="margin: 0 5px;">项目 3</div>
+  </div>
+  <p class="note">对比：gap 只在项目之间有间距，两端没有多余间距。margin 的老办法则会在第一个项目左边和最后一个项目右边留下多余的间距。</p>
+
+  <!-- ============ 七、经典布局模式 ============ -->
+  <h2>七、三个经典布局模式</h2>
+
+  <h3>模式一：水平垂直居中</h3>
+  <div class="center-demo">
+    <div class="center-box">我在正中间！<br>justify-content: center + align-items: center</div>
+  </div>
+  <p class="note">这两行代码是 CSS 里最经典的"水平垂直居中"方案。在 Flexbox 出现之前，这是前端的一大难题。</p>
+
+  <h3>模式二：圣杯布局（页头 + 三列 + 页脚）</h3>
+  <div class="holy-grail">
+    <div class="holy-header">页头 Header</div>
+    <div class="holy-body">
+      <div class="holy-sidebar">左侧栏<br>width:150px</div>
+      <div class="holy-content">主内容区<br>flex:1（自动占满剩余空间）</div>
+      <div class="holy-sidebar">右侧栏<br>width:150px</div>
+    </div>
+    <div class="holy-footer">页脚 Footer</div>
+  </div>
+
+  <h3>模式三：等分列（如卡片列表）</h3>
+  <div class="equal-cols">
+    <div class="card">
+      <h3>卡片 1</h3>
+      <p>flex: 1 让所有卡片自动均分宽度，不管有几张卡片都等宽。</p>
+    </div>
+    <div class="card">
+      <h3>卡片 2</h3>
+      <p>配合 gap 控制间距，配合 min-width 控制最小宽度。</p>
+    </div>
+    <div class="card">
+      <h3>卡片 3</h3>
+      <p>这种写法在"产品列表""文章列表"等场景非常常用。</p>
+    </div>
+  </div>
+
+  <h2>Flexbox 项目属性速查</h2>
+  <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; margin-bottom: 30px;">
+    <tr style="background: #f0f0f0;">
+      <th>属性</th>
+      <th>作用</th>
+      <th>默认值</th>
+      <th>推荐用法</th>
+    </tr>
+    <tr>
+      <td>flex-grow</td>
+      <td>放大比例</td>
+      <td>0</td>
+      <td>用 flex 简写</td>
+    </tr>
+    <tr>
+      <td>flex-shrink</td>
+      <td>缩小比例</td>
+      <td>1</td>
+      <td>用 flex 简写</td>
+    </tr>
+    <tr>
+      <td>flex-basis</td>
+      <td>初始大小</td>
+      <td>auto</td>
+      <td>用 flex 简写</td>
+    </tr>
+    <tr>
+      <td>flex</td>
+      <td>简写（推荐！）</td>
+      <td>0 1 auto</td>
+      <td>flex: 1 均分</td>
+    </tr>
+    <tr>
+      <td>align-self</td>
+      <td>单项目交叉轴对齐</td>
+      <td>auto</td>
+      <td>个别调整时用</td>
+    </tr>
+    <tr>
+      <td>gap</td>
+      <td>项目间距</td>
+      <td>0</td>
+      <td>gap: 20px</td>
+    </tr>
+  </table>
+
+</body>
+</html>

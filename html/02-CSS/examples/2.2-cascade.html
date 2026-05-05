@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2.2 层叠与优先级</title>
+  <style>
+    /* ===== 权重演示区 ===== */
+
+    /* 权重: (0,0,0,1) = 1 分 —— 最低 */
+    p {
+      color: gray;
+    }
+
+    /* 权重: (0,0,1,0) = 10 分 —— 比标签选择器高 */
+    .highlight {
+      color: green;
+    }
+
+    /* 权重: (0,0,1,1) = 11 分 —— 标签+class 组合 */
+    p.special {
+      color: purple;
+    }
+
+    /* 权重: (0,1,0,0) = 100 分 —— id 选择器 */
+    #special-text {
+      color: red;
+    }
+
+    /* ===== "后来居上"演示区 ===== */
+
+    /* 第一条规则：让所有列表项变成蓝色 */
+    li {
+      color: blue;
+    }
+
+    /* 第二条规则：权重相同（也是 1 分），但写在后面！
+       所以它会覆盖上面的蓝色，最终列表项显示为橙色 */
+    li {
+      color: darkorange;
+    }
+
+    /* ===== !important 演示 ===== */
+    .force-green {
+      color: green !important;  /* 加上 !important，谁都别想覆盖我 */
+    }
+  </style>
+</head>
+<body>
+
+  <h1>层叠与优先级演示</h1>
+
+  <!-- ===== 权重演示 ===== -->
+  <h2>一、权重谁高听谁的</h2>
+
+  <p>我是一段普通文字。所有 p 元素的默认颜色是灰色（标签选择器，权重=1）。</p>
+
+  <p class="highlight">
+    我是"highlight"类。class 选择器权重=10，高于标签选择器的 1，所以我是绿色。
+  </p>
+
+  <p class="highlight special">
+    我同时有 highlight 和 special 类。p.special 的权重是 11（1个标签+1个class），高于 .highlight 的 10，所以我是紫色。
+  </p>
+
+  <p id="special-text" class="highlight">
+    我的 id 是 special-text。id 选择器权重=100，即使我也有 class，id 权重最高——最终我是红色。
+  </p>
+
+  <p style="color: dodgerblue;">
+    我用了内联样式。内联权重=1000，无视所有选择器规则——我是 dodgerblue（道奇蓝）。
+  </p>
+
+  <!-- ===== "后来居上"演示 ===== -->
+  <h2>二、同样权重，后来居上</h2>
+
+  <ul>
+    <li>第一项：应该显示什么颜色？</li>
+    <li>第二项：观察 style 标签里 li 的规则顺序</li>
+    <li>第三项：后面写的 li { color: darkorange; } 覆盖了前面的 li { color: blue; }</li>
+  </ul>
+
+  <p>上面三个列表项现在是橙色（darkorange）——因为两条 li 规则权重相同，后面的覆盖前面的。</p>
+
+  <!-- ===== !important 演示 ===== -->
+  <h2>三、!important —— 无视权重，直接碾压</h2>
+
+  <p class="force-green" style="color: red;">
+    我同时有内联样式（权重=1000，红色）和 !important（绿色）。内联样式也敌不过 !important——最终我是绿色！
+  </p>
+
+  <p>注意：!important 是核武器，日常开发中极少使用，尽量别碰。</p>
+
+  <h2>优先级从高到低总结</h2>
+  <ol>
+    <li>!important —— 终极核武器</li>
+    <li>内联样式 style="" —— 权重 1000</li>
+    <li>id 选择器 #xxx —— 权重 100</li>
+    <li>class 选择器 .xxx / 属性选择器 / 伪类 —— 权重 10</li>
+    <li>标签选择器 / 伪元素 —— 权重 1</li>
+    <li>通配符 * —— 权重 0</li>
+    <li>继承来的样式 —— 比 0 还低</li>
+  </ol>
+
+</body>
+</html>

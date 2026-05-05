@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.5 修改属性</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    button { margin: 4px; padding: 6px 14px; cursor: pointer; }
+    .box { border: 2px solid #333; padding: 12px; margin: 10px 0; border-radius: 4px; }
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; }
+    img { max-width: 200px; display: block; margin: 8px 0; border: 2px solid #ccc; border-radius: 4px; }
+    .result { margin: 8px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; font-family: monospace; }
+  </style>
+</head>
+<body>
+
+  <h1>B.5 修改属性</h1>
+
+  <!-- ===== 点号直接操作标准属性 ===== -->
+  <h2>一、点号直接操作标准属性</h2>
+
+  <div class="box">
+    <h3>图片属性操作</h3>
+    <!--
+      这里用占位图服务生成一个彩色的 SVG 作为初始图片
+      data 后面的内容形如 data:image/svg+xml,... 是内联 SVG
+    -->
+    <img id="demo-img" src="https://via.placeholder.com/200x100/4a90d9/ffffff?text=初始图片" alt="初始图片">
+    <p>当前图片地址：<code id="img-src-display"></code></p>
+    <button onclick="changeImage()">换一张图片</button>
+    <button onclick="changeAlt()">修改 alt 文本</button>
+  </div>
+
+  <div class="box">
+    <h3>链接属性操作</h3>
+    <a id="demo-link" href="https://www.example.com" target="_self">点我跳转</a>
+    <p>当前链接：<code id="link-href-display"></code></p>
+    <button onclick="changeLink()">改链接目标为新窗口打开百度</button>
+  </div>
+
+  <div class="box">
+    <h3>输入框属性操作</h3>
+    <input type="text" id="demo-input" value="初始值" placeholder="请输入文字">
+    <button onclick="changeInputValue()">设置 value</button>
+    <button onclick="toggleDisabled()">切换禁用状态</button>
+    <p>当前 value：<code id="input-value-display"></code></p>
+  </div>
+
+  <!-- ===== getAttribute / setAttribute 演示 ===== -->
+  <h2>二、getAttribute / setAttribute（通用方法）</h2>
+
+  <div class="box">
+    <p id="attr-demo" title="我是提示文本" custom-attr="hello">
+      我有一个 title 属性和一个自定义属性 custom-attr
+    </p>
+    <button onclick="showAttributes()">读取属性</button>
+    <button onclick="changeTitle()">修改 title 属性</button>
+    <button onclick="removeAttr()">删除 title 属性</button>
+    <div id="attr-result" class="result">点击按钮查看结果...</div>
+  </div>
+
+  <!-- ===== data-* 自定义属性 + dataset ===== -->
+  <h2>三、data-* 自定义属性 + dataset API</h2>
+
+  <div class="box">
+    <div id="user-card"
+         data-user-id="42"
+         data-role="admin"
+         data-last-login="2026-01-15"
+         style="padding: 12px; background: #e8f4fd; border-radius: 4px;">
+      <strong>用户卡片</strong><br>
+      ID: <span id="uid-display">-</span><br>
+      角色: <span id="role-display">-</span><br>
+      最后登录: <span id="login-display">-</span>
+    </div>
+    <button onclick="showDataset()">读取 dataset 属性</button>
+    <button onclick="changeDataset()">修改角色为 "vip"</button>
+    <button onclick="addDataset()">新增 data-status 属性</button>
+
+    <p><strong>命名规则：</strong></p>
+    <ul>
+      <li>HTML 属性 <code>data-user-id</code> → JS 中 <code>dataset.userId</code></li>
+      <li>HTML 属性 <code>data-last-login</code> → JS 中 <code>dataset.lastLogin</code></li>
+      <li>连字符后面的字母转成大写（驼峰命名 cAMEl case）</li>
+    </ul>
+  </div>
+
+  <!-- ===== 属性速查表 ===== -->
+  <h2>四、常用属性速查</h2>
+  <table>
+    <thead>
+      <tr><th>属性</th><th>读取</th><th>设置</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>id</code></td><td><code>el.id</code></td><td><code>el.id = "x"</code></td></tr>
+      <tr><td><code>class</code></td><td><code>el.className</code></td><td>用 classList（B.11）</td></tr>
+      <tr><td><code>src</code></td><td><code>img.src</code></td><td><code>img.src = "..."</code></td></tr>
+      <tr><td><code>href</code></td><td><code>a.href</code></td><td><code>a.href = "..."</code></td></tr>
+      <tr><td><code>value</code></td><td><code>input.value</code></td><td><code>input.value = "..."</code></td></tr>
+      <tr><td><code>checked</code></td><td><code>cb.checked</code></td><td><code>cb.checked = true</code></td></tr>
+      <tr><td><code>disabled</code></td><td><code>el.disabled</code></td><td><code>el.disabled = true</code></td></tr>
+      <tr><td><code>hidden</code></td><td><code>el.hidden</code></td><td><code>el.hidden = true</code></td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    // ===== 初始化显示 =====
+    document.getElementById("img-src-display").textContent = document.getElementById("demo-img").src;
+    document.getElementById("link-href-display").textContent = document.getElementById("demo-link").href;
+    document.getElementById("input-value-display").textContent = document.getElementById("demo-input").value;
+
+    // ===== 图片属性 =====
+    function changeImage() {
+      var img = document.getElementById("demo-img");
+      // 换一张不同颜色的占位图
+      img.src = "https://via.placeholder.com/200x100/e94e77/ffffff?text=新图片";
+      img.alt = "已更换的新图片";
+      document.getElementById("img-src-display").textContent = img.src;
+      console.log("图片 src 已改为：", img.src);
+    }
+
+    function changeAlt() {
+      var img = document.getElementById("demo-img");
+      img.alt = "这是一张占位示例图（alt 文本已修改）";
+      console.log("图片 alt 已改为：", img.alt);
+      alert("alt 文本已修改（鼠标悬停在图片上看提示）");
+    }
+
+    // ===== 链接属性 =====
+    function changeLink() {
+      var link = document.getElementById("demo-link");
+      link.href = "https://www.baidu.com";
+      link.target = "_blank";         // 新窗口打开
+      link.textContent = "点我跳转到百度（新窗口）";
+      document.getElementById("link-href-display").textContent = link.href;
+      console.log("链接已改为：", link.href, " target：", link.target);
+    }
+
+    // ===== 输入框属性 =====
+    function changeInputValue() {
+      var input = document.getElementById("demo-input");
+      input.value = "JS 设置的新值！";
+      document.getElementById("input-value-display").textContent = input.value;
+    }
+
+    function toggleDisabled() {
+      var input = document.getElementById("demo-input");
+      input.disabled = !input.disabled;
+      document.getElementById("input-value-display").textContent =
+        input.value + " (disabled=" + input.disabled + ")";
+    }
+
+    // ===== getAttribute / setAttribute =====
+    function showAttributes() {
+      var p = document.getElementById("attr-demo");
+      var result = document.getElementById("attr-result");
+
+      // 点号访问 vs getAttribute
+      var titleByDot = p.title;
+      var titleByAttr = p.getAttribute("title");
+      var customByDot = p.customAttr;       // 自定义属性通过点号访问返回 undefined
+      var customByAttr = p.getAttribute("custom-attr");
+
+      result.innerHTML =
+        "点号 p.title = " + titleByDot + "<br>" +
+        "getAttribute('title') = " + titleByAttr + "<br>" +
+        "点号 p.customAttr = " + customByDot + "（自定义属性点号取不到！）<br>" +
+        "getAttribute('custom-attr') = " + customByAttr;
+      console.log("标准属性点号/attr一致，自定义属性需用 getAttribute");
+    }
+
+    function changeTitle() {
+      var p = document.getElementById("attr-demo");
+      p.setAttribute("title", "新提示文本！(" + new Date().toLocaleTimeString() + ")");
+      alert("title 已修改，鼠标悬停在文字上看看？");
+    }
+
+    function removeAttr() {
+      var p = document.getElementById("attr-demo");
+      p.removeAttribute("title");
+      alert("title 属性已删除（鼠标悬停不再有提示）");
+    }
+
+    // ===== dataset API =====
+    function showDataset() {
+      var card = document.getElementById("user-card");
+      document.getElementById("uid-display").textContent = card.dataset.userId;
+      document.getElementById("role-display").textContent = card.dataset.role;
+      document.getElementById("login-display").textContent = card.dataset.lastLogin;
+      console.log("dataset：", card.dataset);
+      console.log("  userId:", card.dataset.userId);
+      console.log("  role:", card.dataset.role);
+      console.log("  lastLogin:", card.dataset.lastLogin);
+    }
+
+    function changeDataset() {
+      var card = document.getElementById("user-card");
+      card.dataset.role = "vip";
+      document.getElementById("role-display").textContent = card.dataset.role;
+      console.log("data-role 已改为：", card.dataset.role);
+      console.log("  HTML 属性现在为：data-role='vip'（打开元素面板可以看到）");
+    }
+
+    function addDataset() {
+      var card = document.getElementById("user-card");
+      card.dataset.status = "online";
+      alert("data-status='online' 已添加！打开元素面板查看 #user-card 的属性变化");
+      console.log("新增 data-status：", card.dataset.status);
+    }
+  </script>
+
+</body>
+</html>

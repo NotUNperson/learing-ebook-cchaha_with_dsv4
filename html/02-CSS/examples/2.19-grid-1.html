@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2.19 Grid（上）—— 网格布局基础</title>
+  <style>
+    /* ========== 公共样式 ========== */
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 15px 50px 15px;
+      line-height: 1.8;
+    }
+    h2 {
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 5px;
+      margin-top: 40px;
+    }
+    .note {
+      color: #888;
+      font-size: 14px;
+      margin: 8px 0;
+    }
+
+    /* 网格项目通用样式 */
+    .grid-item {
+      background: #3498db;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+    /* 颜色区分 */
+    .grid-item:nth-child(1)  { background: #e74c3c; }
+    .grid-item:nth-child(2)  { background: #3498db; }
+    .grid-item:nth-child(3)  { background: #27ae60; }
+    .grid-item:nth-child(4)  { background: #f39c12; }
+    .grid-item:nth-child(5)  { background: #8e44ad; }
+    .grid-item:nth-child(6)  { background: #1abc9c; }
+    .grid-item:nth-child(7)  { background: #e67e22; }
+    .grid-item:nth-child(8)  { background: #2c3e50; }
+    .grid-item:nth-child(9)  { background: #c0392b; }
+    .grid-item:nth-child(10) { background: #2980b9; }
+    .grid-item:nth-child(11) { background: #16a085; }
+    .grid-item:nth-child(12) { background: #d35400; }
+
+    /* ========== 一、固定列宽 ========== */
+    .grid-fixed {
+      display: grid;
+      grid-template-columns: 200px 200px 200px;   /* 三列，每列固定 200px */
+      grid-template-rows: 80px 80px;              /* 两行，每行 80px */
+      gap: 10px;
+      border: 2px dashed #e74c3c;
+      padding: 10px;
+      background: #fdecea;
+      margin: 10px 0;
+    }
+
+    /* ========== 二、fr 单位 ========== */
+    .grid-fr {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;   /* 三列，宽度比为 1:2:1 */
+      gap: 10px;
+      border: 2px dashed #3498db;
+      padding: 10px;
+      background: #eaf2fd;
+      margin: 10px 0;
+    }
+
+    /* ========== 三、repeat() 函数 ========== */
+    .grid-repeat {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);      /* 四列均分 */
+      grid-template-rows: repeat(2, 80px);        /* 两行各 80px */
+      gap: 10px;
+      border: 2px dashed #27ae60;
+      padding: 10px;
+      background: #eafaf1;
+      margin: 10px 0;
+    }
+
+    /* ========== 四、混合单位 ========== */
+    .grid-mixed {
+      display: grid;
+      grid-template-columns: 150px repeat(3, 1fr); /* 第一列固定150px，后三列均分 */
+      gap: 10px;
+      border: 2px dashed #f39c12;
+      padding: 10px;
+      background: #fef9e7;
+      margin: 10px 0;
+    }
+
+    /* ========== 五、minmax() ========== */
+    .grid-minmax {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(150px, 1fr));
+      /* 每列最少 150px，最多按比例 */
+      gap: 10px;
+      border: 2px dashed #8e44ad;
+      padding: 10px;
+      background: #f4ecf7;
+      margin: 10px 0;
+    }
+
+    /* ========== 六、隐式行 ========== */
+    .grid-implicit {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: 80px 80px;           /* 只明确前两行 */
+      grid-auto-rows: 60px;                    /* 多出来的行默认 60px */
+      gap: 10px;
+      border: 2px dashed #1abc9c;
+      padding: 10px;
+      background: #e8f8f5;
+      margin: 10px 0;
+    }
+
+    /* ========== 七、照片墙类比 ========== */
+    .photo-wall {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .photo {
+      aspect-ratio: 1;       /* 让格子保持正方形 */
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .photo:nth-child(1) { background: #e74c3c; }
+    .photo:nth-child(2) { background: #3498db; }
+    .photo:nth-child(3) { background: #27ae60; }
+    .photo:nth-child(4) { background: #f39c12; }
+    .photo:nth-child(5) { background: #8e44ad; }
+    .photo:nth-child(6) { background: #1abc9c; }
+    .photo:nth-child(7) { background: #e67e22; }
+    .photo:nth-child(8) { background: #2c3e50; }
+  </style>
+</head>
+<body>
+
+  <h1>Grid 网格布局演示 —— 二维棋盘</h1>
+
+  <!-- ============ 一、固定列宽 ============ -->
+  <h2>一、固定列宽（px）—— 3列x2行的固定棋盘</h2>
+  <div class="grid-fixed">
+    <div class="grid-item">1</div>
+    <div class="grid-item">2</div>
+    <div class="grid-item">3</div>
+    <div class="grid-item">4</div>
+    <div class="grid-item">5</div>
+    <div class="grid-item">6</div>
+  </div>
+  <p class="note">三列各 200px，两行各 80px，总共 600px 宽。固定宽度的缺点是容器宽度变化时不会自动伸缩。</p>
+
+  <!-- ============ 二、fr 单位 ============ -->
+  <h2>二、fr 单位 —— 按比例分配</h2>
+  <div class="grid-fr">
+    <div class="grid-item">1fr</div>
+    <div class="grid-item">2fr<br>（我占 2 份，最宽）</div>
+    <div class="grid-item">1fr</div>
+    <div class="grid-item">1fr</div>
+    <div class="grid-item">2fr<br>（我占 2 份）</div>
+    <div class="grid-item">1fr</div>
+  </div>
+  <p class="note">1fr + 2fr + 1fr，总份数 = 4。中间列占总宽度的一半。试着拖拽浏览器窗口宽度，比例始终保持不变！</p>
+
+  <!-- ============ 三、repeat() ============ -->
+  <h2>三、repeat() 函数 —— 简化重复定义</h2>
+  <div class="grid-repeat">
+    <div class="grid-item">1</div>
+    <div class="grid-item">2</div>
+    <div class="grid-item">3</div>
+    <div class="grid-item">4</div>
+    <div class="grid-item">5</div>
+    <div class="grid-item">6</div>
+    <div class="grid-item">7</div>
+    <div class="grid-item">8</div>
+  </div>
+  <p class="note">repeat(4, 1fr) 等效于 "1fr 1fr 1fr 1fr"。四列均分，两行各 80px。</p>
+
+  <!-- ============ 四、混合单位 ============ -->
+  <h2>四、混合 px 和 fr —— 固定 + 弹性</h2>
+  <div class="grid-mixed">
+    <div class="grid-item">固定 150px<br>（侧边栏）</div>
+    <div class="grid-item">均分列</div>
+    <div class="grid-item">均分列</div>
+    <div class="grid-item">均分列</div>
+    <div class="grid-item">固定 150px</div>
+    <div class="grid-item">均分列</div>
+    <div class="grid-item">均分列</div>
+    <div class="grid-item">均分列</div>
+  </div>
+  <p class="note">第一列固定 150px（像侧边栏），后面三列用 1fr 均分。这是侧边栏布局的常见写法。</p>
+
+  <!-- ============ 五、minmax() ============ -->
+  <h2>五、minmax() —— 尺寸范围约束</h2>
+  <div class="grid-minmax">
+    <div class="grid-item">minmax(150px, 1fr)</div>
+    <div class="grid-item">minmax(150px, 1fr)</div>
+    <div class="grid-item">minmax(150px, 1fr)</div>
+    <div class="grid-item">minmax(150px, 1fr)</div>
+    <div class="grid-item">minmax(150px, 1fr)</div>
+    <div class="grid-item">minmax(150px, 1fr)</div>
+  </div>
+  <p class="note">试着把浏览器窗口从很窄拖到很宽。窄时列不会小于 150px（会被挤到下一行或触发滚动），宽时列会按 1fr 均分。这就是不用媒体查询的"半自动响应式"。</p>
+
+  <!-- ============ 六、隐式行 ============ -->
+  <h2>六、隐式行 —— 元素多了自动补行</h2>
+  <div class="grid-implicit">
+    <div class="grid-item">第1行-1</div>
+    <div class="grid-item">第1行-2</div>
+    <div class="grid-item">第1行-3</div>
+    <div class="grid-item">第2行-1</div>
+    <div class="grid-item">第2行-2</div>
+    <div class="grid-item">第2行-3</div>
+    <div class="grid-item">隐式行-1<br>（css只定了2行）</div>
+    <div class="grid-item">隐式行-2<br>（自动创建）</div>
+    <div class="grid-item">隐式行-3<br>高度60px）</div>
+  </div>
+  <p class="note">CSS 只定义了 2 行，但放了 9 个元素。Grid 自动创建了第 3 行（隐式行），高度由 grid-auto-rows: 60px 控制。</p>
+
+  <!-- ============ 七、照片墙类比 ============ -->
+  <h2>七、照片墙示例 —— Grid 最擅长的领域</h2>
+  <p>照片墙、产品网格、卡片列表——这些都是 Grid 的拿手好戏：</p>
+  <div class="photo-wall">
+    <div class="photo">1</div>
+    <div class="photo">2</div>
+    <div class="photo">3</div>
+    <div class="photo">4</div>
+    <div class="photo">5</div>
+    <div class="photo">6</div>
+    <div class="photo">7</div>
+    <div class="photo">8</div>
+  </div>
+
+  <h2>Grid 容器属性速查</h2>
+  <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; margin-bottom: 30px;">
+    <tr style="background: #f0f0f0;">
+      <th>属性</th>
+      <th>作用</th>
+      <th>示例</th>
+    </tr>
+    <tr>
+      <td>display: grid</td>
+      <td>开启网格容器</td>
+      <td>display: grid;</td>
+    </tr>
+    <tr>
+      <td>grid-template-columns</td>
+      <td>定义列</td>
+      <td>repeat(3, 1fr)</td>
+    </tr>
+    <tr>
+      <td>grid-template-rows</td>
+      <td>定义行</td>
+      <td>100px auto</td>
+    </tr>
+    <tr>
+      <td>gap</td>
+      <td>行列间距</td>
+      <td>20px</td>
+    </tr>
+    <tr>
+      <td>fr 单位</td>
+      <td>按比例分配</td>
+      <td>1fr 2fr</td>
+    </tr>
+    <tr>
+      <td>repeat()</td>
+      <td>重复定义</td>
+      <td>repeat(4, 1fr)</td>
+    </tr>
+    <tr>
+      <td>minmax()</td>
+      <td>尺寸范围</td>
+      <td>minmax(150px, 1fr)</td>
+    </tr>
+    <tr>
+      <td>grid-auto-rows</td>
+      <td>隐式行高</td>
+      <td>60px</td>
+    </tr>
+  </table>
+
+</body>
+</html>

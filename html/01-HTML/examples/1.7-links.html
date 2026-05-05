@@ -1,0 +1,154 @@
+<!--
+  =====================================================
+  示例文件：1.7 链接
+  对应教程：1.7-链接.md
+
+  这个文件展示了 a 标签的各种用法：
+  - 绝对路径 vs 相对路径
+  - target="_blank" 新标签页打开
+  - 锚点：页面内跳转
+  - 邮件链接、电话链接、下载链接
+  =====================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.7 链接——示例</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 650px;
+      margin: 30px auto;
+      padding: 0 15px;
+      line-height: 1.8;
+    }
+    hr {
+      margin: 25px 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+    .anchor-demo {
+      background: #f0f7ff;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+    /* 给锚点目标一个醒目的标识 */
+    .target-zone {
+      background: #fff3cd;
+      padding: 15px;
+      border: 2px dashed #ffc107;
+      border-radius: 4px;
+      margin: 15px 0;
+    }
+    #top {
+      /* 空规则，仅作为锚点目标存在 */
+    }
+  </style>
+</head>
+<body id="top">
+  <!--
+    注意：body 标签上加了 id="top"
+    这样我们就能用 <a href="#top"> 跳回页面顶部。
+  -->
+
+  <h1>链接（a 标签）全解</h1>
+
+  <!-- ===== 一、基本链接 + 绝对路径 vs 相对路径 ===== -->
+  <h2>一、基本链接：绝对路径 vs 相对路径</h2>
+
+  <p>
+    <strong>绝对路径</strong>（像快递地址，全球唯一）：<br>
+    <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTML">去 MDN 学 HTML（绝对路径）</a>
+  </p>
+
+  <p>
+    <strong>相对路径</strong>（像指路，以当前文件为起点）：<br>
+    <!-- 假设同目录下有一个 about.html -->
+    <a href="1.1-about.html">去 1.1 的示例页面（相对路径）</a>
+  </p>
+
+  <p>
+    <strong>注意：</strong>绝对路径从协议和域名写起，搬网站时需要全改。<br>
+    相对路径以当前文件位置为基准，搬家时只要内部结构不变就不用动。
+  </p>
+
+  <hr>
+
+  <!-- ===== 二、target="_blank" ===== -->
+  <h2>二、target="_blank"——在新标签页打开</h2>
+
+  <p>
+    <a href="https://www.wikipedia.org/" target="_blank">打开维基百科（新标签页）</a>
+  </p>
+  <p>点击上面这个链接，维基百科会在新标签页打开，<strong>当前页面保留</strong>。</p>
+  <p>
+    对比：<a href="https://www.wikipedia.org/">打开维基百科（当前标签页）</a><br>
+    这个会直接跳走，你当前看到的页面就没了。
+  </p>
+
+  <hr>
+
+  <!-- ===== 三、锚点：页面内跳转 ===== -->
+  <!-- 页面顶部有一个快捷导航，像书本的目录 -->
+  <h2>三、锚点——页面内跳转</h2>
+
+  <div class="anchor-demo">
+    <p><strong>快捷导航（目录）：</strong></p>
+    <ul>
+      <li><a href="#section1">跳到第一节</a></li>
+      <li><a href="#section2">跳到第二节</a></li>
+      <li><a href="#section3">跳到第三节</a></li>
+    </ul>
+  </div>
+
+  <p>下面三大段文字模拟一个很长的文章。点击上面的快捷导航，页面会自动滚动到对应位置。</p>
+
+  <!-- 锚点目标区域：第一节 -->
+  <div id="section1" class="target-zone">
+    <h3>第一节：HTML 简介</h3>
+    <p>HTML 是超文本标记语言。它是网页开发三大件之一（HTML、CSS、JavaScript）。</p>
+    <p>HTML 负责页面的结构和内容。你在浏览器里看到的一切文字、图片、表格、表单，都靠 HTML 组织起来。</p>
+    <p><a href="#top">回到顶部</a></p>
+  </div>
+
+  <p>（这中间的空白区域模拟长内容）</p>
+  <p style="min-height: 200px; color: #999;">... 滚动空间 ...</p>
+
+  <!-- 锚点目标区域：第二节 -->
+  <div id="section2" class="target-zone">
+    <h3>第二节：CSS 简介</h3>
+    <p>CSS 是层叠样式表，负责页面的外观：颜色、大小、间距、布局，全归 CSS 管。</p>
+    <p>有了 CSS，你可以让一个朴素的 HTML 页面变得赏心悦目。</p>
+    <p><a href="#top">回到顶部</a></p>
+  </div>
+
+  <p style="min-height: 200px; color: #999;">... 滚动空间 ...</p>
+
+  <!-- 锚点目标区域：第三节 -->
+  <div id="section3" class="target-zone">
+    <h3>第三节：JavaScript 简介</h3>
+    <p>JavaScript 是网页的"行为"层。它让你的页面动起来、响应用户操作、和服务器交互。</p>
+    <p>表单验证、动画效果、数据加载，都靠 JavaScript。</p>
+    <p><a href="#top">回到顶部</a></p>
+  </div>
+
+  <hr>
+
+  <!-- ===== 四、其他类型的链接 ===== -->
+  <h2>四、其他类型的链接</h2>
+
+  <ul>
+    <li><strong>邮件链接：</strong><a href="mailto:hello@example.com">发送邮件给 hello@example.com</a></li>
+    <li><strong>电话链接：</strong><a href="tel:13800000000">拨打电话 13800000000</a>（手机上点击会直接打开拨号盘）</li>
+    <li><strong>下载链接：</strong><a href="1.7-links.html" download>下载本页面 HTML 文件</a></li>
+  </ul>
+
+  <p>
+    <a href="#top">回到页面顶部</a>
+  </p>
+
+</body>
+</html>

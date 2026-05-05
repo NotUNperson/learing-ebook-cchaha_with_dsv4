@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.16 fetch 进阶</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    button { margin: 4px; padding: 6px 14px; cursor: pointer; }
+    .box { border: 2px solid #333; padding: 12px; margin: 10px 0; border-radius: 4px; }
+    .result-area {
+      background: #f5f5f5; padding: 12px; border-radius: 4px;
+      font-family: Consolas, monospace; font-size: 13px;
+      max-height: 250px; overflow-y: auto; white-space: pre-wrap; margin-top: 8px;
+    }
+    .error-msg { color: #e94e77; }
+    .success-msg { color: #28a745; }
+    .loading { color: #856404; }
+    label { display: block; margin: 6px 0 2px; font-weight: bold; }
+    input, textarea {
+      padding: 6px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;
+      box-sizing: border-box; max-width: 400px; width: 100%;
+    }
+    table { border-collapse: collapse; margin: 8px 0; }
+    th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; font-size: 14px; }
+    .server-notice {
+      background: #fff3cd; border: 1px solid #ffc107; padding: 12px;
+      border-radius: 4px; margin: 10px 0;
+    }
+    .file-info { color: #666; font-size: 13px; margin: 4px 0; }
+  </style>
+</head>
+<body>
+
+  <h1>B.16 fetch 进阶</h1>
+
+  <div class="server-notice">
+    <strong>提醒：POST 请求和文件上传需要 HTTP 服务器！</strong><br>
+    <code>python -m http.server 8000</code> 然后访问 <code>http://localhost:8000</code><br>
+    公开 API 的 POST（如 jsonplaceholder）不需要本地服务器。
+  </div>
+
+  <!-- ===== POST 请求演示 ===== -->
+  <h2>一、POST 请求 —— 发送 JSON 数据</h2>
+  <div class="box">
+    <label for="post-title">标题：</label>
+    <input type="text" id="post-title" placeholder="输入文章标题" value="我的第一篇文章">
+
+    <label for="post-body">内容：</label>
+    <textarea id="post-body" rows="3" placeholder="输入文章内容">这是文章正文，由 fetch POST 发送。</textarea>
+
+    <p>
+      <button onclick="sendPostJSON()">POST 发送 JSON</button>
+      <button onclick="sendPostForm()">POST 发送表单格式</button>
+    </p>
+    <div id="post-result" class="result-area">点击按钮发起 POST 请求...</div>
+  </div>
+
+  <!-- ===== 文件上传演示 ===== -->
+  <h2>二、文件上传 —— FormData + fetch</h2>
+  <div class="box">
+    <p>选择一个文件（图片、文本等均可），然后用 FormData 上传：</p>
+    <input type="file" id="file-input">
+    <p class="file-info" id="file-info">未选择文件</p>
+    <p>
+      <button onclick="uploadFile()">模拟上传</button>
+    </p>
+    <div id="upload-result" class="result-area">选择文件并点击上传...</div>
+  </div>
+
+  <!-- ===== AbortController 演示 ===== -->
+  <h2>三、AbortController —— 取消请求</h2>
+  <div class="box">
+    <p>发一个请求，然后在它完成之前取消掉：</p>
+    <p>
+      <button onclick="startSlowRequest()">发起慢请求（模拟）</button>
+      <button onclick="cancelRequest()" style="background:#f8d7da;">取消请求</button>
+    </p>
+    <p id="abort-status"></p>
+    <div id="abort-result" class="result-area">点击发起请求...</div>
+  </div>
+
+  <!-- ===== 三种请求体格式速查 ===== -->
+  <h2>四、三种请求体格式速查</h2>
+  <table>
+    <thead>
+      <tr><th>格式</th><th>Content-Type</th><th>适用场景</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>JSON</td><td><code>application/json</code></td><td>绝大多数 API（最常用）</td></tr>
+      <tr><td>FormData</td><td><code>multipart/form-data</code>（自动设置）</td><td>表单提交、文件上传</td></tr>
+      <tr><td>URLSearchParams</td><td><code>application/x-www-form-urlencoded</code></td><td>简单键值对</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    // ===== POST 发送 JSON =====
+    function sendPostJSON() {
+      var title = document.getElementById("post-title").value.trim();
+      var body = document.getElementById("post-body").value.trim();
+      if (!title) { alert("请输入标题！"); return; }
+
+      var resultEl = document.getElementById("post-result");
+      resultEl.className = "result-area loading";
+      resultEl.textContent = "正在发送 POST 请求...\n\n请求体：\n" +
+        JSON.stringify({ title: title, body: body, userId: 1 }, null, 2);
+
+      fetch("https://jsonplaceholder.typicode.com/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          title: title,
+          body: body,
+          userId: 1
+        })
+      })
+        .then(function(response) {
+          console.log("POST 状态：", response.status);
+          if (!response.ok) throw new Error("HTTP " + response.status);
+          return response.json();
+        })
+        .then(function(data) {
+          resultEl.className = "result-area success-msg";
+          resultEl.textContent = "POST 请求成功！\n\n" +
+            "服务器返回（jsonplaceholder 会返回创建后的对象）：\n" +
+            JSON.stringify(data, null, 2) + "\n\n" +
+            "注意：jsonplaceholder 不会真的保存数据，它只是模拟。\n" +
+            "但请求格式和真实场景完全一样。";
+          console.log("POST 响应：", data);
+        })
+        .catch(function(error) {
+          resultEl.className = "result-area error-msg";
+          resultEl.textContent = "请求失败：" + error.message;
+        });
+    }
+
+    function sendPostForm() {
+      var title = document.getElementById("post-title").value.trim();
+      var body = document.getElementById("post-body").value.trim();
+      if (!title) { alert("请输入标题！"); return; }
+
+      var resultEl = document.getElementById("post-result");
+      resultEl.className = "result-area loading";
+      resultEl.textContent = "正在以表单格式发送...";
+
+      // 使用 URLSearchParams 格式（简单的键值对）
+      var params = new URLSearchParams();
+      params.append("title", title);
+      params.append("body", body);
+      params.append("userId", "1");
+
+      fetch("https://jsonplaceholder.typicode.com/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: params
+      })
+        .then(function(response) {
+          if (!response.ok) throw new Error("HTTP " + response.status);
+          return response.json();
+        })
+        .then(function(data) {
+          resultEl.className = "result-area success-msg";
+          resultEl.textContent = "POST（表单格式）成功！\n\n" +
+            "服务器返回：\n" + JSON.stringify(data, null, 2) + "\n\n" +
+            "请求体是：title=xxx&body=xxx&userId=1\n" +
+            "（这种格式不如 JSON 常用，但老系统可能还在用）";
+        })
+        .catch(function(error) {
+          resultEl.className = "result-area error-msg";
+          resultEl.textContent = "请求失败：" + error.message;
+        });
+    }
+
+    // ===== 文件上传 =====
+    var fileInput = document.getElementById("file-input");
+    fileInput.addEventListener("change", function() {
+      var file = fileInput.files[0];
+      var info = document.getElementById("file-info");
+      if (file) {
+        info.textContent = "已选择：" + file.name + " (" +
+          (file.size / 1024).toFixed(1) + " KB, 类型: " + (file.type || "未知") + ")";
+      } else {
+        info.textContent = "未选择文件";
+      }
+    });
+
+    function uploadFile() {
+      var file = fileInput.files[0];
+      var resultEl = document.getElementById("upload-result");
+
+      if (!file) {
+        resultEl.className = "result-area error-msg";
+        resultEl.textContent = "请先选择一个文件！";
+        return;
+      }
+
+      resultEl.className = "result-area loading";
+      resultEl.textContent = "正在构建 FormData...\n";
+
+      // 构建 FormData
+      var formData = new FormData();
+      formData.append("file", file);          // 文件字段
+      formData.append("description", "模拟上传的文件"); // 附加字段
+
+      // 打印 FormData 内容（FormData 不能直接打印，需要迭代）
+      var formInfo = "FormData 包含以下字段：\n";
+      for (var pair of formData.entries()) {
+        var val = pair[1];
+        if (val instanceof File) {
+          formInfo += "  " + pair[0] + " = [File] " + val.name + " (" + (val.size / 1024).toFixed(1) + " KB)\n";
+        } else {
+          formInfo += "  " + pair[0] + " = " + val + "\n";
+        }
+      }
+      resultEl.textContent += formInfo + "\n正在发送...";
+
+      // 由于 jsonplaceholder 不支持文件上传，我们向它发一个不包含文件的 POST 来演示
+      // 真实场景下，你会把 FormData 发到自己的后端
+      resultEl.textContent += "\n\n注意：本示例对 jsonplaceholder 发了个普通 POST 演示流程。\n";
+      resultEl.textContent += "真实项目中你会把 FormData POST 到自己的后端接口。\n\n";
+
+      // 演示 FormData 构建成功
+      resultEl.className = "result-area success-msg";
+      resultEl.textContent += "FormData 构建成功！\n" +
+        "文件 \"" + file.name + "\" 已准备好。\n\n" +
+        "真实上传代码：\n" +
+        "fetch('/api/upload', {\n" +
+        "  method: 'POST',\n" +
+        "  body: formData  // 不要设 Content-Type！浏览器会自动设\n" +
+        "})";
+    }
+
+    // ===== AbortController =====
+    var currentController = null;
+
+    function startSlowRequest() {
+      // 先取消之前的请求
+      if (currentController) {
+        currentController.abort();
+      }
+
+      var resultEl = document.getElementById("abort-result");
+      var statusEl = document.getElementById("abort-status");
+
+      currentController = new AbortController();
+
+      resultEl.className = "result-area loading";
+      resultEl.textContent = "正在请求（3 秒后返回，你有 3 秒时间点击"取消请求"）...";
+      statusEl.textContent = "状态：请求进行中...";
+
+      // 使用一个真实但会暂停的 API；这里用 jsonplaceholder 的延迟端点
+      // 同时也加一个本地 setTimeout 做中止演示
+      fetch("https://jsonplaceholder.typicode.com/posts/1", {
+        signal: currentController.signal
+      })
+        .then(function(response) {
+          if (!response.ok) throw new Error("HTTP " + response.status);
+          return response.json();
+        })
+        .then(function(data) {
+          resultEl.className = "result-area success-msg";
+          resultEl.textContent = "请求完成！\n\n" +
+            JSON.stringify(data, null, 2) + "\n\n" +
+            "如果你看到了这个，说明请求没有被取消。下次发请求后快点"取消请求"按钮试试。";
+          statusEl.textContent = "状态：请求已完成";
+          currentController = null;
+        })
+        .catch(function(error) {
+          if (error.name === "AbortError") {
+            resultEl.className = "result-area error-msg";
+            resultEl.textContent = "请求已被取消！\n\n" +
+              "AbortController 像遥控器一样中断了正在进行的 fetch。\n" +
+              "这在用户离开页面或切换搜索关键词时非常有用。";
+            statusEl.textContent = "状态：请求已取消";
+          } else {
+            resultEl.className = "result-area error-msg";
+            resultEl.textContent = "请求失败：" + error.message;
+            statusEl.textContent = "状态：请求失败";
+          }
+          currentController = null;
+        });
+    }
+
+    function cancelRequest() {
+      if (currentController) {
+        currentController.abort();
+        document.getElementById("abort-status").textContent = "状态：正在取消...";
+        console.log("AbortController: 请求已取消");
+      } else {
+        document.getElementById("abort-status").textContent = "状态：没有正在进行的请求";
+      }
+    }
+  </script>
+
+</body>
+</html>

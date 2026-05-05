@@ -1,0 +1,10 @@
+{
+  "status": "ok",
+  "message": "这是从 data.json 加载的数据——fetch 成功了！",
+  "users": [
+    { "id": 1, "name": "张三", "role": "管理员", "email": "zhangsan@example.com" },
+    { "id": 2, "name": "李四", "role": "编辑", "email": "lisi@example.com" },
+    { "id": 3, "name": "王五", "role": "读者", "email": "wangwu@example.com" }
+  ],
+  "total": 3
+}

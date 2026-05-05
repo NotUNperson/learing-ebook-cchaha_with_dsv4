@@ -1,0 +1,162 @@
+<!--
+  =====================================================
+  示例文件：1.8 图片
+  对应教程：1.8-图片.md
+
+  这个文件展示了：
+  - img 标签及其核心属性（src、alt、width、height）
+  - 各种图片格式的特点
+  - figure/figcaption 组合
+  - alt 属性的重要性
+  =====================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1.8 图片——示例</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 0 15px;
+      line-height: 1.8;
+    }
+    hr {
+      margin: 25px 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+    figure {
+      margin: 20px 0;
+      text-align: center;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 4px;
+    }
+    figcaption {
+      margin-top: 8px;
+      color: #666;
+      font-size: 14px;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+    .good {
+      background: #d4edda;
+      border: 1px solid #28a745;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 4px;
+    }
+    .bad {
+      background: #f8d7da;
+      border: 1px solid #dc3545;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>图片标签 img</h1>
+
+  <!-- ===== 一、基本的 img 标签 ===== -->
+  <h2>一、基本用法</h2>
+  <p>下面的图片是一个占位图（placeholder），模拟正常图片的显示效果：</p>
+  <img
+    src="https://via.placeholder.com/400x200/007acc/ffffff?text=%E8%BF%99%E6%98%AF%E4%B8%80%E5%BC%A0%E7%A4%BA%E4%BE%8B%E5%9B%BE%E7%89%87"
+    alt="一张蓝色的占位示例图，上面写着'这是一张示例图片'"
+    width="400"
+    height="200"
+  >
+  <p>上面这张图使用了 src、alt、width、height 四个属性。</p>
+
+  <hr>
+
+  <!-- ===== 二、alt 的重要性 ===== -->
+  <h2>二、alt 属性：写对 vs 写错</h2>
+
+  <p>下面故意给了一个<strong>不存在的图片路径</strong>，演示 alt 文字如何显示：</p>
+  <img
+    src="this-file-does-not-exist.jpg"
+    alt="好的 alt：一张夕阳下的海滩照片，海浪拍打着沙滩"
+    width="400"
+    height="200"
+  >
+  <p>因为 src 路径不存在，图片加载失败，浏览器显示了 alt 中的文字。如果没有 alt，用户只会看到一个裂图图标。</p>
+
+  <hr>
+
+  <!-- ===== 三、figure 和 figcaption ===== -->
+  <h2>三、figure 和 figcaption——带标题的图片</h2>
+
+  <figure>
+    <img
+      src="https://via.placeholder.com/500x250/28a745/ffffff?text=Q4+%E9%94%80%E5%94%AE%E9%A2%9D%E6%9C%80%E9%AB%98"
+      alt="2025 年四个季度销售额柱状图"
+      width="500"
+      height="250"
+    >
+    <figcaption>图 1：2025 年各季度销售额对比。Q4 受双十一带动，销售额突破 150 万元，同比增长 35%。</figcaption>
+  </figure>
+
+  <p>
+    figure 是一个独立的"内容单元"，可以包含图片和说明文字。<br>
+    figcaption 是说明文字，放在 figure 里面，可以放在 img 前面或后面。
+  </p>
+
+  <hr>
+
+  <!-- ===== 四、图片格式速查 ===== -->
+  <h2>四、常用图片格式速查</h2>
+
+  <table style="border-collapse: collapse; width: 100%;">
+    <thead>
+      <tr style="background: #f0f0f0;">
+        <th style="border: 1px solid #ccc; padding: 8px;">格式</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">后缀名</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">适合场景</th>
+        <th style="border: 1px solid #ccc; padding: 8px;">透明背景</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">JPEG</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">.jpg / .jpeg</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">照片、写实图片</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">不支持</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">PNG</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">.png</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">Logo、图标、需要透明的图</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">支持</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">SVG</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">.svg</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">图标、简单插图</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">支持</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">WebP</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">.webp</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">照片和图标都行，文件更小</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">支持</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid #ccc; padding: 8px;">GIF</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">.gif</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">简单动图</td>
+        <td style="border: 1px solid #ccc; padding: 8px;">支持（但不支持半透明）</td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>

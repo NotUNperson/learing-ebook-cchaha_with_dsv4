@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.7 删除与替换节点</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    button { margin: 4px; padding: 6px 14px; cursor: pointer; }
+    .box { border: 2px solid #333; padding: 12px; margin: 10px 0; border-radius: 4px; }
+    li { margin: 4px 0; padding: 4px 8px; background: #f0f0f0; border-radius: 3px; transition: all 0.3s; }
+    .delete-btn { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; font-size: 12px; padding: 2px 8px; }
+    .replaced { background: #d4edda; padding: 4px 8px; border-radius: 3px; }
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; }
+  </style>
+</head>
+<body>
+
+  <h1>B.7 删除与替换节点</h1>
+
+  <!-- ===== remove() 演示 ===== -->
+  <h2>一、remove() —— 自己删自己（推荐）</h2>
+  <div class="box">
+    <ul id="remove-list">
+      <li>苹果</li>
+      <li>香蕉</li>
+      <li>橙子</li>
+      <li>葡萄</li>
+      <li>西瓜</li>
+    </ul>
+    <button onclick="removeFirst()">删除第一个 &lt;li&gt;</button>
+    <button onclick="removeLast()">删除最后一个 &lt;li&gt;</button>
+    <button onclick="restoreItem()">恢复最近删除的项</button>
+  </div>
+
+  <!-- ===== removeChild 演示 ===== -->
+  <h2>二、removeChild —— 老方法（需要找父元素）</h2>
+  <div class="box">
+    <ul id="removechild-list">
+      <li>第一项</li>
+      <li>第二项（待删除）</li>
+      <li>第三项</li>
+    </ul>
+    <button onclick="useRemoveChild()">用 removeChild 删"第二项"</button>
+    <button onclick="useRemoveModern()">对比：用 remove() 删"第三项"</button>
+  </div>
+
+  <!-- ===== replaceChild / replaceWith 演示 ===== -->
+  <h2>三、替换节点</h2>
+  <div class="box">
+    <ul id="replace-list">
+      <li id="old-item">我是旧的列表项</li>
+    </ul>
+    <button onclick="useReplaceChild()">replaceChild —— 替换旧项</button>
+    <button onclick="useReplaceWith()">replaceWith —— 现代替换</button>
+  </div>
+
+  <!-- ===== 清空所有子节点 ===== -->
+  <h2>四、清空所有子节点（三种方式）</h2>
+  <div class="box">
+    <ul id="clear-list">
+      <li>待清除项 A</li>
+      <li>待清除项 B</li>
+      <li>待清除项 C</li>
+      <li>待清除项 D</li>
+    </ul>
+    <button onclick="clearWithInnerHTML()">方式一：innerHTML = ""</button>
+    <button onclick="clearWithWhileRemove()">方式二：while + removeChild</button>
+    <button onclick="clearWithLoopRemove()">方式三：循环 remove()（逐个）</button>
+    <button onclick="resetClearList()">重置列表</button>
+  </div>
+
+  <!-- ===== 删除特定项（带删除按钮的列表） ===== -->
+  <h2>五、删除特定项 —— 给每项加删除按钮</h2>
+  <div class="box">
+    <ul id="todo-list">
+      <!-- JS 会动态填充 -->
+    </ul>
+    <button onclick="addTodoItem()">添加任务</button>
+    <button onclick="removeAllDone()">删除所有"已完成"项</button>
+    <p>点击每个任务旁边的"删除"按钮来删除单个任务。</p>
+  </div>
+
+  <script>
+    // ===== remove() =====
+    var lastRemoved = null; // 暂存最近删除的元素
+
+    function removeFirst() {
+      var list = document.getElementById("remove-list");
+      if (list.children.length === 0) return;
+      var first = list.children[0];
+      lastRemoved = first;  // 保存引用，方便恢复
+      first.remove();
+      console.log("remove() 删除了：" + lastRemoved.textContent);
+    }
+
+    function removeLast() {
+      var list = document.getElementById("remove-list");
+      if (list.children.length === 0) return;
+      var last = list.children[list.children.length - 1];
+      lastRemoved = last;
+      last.remove();
+      console.log("remove() 删除了：" + lastRemoved.textContent);
+    }
+
+    function restoreItem() {
+      if (!lastRemoved) {
+        alert("还没有删除过任何元素！");
+        return;
+      }
+      var list = document.getElementById("remove-list");
+      list.append(lastRemoved);
+      console.log("恢复了：" + lastRemoved.textContent);
+      lastRemoved = null;
+    }
+
+    // ===== removeChild =====
+    function useRemoveChild() {
+      var ul = document.getElementById("removechild-list");
+      // 找到"第二项"——第二个 li
+      var target = ul.children[1];
+      if (target) {
+        ul.removeChild(target);  // 必须在父元素(ul)上调用
+        console.log("removeChild 删除了：" + target.textContent);
+      }
+    }
+
+    function useRemoveModern() {
+      var ul = document.getElementById("removechild-list");
+      var target = ul.children[ul.children.length - 1];
+      if (target) {
+        target.remove();  // 直接调用 remove()，不需要找父元素
+        console.log("remove() 删除了：" + target.textContent);
+      }
+    }
+
+    // ===== 替换 =====
+    function useReplaceChild() {
+      var ul = document.getElementById("replace-list");
+      var oldItem = document.getElementById("old-item");
+      if (!oldItem) {
+        alert("旧项已被替换。请刷新页面重试。");
+        return;
+      }
+      var newItem = document.createElement("li");
+      newItem.textContent = "我是新来的（replaceChild 替换）";
+      newItem.className = "replaced";
+      ul.replaceChild(newItem, oldItem);
+      console.log("replaceChild 完成替换");
+    }
+
+    function useReplaceWith() {
+      var oldItem = document.getElementById("old-item");
+      if (!oldItem) {
+        alert("旧项已被替换。请刷新页面重试。");
+        return;
+      }
+      var newItem = document.createElement("li");
+      newItem.textContent = "我是新来的（replaceWith 替换，更简单！）";
+      newItem.className = "replaced";
+      oldItem.replaceWith(newItem);  // 不需要找父元素
+      // 注意：replaceWith 后 oldItem 不再是 DOM 中的元素
+      console.log("replaceWith 完成替换");
+    }
+
+    // ===== 清空所有子节点 =====
+    function clearWithInnerHTML() {
+      var ul = document.getElementById("clear-list");
+      ul.innerHTML = "";  // 最简短
+      console.log("用 innerHTML='' 清空了列表");
+    }
+
+    function clearWithWhileRemove() {
+      var ul = document.getElementById("clear-list");
+      while (ul.firstChild) {
+        ul.removeChild(ul.firstChild);
+      }
+      console.log("用 while + removeChild 清空了列表");
+    }
+
+    function clearWithLoopRemove() {
+      var ul = document.getElementById("clear-list");
+      // 注意：必须用 while 或从后往前删，因为 remove() 会改变 children 集合
+      while (ul.children.length > 0) {
+        ul.children[0].remove();
+      }
+      console.log("用循环 remove() 逐个删除了列表");
+    }
+
+    function resetClearList() {
+      var ul = document.getElementById("clear-list");
+      var items = ["待清除项 A", "待清除项 B", "待清除项 C", "待清除项 D"];
+      ul.innerHTML = "";
+      items.forEach(function(text) {
+        var li = document.createElement("li");
+        li.textContent = text;
+        ul.append(li);
+      });
+    }
+
+    // ===== 带删除按钮的任务列表 =====
+    var todoCounter = 0;
+    function addTodoItem() {
+      todoCounter++;
+      var ul = document.getElementById("todo-list");
+      var li = document.createElement("li");
+      li.textContent = "任务 #" + todoCounter + " ";
+
+      // 创建删除按钮
+      var btn = document.createElement("button");
+      btn.textContent = "删除";
+      btn.className = "delete-btn";
+      // 用 onclick 属性绑定删除逻辑（B.8 会讲更好的事件监听方式）
+      btn.onclick = function() {
+        li.remove();  // 删除按钮所在的整个 li
+        console.log("删除了：" + li.textContent);
+      };
+
+      li.append(btn);
+
+      // 双击标记完成
+      li.ondblclick = function() {
+        li.classList.toggle("replaced");
+        li.style.textDecoration = li.classList.contains("replaced") ? "line-through" : "none";
+      };
+
+      ul.append(li);
+    }
+
+    function removeAllDone() {
+      var doneItems = document.querySelectorAll("#todo-list li.replaced");
+      if (doneItems.length === 0) {
+        alert("没有已完成的任务（双击任务标记为完成）");
+        return;
+      }
+      doneItems.forEach(function(item) {
+        item.remove();
+      });
+      console.log("删除了 " + doneItems.length + " 个已完成任务");
+    }
+
+    // 初始添加几个示例任务
+    for (var i = 1; i <= 3; i++) {
+      addTodoItem();
+    }
+  </script>
+
+</body>
+</html>

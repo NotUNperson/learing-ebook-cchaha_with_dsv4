@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2.6 伪元素</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      padding: 20px;
+      line-height: 1.8;
+      color: #333;
+      max-width: 700px;
+    }
+
+    h1 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+
+    h2 {
+      margin-top: 30px;
+      color: #34495e;
+    }
+
+    /* ===== 1. ::before 和 ::after —— 装饰性引号 ===== */
+    .quote {
+      font-style: italic;
+      color: #555;
+      padding: 10px 20px;
+      background-color: #f9f9f9;
+      border-left: 3px solid #3498db;
+    }
+
+    .quote::before {
+      content: "\201C";   /* 左双引号 " */
+      font-size: 2em;
+      color: #bbb;
+      line-height: 1;
+    }
+
+    .quote::after {
+      content: "\201D";   /* 右双引号 " */
+      font-size: 2em;
+      color: #bbb;
+      line-height: 1;
+    }
+
+    /* ===== 2. ::before 和 ::after —— 纯装饰（content 为空，用背景/边框做出形状） ===== */
+    .badge {
+      display: inline-block;
+      padding: 8px 16px;
+      background-color: #3498db;
+      color: white;
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .badge::before {
+      content: "NEW";       /* 也可以放文字 */
+      display: inline-block;
+      background-color: #e74c3c;
+      color: white;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-right: 8px;
+    }
+
+    /* ===== 3. attr() —— 读取属性值显示 ===== */
+    .attr-demo a[href]::after {
+      content: " [" attr(href) "]";   /* 读取 href 属性值，显示在链接后面 */
+      font-size: 0.8em;
+      color: #999;
+      word-break: break-all;
+    }
+
+    /* ===== 4. ::first-line —— 首行特殊样式 ===== */
+    .first-line-demo {
+      width: 350px;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 5px;
+      background: #fafafa;
+    }
+
+    .first-line-demo::first-line {
+      font-weight: bold;
+      font-size: 1.1em;
+      color: #2c3e50;
+      letter-spacing: 1px;
+    }
+
+    /* ===== 5. ::selection —— 被选中文字的样式 ===== */
+    ::selection {
+      background-color: #3498db;
+      color: white;
+    }
+
+    /* 可以给特定元素设置不同的 selection 样式 */
+    .special-selection::selection {
+      background-color: #e74c3c;
+      color: yellow;
+    }
+
+    /* ===== 6. ::placeholder —— 输入框提示文字 ===== */
+    input::placeholder {
+      color: #bbb;
+      font-style: italic;
+      font-size: 0.9em;
+    }
+
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      width: 250px;
+    }
+
+    /* ===== 7. 清除浮动（经典用法，后面章节会讲） ===== */
+    .clearfix::after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    .box {
+      border: 1px dashed #ccc;
+      padding: 10px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CSS 伪元素演示</h1>
+
+  <!-- ===== ::before / ::after 装饰性引号 ===== -->
+  <h2>一、::before 和 ::after —— 自动加引号</h2>
+
+  <p class="quote">
+    学而不思则罔，思而不学则殆。
+  </p>
+
+  <p>注意：上面的引号不是写在 HTML 里的，而是 CSS 通过 <code>::before</code> 和 <code>::after</code> 自动生成的。</p>
+
+  <!-- ===== ::before 纯装饰 ===== -->
+  <h2>二、::before —— 文字标签</h2>
+
+  <p>
+    <span class="badge">这是一条重要通知</span>
+  </p>
+
+  <p>前面的红色 "NEW" 标签是由 <code>::before</code> 伪元素生成的。</p>
+
+  <!-- ===== attr() 读取属性 ===== -->
+  <h2>三、attr() 读取属性值</h2>
+
+  <div class="attr-demo">
+    <p>下面链接的 URL 是 CSS 通过 <code>content: attr(href)</code> 自动显示的：</p>
+    <ul>
+      <li><a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS">MDN CSS 文档</a></li>
+      <li><a href="https://www.w3.org/Style/CSS/">W3C CSS 官网</a></li>
+    </ul>
+  </div>
+
+  <!-- ===== ::first-line ===== -->
+  <h2>四、::first-line —— 首行特殊格式化</h2>
+
+  <div class="first-line-demo">
+    <p>这是第一行，它会有粗体和略大的字体，颜色也更深。当你缩小浏览器窗口让这段文字换行时，你会发现只有真正的第一行受 ::first-line 的影响，第二行就恢复普通样式了。</p>
+  </div>
+
+  <!-- ===== ::selection ===== -->
+  <h2>五、::selection —— 选中文字的自定义颜色</h2>
+
+  <p>
+    用鼠标划选这段文字——你会看到选中区域的背景变成了蓝色，文字变成了白色。
+  </p>
+
+  <p class="special-selection">
+    而选中这段文字时，背景是<strong>红色</strong>，文字是<strong>黄色</strong>。
+    ——这是因为给这个段落单独设置了不同的 ::selection 样式。
+  </p>
+
+  <!-- ===== ::placeholder ===== -->
+  <h2>六、::placeholder —— 输入框提示文字</h2>
+
+  <input type="text" placeholder="这里的提示文字是灰色斜体...">
+
+  <h2>伪元素 vs 伪类 总结</h2>
+  <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">
+    <thead>
+      <tr style="background: #f0f0f0;">
+        <th>伪类 (:)</th>
+        <th>伪元素 (::)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>选<strong>状态</strong>（悬停、聚焦、排位）</td>
+        <td>造<strong>虚拟元素</strong>（不存在的子元素）</td>
+      </tr>
+      <tr>
+        <td>单冒号</td>
+        <td>双冒号（推荐）</td>
+      </tr>
+      <tr>
+        <td>例：:hover, :nth-child, :focus</td>
+        <td>例：::before, ::after, ::first-line</td>
+      </tr>
+      <tr>
+        <td>可以叠加多个</td>
+        <td>::before/::after 各只能有一个</td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>

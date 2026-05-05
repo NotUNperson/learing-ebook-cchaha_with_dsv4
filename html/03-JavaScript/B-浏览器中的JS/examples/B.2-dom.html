@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.2 DOM 是什么</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; }
+    .highlight { background: #fff3cd; padding: 2px 6px; border-radius: 3px; }
+    pre { background: #f5f5f5; padding: 12px; border-radius: 4px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+
+  <h1>B.2 DOM 是什么</h1>
+
+  <!-- ===== DOM 树可视化 ===== -->
+  <h2>一、这段 HTML 对应的 DOM 树</h2>
+
+  <p>以下是本页面的简化 DOM 树结构（<strong>打开控制台看更详细</strong>）：</p>
+
+  <pre>
+document（文档根节点）
+  |
+  html
+  /   \
+head   body
+  |     / |  \
+title  h1 h2  p   table  pre  script
+  |     |  |   |    |      |      |
+"B.2"  "B.2" "一、.." "以下.." (表格) (树) (JS代码)
+  </pre>
+
+  <!-- ===== 节点类型演示 ===== -->
+  <h2>二、节点类型演示</h2>
+
+  <div id="type-demo">
+    <!-- 这是一个注释节点，JS 也能读到它 -->
+    这是一段文本节点。
+    <p>这是一个 <strong>元素节点</strong>，里面嵌套了子元素。</p>
+  </div>
+
+  <p>上面的 div 里有三种节点：</p>
+  <ul>
+    <li><strong>注释节点</strong>：<code>&lt;!-- 这是一个注释节点 --&gt;</code></li>
+    <li><strong>文本节点</strong>："这是一段文本节点。"（换行和缩进空格也是文本节点！）</li>
+    <li><strong>元素节点</strong>：<code>&lt;p&gt;</code> 和 <code>&lt;strong&gt;</code></li>
+  </ul>
+
+  <!-- ===== 用 JS 遍历演示 ===== -->
+  <h2>三、用 JS 遍历 DOM 树</h2>
+  <p>以下内容由 JavaScript 动态生成，展示了用 JS 遍历 DOM 节点：</p>
+
+  <div id="traversal-demo">
+    <p>等待 JS 执行...</p>
+  </div>
+
+  <!-- ===== 家族树类比 ===== -->
+  <h2>四、家族树类比</h2>
+
+  <p>以下 div 结构放到家族里理解：</p>
+
+  <div id="family-tree">
+    <p class="child">老大（p 元素）</p>
+    <p class="child">老二（p 元素）</p>
+    <span class="child">老三（span 元素）</span>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>家族称谓</th><th>DOM 属性</th><th>示例</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>爸爸</td><td><code>parentNode</code></td><td>三个 child 的 parentNode 都是 #family-tree</td></tr>
+      <tr><td>儿子们</td><td><code>childNodes</code></td><td>#family-tree 的 childNodes 包含三个元素+换行文本</td></tr>
+      <tr><td>大儿子</td><td><code>firstChild</code></td><td>#family-tree 的第一个子节点</td></tr>
+      <tr><td>小儿子</td><td><code>lastChild</code></td><td>#family-tree 的最后一个子节点</td></tr>
+      <tr><td>兄弟</td><td><code>nextSibling</code></td><td>老大的 nextSibling 就是老二（中间可能有文本节点）</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===== C 语言对比 ===== -->
+  <h2>五、从 C 语言视角看 DOM</h2>
+
+  <p>如果用 C 语言来实现 DOM 树的节点结构，你可能会这样写：</p>
+
+  <pre>
+// C 语言版本的 DOM 节点（伪代码）
+typedef struct DomNode {
+    char* tagName;              // "p", "div", "h1" ...
+    char* textContent;          // 文本内容
+    int   nodeType;             // 1=元素, 3=文本, 8=注释
+    struct DomNode* parentNode; // 父节点
+    struct DomNode* firstChild; // 第一个子节点
+    struct DomNode* lastChild;  // 最后一个子节点
+    struct DomNode* nextSibling;// 下一个兄弟
+    // ... 还有很多属性
+} DomNode;
+
+// 遍历子节点（C 语言方式）
+DomNode* child = parent-&gt;firstChild;
+while (child != NULL) {
+    printf("%s\n", child-&gt;tagName);
+    child = child-&gt;nextSibling;
+}
+  </pre>
+
+  <p>
+    JS 中遍历子节点则简单得多：
+    <code>parent.childNodes.forEach(node => console.log(node.tagName));</code>
+    浏览器已经帮你做好了所有的"malloc"和"free"——JS 程序员只需要用现成的 API。
+  </p>
+
+  <script>
+    // ===== 三、用 JS 遍历 DOM 节点 =====
+    var typeDemo = document.getElementById("type-demo");
+    var traversalDiv = document.getElementById("traversal-demo");
+
+    // 清空并重建展示内容
+    traversalDiv.innerHTML = "";
+
+    var info = document.createElement("p");
+    info.textContent = "type-demo 这个 div 的子节点有：";
+    traversalDiv.appendChild(info);
+
+    // childNodes 包含所有类型的子节点（元素 + 文本 + 注释）
+    var childNodes = typeDemo.childNodes;
+    var list = document.createElement("ul");
+
+    for (var i = 0; i < childNodes.length; i++) {
+      var node = childNodes[i];
+      var item = document.createElement("li");
+
+      // 根据 nodeType 判断节点类型
+      if (node.nodeType === 1) {
+        // 元素节点
+        item.textContent = "元素节点：" + node.tagName + " (nodeType=" + node.nodeType + ")";
+        item.style.color = "blue";
+      } else if (node.nodeType === 3) {
+        // 文本节点 —— 注意：换行和缩进的空白也算文本节点！
+        var text = node.textContent.trim();
+        if (text.length > 0) {
+          item.textContent = "文本节点：\"" + text + "\" (nodeType=" + node.nodeType + ")";
+          item.style.color = "green";
+        } else {
+          item.textContent = "文本节点：[空白/换行] (nodeType=" + node.nodeType + ")";
+          item.style.color = "gray";
+        }
+      } else if (node.nodeType === 8) {
+        // 注释节点
+        item.textContent = "注释节点：" + node.nodeValue.trim() + " (nodeType=" + node.nodeType + ")";
+        item.style.color = "orange";
+      } else {
+        item.textContent = "其他节点：nodeType=" + node.nodeType;
+      }
+
+      list.appendChild(item);
+    }
+
+    traversalDiv.appendChild(list);
+
+    // 提示
+    var tip = document.createElement("p");
+    tip.innerHTML = "<strong>注意：</strong>刚才列表中出现了灰色的\"[空白/换行]\"——HTML 中标签之间的换行和缩进，在 DOM 中被当作文本节点！这就是为什么用 <code>children</code>（只取元素子节点）比 <code>childNodes</code>（取所有子节点）更常见。";
+    traversalDiv.appendChild(tip);
+
+    // ===== 家族树演示 =====
+    var familyTree = document.getElementById("family-tree");
+
+    console.log("===== DOM 家族树演示 =====");
+    console.log("document 对象（根入口）：", document);
+    console.log("document.documentElement（html 元素）：", document.documentElement);
+    console.log("document.body：", document.body);
+    console.log("family-tree div 的子节点集合（childNodes）：", familyTree.childNodes);
+    console.log("family-tree div 的子元素集合（children，只含元素节点）：", familyTree.children);
+    console.log("family-tree 的第一个子元素：", familyTree.firstElementChild);
+    console.log("family-tree 的最后一个子元素：", familyTree.lastElementChild);
+
+    // 演示兄弟关系
+    var firstChild = familyTree.firstElementChild;
+    if (firstChild) {
+      console.log("老大的下一个兄弟元素：", firstChild.nextElementSibling);
+      console.log("老大的父元素：", firstChild.parentElement);
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.6 创建与插入节点</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    button { margin: 4px; padding: 6px 14px; cursor: pointer; }
+    .box { border: 2px solid #333; padding: 12px; margin: 10px 0; border-radius: 4px; }
+    .new-item { background: #d4edda; padding: 4px 8px; margin: 2px 0; border-radius: 3px; }
+    .highlight-box {
+      border: 3px dashed #e94e77; padding: 12px; margin: 8px 0;
+      position: relative; border-radius: 4px;
+    }
+    .position-label {
+      position: absolute; font-size: 12px; color: #e94e77; font-weight: bold;
+    }
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; }
+  </style>
+</head>
+<body>
+
+  <h1>B.6 创建与插入节点</h1>
+
+  <!-- ===== createElement + append 演示 ===== -->
+  <h2>一、createElement + append（创建并追加到末尾）</h2>
+  <div class="box">
+    <p>以下列表由 JS 动态填充：</p>
+    <ul id="demo-list">
+      <li>固定项：我是 HTML 里写死的</li>
+    </ul>
+    <button onclick="addItem()">append —— 在末尾添加一项</button>
+    <button onclick="addMultiple()">append —— 一次添加三项</button>
+    <button onclick="addWithText()">append —— 直接添加文字（不用 createElement）</button>
+    <p>当前列表项数：<strong id="item-count">1</strong></p>
+  </div>
+
+  <!-- ===== prepend 演示 ===== -->
+  <h2>二、prepend（插入到开头）</h2>
+  <div class="box">
+    <ul id="prepend-list">
+      <li>原有第一项</li>
+    </ul>
+    <button onclick="prependItem()">prepend —— 在开头插入一项</button>
+  </div>
+
+  <!-- ===== before / after 演示 ===== -->
+  <h2>三、before / after（作为兄弟插入）</h2>
+  <div class="box">
+    <p id="reference-el" style="background: #ffeebb; padding: 8px; border-radius: 3px;">
+      我是参照元素
+    </p>
+    <button onclick="insertBefore()">before —— 插在我前面</button>
+    <button onclick="insertAfter()">after —— 插在我后面</button>
+  </div>
+
+  <!-- ===== insertAdjacentHTML 演示 ===== -->
+  <h2>四、insertAdjacentHTML（四个位置，高效插 HTML）</h2>
+  <div class="box">
+    <div id="adjacent-demo" class="highlight-box">
+      <strong>我是目标元素 #adjacent-demo</strong>
+    </div>
+    <p>在下方的四个按钮，会分别把一段 HTML 插入到 #adjacent-demo 的四个位置：</p>
+    <button onclick="insertHTML('beforebegin')">beforebegin —— 元素之前</button>
+    <button onclick="insertHTML('afterbegin')">afterbegin —— 元素内部开头</button>
+    <button onclick="insertHTML('beforeend')">beforeend —— 元素内部末尾</button>
+    <button onclick="insertHTML('afterend')">afterend —— 元素之后</button>
+    <button onclick="clearAdjacent()" style="background: #f8d7da;">清除所有插入的内容</button>
+  </div>
+
+  <!-- ===== append vs appendChild 对比表 ===== -->
+  <h2>五、append vs appendChild</h2>
+  <table>
+    <thead>
+      <tr><th>特性</th><th>append（现代，推荐）</th><th>appendChild（老方法）</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>一次插入多个</td><td>支持</td><td>不支持</td></tr>
+      <tr><td>插入纯文本</td><td>支持</td><td>不支持</td></tr>
+      <tr><td>返回值</td><td>无（undefined）</td><td>返回插入的节点</td></tr>
+      <tr><td>浏览器兼容</td><td>现代浏览器都支持</td><td>所有浏览器都支持</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    var counter = 1;
+
+    // ===== append =====
+    function addItem() {
+      var ul = document.getElementById("demo-list");
+      var li = document.createElement("li");
+      counter++;
+      li.textContent = "动态创建的第 " + counter + " 项";
+      li.className = "new-item";
+      ul.append(li);  // 追加到列表末尾
+      updateCount();
+    }
+
+    function addMultiple() {
+      var ul = document.getElementById("demo-list");
+      // append 可以一次插入多个元素
+      var li1 = document.createElement("li");
+      li1.textContent = "批量 A";
+      li1.className = "new-item";
+
+      var li2 = document.createElement("li");
+      li2.textContent = "批量 B";
+      li2.className = "new-item";
+
+      var li3 = document.createElement("li");
+      li3.textContent = "批量 C —— 三个一起插入！";
+      li3.className = "new-item";
+
+      ul.append(li1, li2, li3);  // 一次 append 多个！
+      counter += 3;
+      updateCount();
+      console.log("append 一次传入了三个元素！appendChild 做不到这一点");
+    }
+
+    function addWithText() {
+      var ul = document.getElementById("demo-list");
+      // append 可以直接插入纯文本——不需要 createElement
+      ul.append("（直接插入的纯文本——append 支持，appendChild 不支持）");
+      updateCount();
+    }
+
+    function updateCount() {
+      var ul = document.getElementById("demo-list");
+      document.getElementById("item-count").textContent = ul.children.length;
+    }
+
+    // ===== prepend =====
+    function prependItem() {
+      var ul = document.getElementById("prepend-list");
+      var li = document.createElement("li");
+      li.textContent = "我插在最前面！(" + new Date().toLocaleTimeString() + ")";
+      li.className = "new-item";
+      ul.prepend(li);
+    }
+
+    // ===== before / after =====
+    function insertBefore() {
+      var ref = document.getElementById("reference-el");
+      var div = document.createElement("div");
+      div.textContent = "我在参照元素【前面】（before）";
+      div.style.cssText = "background: #cfe2ff; padding: 6px; margin: 4px 0; border-radius: 3px;";
+      ref.before(div);
+    }
+
+    function insertAfter() {
+      var ref = document.getElementById("reference-el");
+      var div = document.createElement("div");
+      div.textContent = "我在参照元素【后面】（after）";
+      div.style.cssText = "background: #f8d7da; padding: 6px; margin: 4px 0; border-radius: 3px;";
+      ref.after(div);
+    }
+
+    // ===== insertAdjacentHTML =====
+    function insertHTML(position) {
+      var el = document.getElementById("adjacent-demo");
+      var labelMap = {
+        "beforebegin": "元素之前（兄弟）",
+        "afterbegin":  "元素内部开头",
+        "beforeend":   "元素内部末尾",
+        "afterend":    "元素之后（兄弟）"
+      };
+      var label = labelMap[position];
+      var colorMap = {
+        "beforebegin": "#cfe2ff",
+        "afterbegin":  "#d4edda",
+        "beforeend":   "#fff3cd",
+        "afterend":    "#f8d7da"
+      };
+      var html = '<div style="background:' + colorMap[position] +
+        '; padding: 4px 8px; margin: 2px 0; border-radius: 3px; font-size: 13px;">' +
+        position + ' — ' + label + '</div>';
+      el.insertAdjacentHTML(position, html);
+      console.log("insertAdjacentHTML('" + position + "') — " + label);
+    }
+
+    function clearAdjacent() {
+      // 简单粗暴：重置 #adjacent-demo 的内容
+      var el = document.getElementById("adjacent-demo");
+      el.innerHTML = "<strong>我是目标元素 #adjacent-demo</strong>";
+    }
+  </script>
+
+</body>
+</html>

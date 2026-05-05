@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.13 BOM（上）—— window、弹窗、定时器</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    button { margin: 4px; padding: 6px 14px; cursor: pointer; }
+    .box { border: 2px solid #333; padding: 12px; margin: 10px 0; border-radius: 4px; }
+    .timer-display {
+      font-size: 48px; font-family: Consolas, monospace; text-align: center;
+      padding: 20px; background: #1e1e1e; color: #4ec9b0; border-radius: 8px;
+    }
+    .animate-box {
+      width: 60px; height: 60px; background: #e94e77; border-radius: 8px;
+      position: relative; left: 0; margin: 10px 0;
+    }
+    .track {
+      width: 100%; height: 60px; background: #f0f0f0; border-radius: 8px;
+      position: relative; overflow: hidden;
+    }
+    .toast {
+      position: fixed; top: 20px; right: 20px; background: #333; color: white;
+      padding: 12px 24px; border-radius: 6px; opacity: 1; transition: opacity 0.5s;
+      z-index: 1000;
+    }
+    .toast.fade { opacity: 0; }
+    table { border-collapse: collapse; margin: 8px 0; }
+    th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <h1>B.13 BOM（上）—— window、弹窗、定时器</h1>
+
+  <!-- ===== window 全局对象演示 ===== -->
+  <h2>一、window 是全局对象</h2>
+  <div class="box">
+    <p>在浏览器中，所有全局变量和函数都挂在 window 下。</p>
+    <button onclick="demoWindow()">演示 window 全局对象</button>
+    <p id="window-result"></p>
+  </div>
+
+  <!-- ===== 弹窗三兄弟 ===== -->
+  <h2>二、弹窗三兄弟（alert / prompt / confirm）</h2>
+  <div class="box">
+    <p>注意：弹窗会<strong>阻塞页面</strong>，对话框关闭前页面无法操作。</p>
+    <button onclick="demoAlert()">alert —— 通知</button>
+    <button onclick="demoPrompt()">prompt —— 提问</button>
+    <button onclick="demoConfirm()">confirm —— 确认</button>
+    <p id="dialog-result">等待操作...</p>
+  </div>
+
+  <!-- ===== setTimeout ===== -->
+  <h2>三、setTimeout —— 延迟执行一次（像闹钟）</h2>
+  <div class="box">
+    <button onclick="demoSetTimeout()">3 秒后弹出提示</button>
+    <button onclick="demoCancelTimeout()">取消闹钟</button>
+    <button onclick="demoToast()">3 秒后自动消失的 toast 提示</button>
+    <p id="timeout-status"></p>
+    <!-- toast 容器 -->
+    <div id="toast-container"></div>
+  </div>
+
+  <!-- ===== setInterval ===== -->
+  <h2>四、setInterval —— 周期重复执行（像心跳）</h2>
+  <div class="box">
+    <div id="interval-display" class="timer-display">0</div>
+    <p>
+      <button onclick="startTimer()">启动计时器</button>
+      <button onclick="stopTimer()">停止计时器</button>
+      <button onclick="resetTimer()">重置</button>
+    </p>
+    <p class="info" id="interval-status">计时器状态：未启动</p>
+  </div>
+
+  <!-- ===== requestAnimationFrame ===== -->
+  <h2>五、requestAnimationFrame —— 流畅动画</h2>
+  <div class="box">
+    <div class="track">
+      <div id="animate-box" class="animate-box"></div>
+    </div>
+    <p>
+      <button onclick="startAnimation()">开始动画</button>
+      <button onclick="stopAnimation()">停止动画</button>
+      <button onclick="toggleAnimationSpeed()">切换速度（setInterval 对比）</button>
+    </p>
+    <p id="anim-status">帧数：0 | 位置：0px</p>
+    <p class="info">
+      requestAnimationFrame 自动适配屏幕刷新率（通常 60fps），页面切换到后台时自动暂停。<br>
+      下方的 setInterval 版本则无论页面是否可见都在执行。
+    </p>
+  </div>
+
+  <!-- ===== 定时器对比 ===== -->
+  <h2>六、定时器方法对比</h2>
+  <table>
+    <thead>
+      <tr><th>方法</th><th>执行方式</th><th>取消方式</th><th>适用场景</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>setTimeout</code></td><td>延迟一次</td><td><code>clearTimeout</code></td><td>延迟操作、防抖</td></tr>
+      <tr><td><code>setInterval</code></td><td>周期重复</td><td><code>clearInterval</code></td><td>轮询、倒计时</td></tr>
+      <tr><td><code>requestAnimationFrame</code></td><td>每帧一次</td><td>不调用下一帧</td><td>动画（最佳）</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    // ===== 全局 window 演示 =====
+    // 全局变量自动挂在 window 上
+    var myGlobalVar = "我是全局变量";
+
+    function demoWindow() {
+      var result = document.getElementById("window-result");
+      result.innerHTML =
+        "window.myGlobalVar = " + window.myGlobalVar + "<br>" +
+        "window.innerWidth = " + window.innerWidth + "px (浏览器窗口宽度)<br>" +
+        "window.innerHeight = " + window.innerHeight + "px (浏览器窗口高度)<br>" +
+        "window.location.href = " + window.location.href + "<br>" +
+        "<em>打开控制台输入 window 查看完整对象</em>";
+      console.log("window 对象：", window);
+      console.log("全局变量 myGlobalVar 等于 window.myGlobalVar");
+    }
+
+    // ===== 弹窗三兄弟 =====
+    function demoAlert() {
+      alert("你好！这是 alert 弹窗。\n\n它只有一个\"确定\"按钮，适合通知用户。\n\n注意：弹窗出现时页面被阻塞，你不能操作页面。");
+      document.getElementById("dialog-result").textContent =
+        "alert 弹窗已关闭 — 页面不再阻塞";
+    }
+
+    function demoPrompt() {
+      var name = prompt("你最喜欢的水果是什么？", "苹果");
+      document.getElementById("dialog-result").textContent =
+        "prompt 返回值：" + (name === null ? "null（用户点了取消）" : "\"" + name + "\"");
+    }
+
+    function demoConfirm() {
+      var ok = confirm("确定要模拟删除操作吗？");
+      document.getElementById("dialog-result").textContent =
+        "confirm 返回值：" + ok + " —— 用户选了" + (ok ? "\"确定\"" : "\"取消\"");
+    }
+
+    // ===== setTimeout =====
+    var timeoutId = null;
+    var timeoutStatus = document.getElementById("timeout-status");
+
+    function demoSetTimeout() {
+      timeoutStatus.textContent = "闹钟已设定，3 秒后触发...";
+      timeoutId = setTimeout(function() {
+        alert("3 秒到了！");
+        timeoutStatus.textContent = "闹钟触发了！";
+        timeoutId = null;
+      }, 3000);
+    }
+
+    function demoCancelTimeout() {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutStatus.textContent = "闹钟已取消！";
+        timeoutId = null;
+      } else {
+        timeoutStatus.textContent = "没有正在运行的闹钟";
+      }
+    }
+
+    function demoToast() {
+      var container = document.getElementById("toast-container");
+      var toast = document.createElement("div");
+      toast.className = "toast";
+      toast.textContent = "这是一条 3 秒后自动消失的提示！";
+      container.append(toast);
+
+      setTimeout(function() {
+        toast.classList.add("fade");
+        // 等淡出动画完成再移除元素
+        setTimeout(function() {
+          toast.remove();
+        }, 500);
+      }, 3000);
+    }
+
+    // ===== setInterval =====
+    var intervalId = null;
+    var intervalCount = 0;
+    var intervalDisplay = document.getElementById("interval-display");
+    var intervalStatus = document.getElementById("interval-status");
+
+    function startTimer() {
+      if (intervalId) {
+        intervalStatus.textContent = "计时器已在运行中";
+        return;
+      }
+      intervalStatus.textContent = "计时器状态：运行中";
+
+      intervalId = setInterval(function() {
+        intervalCount++;
+        intervalDisplay.textContent = intervalCount;
+      }, 1000);  // 每秒
+    }
+
+    function stopTimer() {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+        intervalStatus.textContent = "计时器状态：已停止（" + intervalCount + " 秒）";
+      }
+    }
+
+    function resetTimer() {
+      stopTimer();
+      intervalCount = 0;
+      intervalDisplay.textContent = "0";
+      intervalStatus.textContent = "计时器状态：已重置";
+    }
+
+    // ===== requestAnimationFrame =====
+    var animBox = document.getElementById("animate-box");
+    var animStatus = document.getElementById("anim-status");
+    var animId = null;
+    var animFrame = 0;
+    var animX = 0;
+    var speed = 2;
+
+    // 用 requestAnimationFrame 做动画
+    function animateWithRAF() {
+      animX += speed;
+      animFrame++;
+
+      if (animX > 700) {
+        animX = 0;  // 循环
+      }
+
+      animBox.style.left = animX + "px";
+      animStatus.textContent = "帧数：" + animFrame + " | 位置：" + animX + "px | 方式：requestAnimationFrame";
+
+      // 请求下一帧
+      animId = requestAnimationFrame(animateWithRAF);
+    }
+
+    function startAnimation() {
+      if (animId) return;  // 已经在运行
+      animId = requestAnimationFrame(animateWithRAF);
+    }
+
+    function stopAnimation() {
+      if (animId) {
+        cancelAnimationFrame(animId);
+        animId = null;
+        animStatus.textContent = "动画已停止 | 总帧数：" + animFrame + " | 当前速度：" + speed;
+      }
+    }
+
+    // 用 setInterval 做动画对比（抖动、不流畅）
+    var intervalAnimId = null;
+    function toggleAnimationSpeed() {
+      if (intervalAnimId) {
+        clearInterval(intervalAnimId);
+        intervalAnimId = null;
+        animStatus.textContent += " | setInterval 版本已停止";
+        return;
+      }
+
+      // 同时运行一个 setInterval 版本做对比
+      var intervalX = 0;
+      intervalAnimId = setInterval(function() {
+        intervalX += speed;
+        if (intervalX > 700) intervalX = 0;
+        // setInterval 版本只是打印，不干扰 RAF 版本
+        console.log("[setInterval 动画] 位置：" + intervalX +
+          " — 注意：即使切到其他标签页，这个也会继续执行");
+      }, 16);  // 约 60fps
+      animStatus.textContent += " | setInterval 版本已启动（看控制台）";
+    }
+
+    console.log("===== B.13 BOM（上）=====");
+    console.log("window 是浏览器全局对象，所有全局变量都是它的属性");
+    console.log("试试切换到其他标签页，看 requestAnimationFrame 的帧计数暂停，而 setInterval 不暂停");
+  </script>
+
+</body>
+</html>

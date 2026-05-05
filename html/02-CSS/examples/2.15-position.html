@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2.15 定位 - position 演示</title>
+  <style>
+    /* ========== 公共样式 ========== */
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      max-width: 750px;
+      margin: 20px auto;
+      padding: 0 15px 300px 15px;  /* 底部留白，方便观察 fixed 和 sticky */
+      line-height: 1.8;
+      /* 故意让页面可以滚动，演示 sticky 和 fixed */
+    }
+    h2 {
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 5px;
+      margin-top: 40px;
+    }
+    .note {
+      color: #888;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+
+    /* ================================================================ */
+    /* 一、static —— 默认定位，无需特意声明。这里只是示例               */
+    /* ================================================================ */
+
+    /* ================================================================ */
+    /* 二、relative —— 相对定位                                         */
+    /* ================================================================ */
+    .relative-parent {
+      border: 2px dashed #999;
+      padding: 15px;
+      margin: 10px 0;
+      background: #fafafa;
+    }
+    .relative-box {
+      background: #fdecea;
+      border: 2px solid #e74c3c;
+      padding: 10px;
+      width: 200px;
+      /* relative 的关键：相对于自己原本的位置偏移 */
+      position: relative;
+      top: 20px;     /* 原本的位置往下 20px */
+      left: 50px;    /* 原本的位置往右 50px */
+    }
+    /* 用来对比"原位置是否保留" */
+    .after-relative {
+      background: #eaf2fd;
+      border: 2px solid #3498db;
+      padding: 10px;
+      margin-top: 5px;
+    }
+
+    /* ================================================================ */
+    /* 三、absolute —— 绝对定位                                         */
+    /* ================================================================ */
+    .absolute-parent {
+      position: relative;  /* 关键！让子元素的 absolute 以我为参考 */
+      border: 3px solid #27ae60;
+      padding: 15px;
+      margin: 10px 0;
+      height: 200px;       /* 给父元素一个高度，方便观察 */
+      background: #f0faf4;
+    }
+    .absolute-box {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 150px;
+      background: #e74c3c;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+    }
+    .absolute-content {
+      background: #eaf2fd;
+      border: 2px solid #3498db;
+      padding: 10px;
+    }
+
+    /* ================================================================ */
+    /* 四、fixed —— 固定定位                                            */
+    /* ================================================================ */
+    .fixed-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #2c3e50;
+      color: #fff;
+      text-align: center;
+      padding: 12px;
+      z-index: 100;   /* 确保在其他元素上面 */
+      font-size: 14px;
+    }
+    .fixed-banner a {
+      color: #f1c40f;
+      text-decoration: none;
+    }
+
+    /* ================================================================ */
+    /* 五、sticky —— 粘性定位                                           */
+    /* ================================================================ */
+    .sticky-section {
+      border: 2px dashed #999;
+      margin: 10px 0;
+      padding: 0 15px 15px 15px;
+    }
+    .sticky-title {
+      position: sticky;
+      top: 0;  /* 滚动到距视口顶部 0px 时粘住 */
+      background: #8e44ad;
+      color: #fff;
+      padding: 10px 15px;
+      margin: 0 -15px 10px -15px;  /* 抵消父元素的 padding */
+      z-index: 50;
+    }
+
+    /* ================================================================ */
+    /* z-index 对比演示                                                  */
+    /* ================================================================ */
+    .z-demo-area {
+      position: relative;
+      height: 180px;
+      border: 2px dashed #999;
+      margin: 10px 0;
+      background: #fafafa;
+    }
+    .z-box {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      color: #fff;
+      padding: 10px;
+      font-size: 13px;
+    }
+    .z-box-1 {
+      background: rgba(231, 76, 60, 0.85);
+      top: 10px;
+      left: 10px;
+      z-index: 1;
+    }
+    .z-box-2 {
+      background: rgba(52, 152, 219, 0.85);
+      top: 40px;
+      left: 50px;
+      z-index: 2;
+    }
+    .z-box-3 {
+      background: rgba(46, 204, 113, 0.85);
+      top: 70px;
+      left: 90px;
+      z-index: 3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>position 定位演示 —— 五种"入住许可证"</h1>
+
+  <!-- ============ 一、static ============ -->
+  <h2>一、static —— 默认"普通人"</h2>
+  <div class="demo-area" style="border:1px dashed #999; padding:15px; background:#fafafa;">
+    <p>所有元素默认都是 static，不需要特意声明。它们在正常的文档流里排队：block 从上往下，inline 从左往右。</p>
+    <p>Static 元素不接受 top/left 偏移，也不参与 z-index 层叠。</p>
+  </div>
+
+  <!-- ============ 二、relative ============ -->
+  <h2>二、relative —— "挪一下，但坑留着"</h2>
+  <div class="relative-parent">
+    <p>我是父容器里的普通段落。</p>
+    <div class="relative-box">
+      我是 relative 盒子<br>
+      top: 20px; left: 50px<br>
+      我偏移了，但我原来的坑还在！
+    </div>
+    <div class="after-relative">
+      我是 relative 盒子后面的元素。你看，我没有顶上去——因为 relative 原来那个"坑"还在。
+    </div>
+  </div>
+  <p class="note">要点：relative 偏移后，原位置保留，其他元素不会补位。</p>
+
+  <!-- ============ 三、absolute ============ -->
+  <h2>三、absolute —— "找长辈做参照"</h2>
+  <div class="absolute-parent">
+    <p style="color:#27ae60; font-weight:bold;">我是父元素，我设了 position: relative（这是关键！）</p>
+    <div class="absolute-content">
+      我是正常文档流里的内容。absolute 盒子脱离文档流了，所以我顶上去了。
+    </div>
+    <div class="absolute-box">
+      我是 absolute！<br>
+      top:0; right:0<br>
+      以父元素为参考，<br>
+      钉在右上角。
+    </div>
+  </div>
+  <p class="note">要点：absolute 找最近的有定位祖先（非 static）做参考。如果没找到，就以 body 为参考。</p>
+
+  <!-- ============ 四、fixed ============ -->
+  <h2>四、fixed —— "粘在屏幕上"</h2>
+  <div class="demo-area" style="border:1px dashed #999; padding:15px; background:#fafafa;">
+    <p>看看页面底部——有一条深色的横幅，写着"这是 fixed 定位的底部横幅"。无论你怎么滚动页面，它始终贴在底部。</p>
+    <p>这就是 fixed：相对于浏览器窗口定位，滚动无效。</p>
+  </div>
+
+  <!-- ============ 五、sticky ============ -->
+  <h2>五、sticky —— "滚到这里就粘住"</h2>
+  <div class="sticky-section">
+    <div class="sticky-title">第一组：水果类</div>
+    <p>苹果 —— 富含维生素，一天一个医生远离我。</p>
+    <p>香蕉 —— 富含钾元素，运动后补充能量好选择。</p>
+    <p>橙子 —— 维生素 C 含量高，增强免疫力。</p>
+  </div>
+  <div class="sticky-section">
+    <div class="sticky-title">第二组：蔬菜类</div>
+    <p>菠菜 —— 含铁丰富，大力水手的最爱。</p>
+    <p>胡萝卜 —— 富含胡萝卜素，对眼睛好。</p>
+    <p>西兰花 —— 营养全面，健身人士推荐。</p>
+  </div>
+  <div class="sticky-section">
+    <div class="sticky-title">第三组：谷物类</div>
+    <p>燕麦 —— 高纤维低热量，早餐好选择。</p>
+    <p>小米 —— 养胃，适合熬粥。</p>
+    <p>糙米 —— 比白米保留了更多营养。</p>
+  </div>
+  <p class="note">要点：向下滚动页面，观察每个分组的标题是否"粘"在顶部。当下一组的标题滚上来时，它会顶走上一组的标题。</p>
+
+  <!-- ============ z-index 演示 ============ -->
+  <h2>六、z-index —— 谁在上面</h2>
+  <div class="z-demo-area">
+    <div class="z-box z-box-1">z-index: 1<br>我在最底层</div>
+    <div class="z-box z-box-2">z-index: 2<br>我在中间</div>
+    <div class="z-box z-box-3">z-index: 3<br>我在最上面</div>
+  </div>
+  <p class="note">要点：z-index 值越大的越靠上。只有定位元素（非 static）才吃 z-index。</p>
+
+  <!-- ============ fixed 底部横幅 ============ -->
+  <div class="fixed-banner">
+    这是 fixed 定位的底部横幅 —— 无论怎么滚动我都不动 |
+    <a href="#">回到顶部</a>
+  </div>
+
+</body>
+</html>

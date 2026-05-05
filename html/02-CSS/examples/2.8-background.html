@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2.8 背景</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      line-height: 1.8;
+      color: #333;
+    }
+
+    h1 {
+      color: #2c3e50;
+      padding: 20px;
+      margin: 0;
+      background: #fff;
+    }
+
+    h2 {
+      margin-top: 30px;
+      color: #34495e;
+      padding: 0 20px;
+    }
+
+    p, ul {
+      padding: 0 20px;
+    }
+
+    /* ===== 一个生成纯色+条纹背景图的辅助函数说明 ===== */
+    /* 因为示例需要背景图但没有外部图片文件，
+       我们用 CSS gradient 来模拟"背景图"的效果。
+       gradient 本质也是一种 background-image，它生成的图像不需要外部文件。
+       这不是"取巧"——gradient 在实际项目中非常常用！ */
+
+    /* ===== 1. background-color：底色 ===== */
+    .bg-color {
+      background-color: #e8f4f8;
+      padding: 30px;
+      margin: 15px 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    /* ===== 2. background-image + background-repeat：背景图与平铺 ===== */
+    .bg-repeat-all {
+      /* 用 CSS gradient 模拟"小图块"来演示平铺效果 */
+      background-image:
+        radial-gradient(circle at 20px 20px, #3498db 8px, transparent 8px);
+      background-size: 40px 40px;  /* 每个"图案块" 40x40 */
+      /* 默认 repeat — 像瓷砖一样铺满 */
+      height: 120px;
+      margin: 15px 20px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    .bg-repeat-x {
+      background-image:
+        radial-gradient(circle at 20px 20px, #e74c3c 8px, transparent 8px);
+      background-size: 40px 40px;
+      background-repeat: repeat-x;  /* 只水平铺 */
+      height: 80px;
+      margin: 15px 20px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    .bg-no-repeat {
+      background-image:
+        radial-gradient(circle at 20px 20px, #27ae60 10px, transparent 10px);
+      background-size: 40px 40px;
+      background-repeat: no-repeat;  /* 不铺，只有一张 */
+      height: 100px;
+      margin: 15px 20px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    /* ===== 3. background-position：图片位置 ===== */
+    .bg-position-center {
+      background-image:
+        radial-gradient(circle, #f39c12 15px, transparent 15px);
+      background-repeat: no-repeat;
+      background-position: center;  /* 居中 */
+      height: 120px;
+      margin: 15px 20px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    .bg-position-right-bottom {
+      background-image:
+        radial-gradient(circle, #9b59b6 15px, transparent 15px);
+      background-repeat: no-repeat;
+      background-position: right bottom;  /* 右下角 */
+      height: 120px;
+      margin: 15px 20px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    /* 一个带背景位置标签的容器 */
+    .pos-demo-box {
+      position: relative;
+      height: 100px;
+      margin: 15px 20px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      background-color: #fafafa;
+    }
+
+    .pos-demo-box::before {
+      content: "左上角（默认）";
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      font-size: 12px;
+      color: #999;
+    }
+
+    .pos-marker {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: rgba(231, 76, 60, 0.6);
+      border-radius: 50%;
+    }
+
+    /* ===== 4. background-size ===== */
+    .bg-size-cover {
+      /* 模拟一张大图：一个大的渐变色块 */
+      background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-repeat: no-repeat;
+      background-size: cover;  /* 铺满，可能裁边 */
+      height: 150px;
+      margin: 15px 20px;
+      border-radius: 8px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .bg-size-contain {
+      background-image: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      background-repeat: no-repeat;
+      background-size: contain;  /* 完整显示，可能留白 */
+      background-color: #fafafa;
+      height: 150px;
+      margin: 15px 20px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      border: 1px solid #ddd;
+    }
+
+    /* ===== 5. background-attachment: fixed ===== */
+    .bg-fixed {
+      background-image: linear-gradient(135deg, #2c3e50, #3498db);
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;  /* 固定！滚动页面时这个背景不动 */
+      height: 200px;
+      margin: 15px 20px;
+      border-radius: 8px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* ===== 6. 简写 background ===== */
+    .bg-shorthand {
+      /* 一次搞定：颜色 图片 重复 位置/大小 固定 */
+      background: #f39c12
+                  radial-gradient(circle, #e74c3c 20px, transparent 20px)
+                  repeat-x
+                  center / 40px 40px;
+      height: 120px;
+      margin: 15px 20px;
+      border-radius: 8px;
+    }
+
+    /* ===== 7. 多背景 ===== */
+    .bg-multi {
+      background:
+        /* 最上层：居中的"图标" */
+        radial-gradient(circle at center, rgba(255,255,255,0.9) 15px, transparent 15px) no-repeat center,
+        /* 第二层：条纹 */
+        linear-gradient(90deg, rgba(52,152,219,0.3) 1px, transparent 1px),
+        /* 底色 */
+        #2c3e50;
+      background-size: 100% 100%, 20px 20px, auto;
+      height: 150px;
+      margin: 15px 20px;
+      border-radius: 8px;
+    }
+
+    /* 辅助：填充内容让页面有滚动空间（演示 fixed 效果） */
+    .spacer {
+      height: 200px;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CSS 背景演示</h1>
+
+  <p><strong>说明：</strong>因为示例文件需要自包含（不需要外部图片），我们用 CSS <code>gradient</code>（渐变）来模拟背景图。
+  gradient 本质上也是一种 <code>background-image</code>，不需要外部图片文件。实际项目中也非常常用！</p>
+
+  <!-- ===== 1. background-color ===== -->
+  <h2>一、background-color：底色</h2>
+  <div class="bg-color">
+    我只设置了背景色 #e8f4f8（浅蓝），没有背景图。
+  </div>
+
+  <!-- ===== 2. background-image + background-repeat ===== -->
+  <h2>二、background-image 与 background-repeat：贴图与铺法</h2>
+
+  <p>默认 repeat（横竖都铺，像瓷砖）：</p>
+  <div class="bg-repeat-all"></div>
+
+  <p>repeat-x（只水平铺）：</p>
+  <div class="bg-repeat-x"></div>
+
+  <p>no-repeat（不铺，只显示一张）：</p>
+  <div class="bg-no-repeat"></div>
+
+  <!-- ===== 3. background-position ===== -->
+  <h2>三、background-position：图片位置</h2>
+
+  <p>居中（center）：</p>
+  <div class="bg-position-center"></div>
+
+  <p>右下角（right bottom）：</p>
+  <div class="bg-position-right-bottom"></div>
+
+  <!-- ===== 4. background-size ===== -->
+  <h2>四、background-size：cover vs contain</h2>
+  <p>cover：铺满容器，可能裁剪边缘（适合全屏背景）</p>
+  <div class="bg-size-cover">cover — 铺满</div>
+
+  <p>contain：完整显示整张图，可能留白（适合产品展示）</p>
+  <div class="bg-size-contain">contain — 完整显示</div>
+
+  <!-- ===== 5. background-attachment: fixed ===== -->
+  <h2>五、background-attachment: fixed：背景固定</h2>
+  <p>滚动页面，看下面这块的背景是否纹丝不动：</p>
+  <div class="bg-fixed">
+    试着滚动页面——我的背景不会跟着动！<br>
+    这就是 background-attachment: fixed 的效果。
+  </div>
+  <p>（继续往下滚动体验效果...）</p>
+
+  <!-- ===== 6. 简写 background ===== -->
+  <h2>六、简写 background 属性</h2>
+  <p>下面这个背景用了一句简写搞定（颜色 + 图案 + 平铺 + 位置/尺寸）：</p>
+  <div class="bg-shorthand"></div>
+  <pre style="margin: 10px 20px; background: #f5f5f5; padding: 10px; border-radius: 4px;">
+background: #f39c12 radial-gradient(...) repeat-x center / 40px 40px;</pre>
+
+  <!-- ===== 7. 多背景 ===== -->
+  <h2>七、多背景（一个元素贴多层）</h2>
+  <div class="bg-multi"></div>
+  <p>三层背景：白色圆点 + 蓝色竖条纹 + 深色底色，一次 <code>background</code> 全搞定。</p>
+
+  <!-- spacer: 让页面足够长来体验 fixed 效果 -->
+  <div class="spacer">
+    <p>到底了。往回滚动时观察上面 "background-attachment:fixed" 区块的背景是否固定。</p>
+  </div>
+
+</body>
+</html>

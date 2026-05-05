@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2.11 盒模型（上）</title>
+  <style>
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 16px;
+      line-height: 1.8;
+      color: #333;
+      padding: 20px;
+      background-color: #fdfdfd;
+    }
+
+    h1 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+
+    h2 {
+      margin-top: 35px;
+      color: #34495e;
+    }
+
+    /* ===== 核心演示：盒模型四层 ===== */
+    /* 我们用四个嵌套的 div 来直观展示四层结构 */
+
+    .box-model-demo {
+      /* margin —— 最外层间距（在整体布局中体现） */
+      margin: 30px auto;
+      /* 这里 margin 设为 30px 上下，auto 左右（居中） */
+
+      /* 下方有一个完整的可视化标注区块 */
+    }
+
+    /* 逐层标注版：给每层不同的背景色，用嵌套结构展示 */
+    .margin-layer {
+      background-color: #fce4b8;  /* 浅橙色 = margin 区域 */
+      padding: 30px;                /* 这个 padding 模拟 margin 的空间 */
+      position: relative;
+    }
+
+    .border-layer {
+      background-color: #ffd699;  /* 黄色 = border 区域 */
+      padding: 8px;                 /* 这个 padding 模拟 border 的厚度 */
+    }
+
+    .padding-layer {
+      background-color: #c8e6a5;  /* 浅绿色 = padding 区域 */
+      padding: 35px;                /* 真正的 padding */
+    }
+
+    .content-layer {
+      background-color: #a8d8ea;  /* 浅蓝色 = content 区域 */
+      padding: 30px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    /* 层标注标签 */
+    .layer-label {
+      position: absolute;
+      top: 4px;
+      left: 8px;
+      font-size: 11px;
+      font-weight: bold;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .margin-layer  { position: relative; }
+    .border-layer  { position: relative; }
+    .padding-layer { position: relative; }
+
+    /* ===== 各层独立演示 ===== */
+
+    /* content 演示 */
+    .demo-content {
+      width: 300px;
+      height: 80px;
+      background-color: #a8d8ea;
+      text-align: center;
+      line-height: 80px;
+      border: 1px dashed #666;
+      margin: 10px 0;
+    }
+
+    /* padding 演示 */
+    .demo-no-padding {
+      background-color: #fce4b8;
+      margin: 10px 0;
+      display: inline-block;
+    }
+
+    .demo-with-padding {
+      background-color: #fce4b8;
+      padding: 25px;
+      margin: 10px 0;
+      display: inline-block;
+    }
+
+    /* border 演示 */
+    .demo-no-border {
+      padding: 20px;
+      background-color: #fce4b8;
+      margin: 10px 0;
+      display: inline-block;
+    }
+
+    .demo-with-border {
+      padding: 20px;
+      background-color: #fce4b8;
+      border: 6px solid #333;
+      margin: 10px 0;
+      display: inline-block;
+    }
+
+    /* margin 演示 */
+    .margin-demo-container {
+      border: 2px dashed #999;
+      padding: 10px;
+      margin: 15px 0;
+      /* 这个虚线框表示"容器边界" */
+    }
+
+    .margin-box {
+      background-color: #a8d8ea;
+      padding: 15px;
+      text-align: center;
+      border: 2px solid #3498db;
+    }
+
+    .margin-tight {
+      margin: 5px;
+    }
+
+    .margin-loose {
+      margin: 40px;
+    }
+
+    /* ===== margin: 0 auto 居中演示 ===== */
+    .center-box {
+      width: 400px;           /* 必须有固定宽度 */
+      margin: 20px auto;      /* 上下 20px，左右 auto = 居中 */
+      background-color: #e8f4f8;
+      padding: 20px;
+      border: 2px solid #3498db;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    /* ===== 简写值演示 ===== */
+    .shorthand-demo {
+      border: 1px solid #ccc;
+      margin: 10px 0;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>盒模型（上）—— 万物皆盒子</h1>
+
+  <!-- ===== 核心：四层结构图 ===== -->
+  <h2>一、盒模型四层结构（从内到外）</h2>
+
+  <p>下面用嵌套结构展示 CSS 盒模型的四层——颜色对应 Chrome DevTools 中的盒模型面板：</p>
+
+  <div class="margin-layer">
+    <span class="layer-label">margin（外边距）区域 — 橙色</span>
+    <div class="border-layer">
+      <span class="layer-label">border（边框）区域 — 黄色</span>
+      <div class="padding-layer">
+        <span class="layer-label">padding（内边距）区域 — 绿色</span>
+        <div class="content-layer">
+          content（内容区）— 蓝色
+        </div>
+        <div style="text-align:center;font-size:12px;color:#666;">
+          padding: 35px（背景色会延伸到 padding 区域）
+        </div>
+      </div>
+      <div style="font-size:12px;color:#555;text-align:center;">
+        border 宽度: 8px
+      </div>
+    </div>
+    <div style="font-size:12px;color:#555;text-align:center;">
+      margin: 30px（此处在整体布局中表现为间距）
+    </div>
+  </div>
+
+  <!-- ===== 第二层：content ===== -->
+  <h2>二、content（内容区）</h2>
+  <p>内容区是元素真正"装东西"的地方——文字、图片、子元素。</p>
+  <div class="demo-content">
+    内容区：width=300px, height=80px
+  </div>
+
+  <!-- ===== 第三层：padding ===== -->
+  <h2>三、padding（内边距）—— 背景色会延伸过来</h2>
+
+  <p>没有 padding（内容贴着边框）：</p>
+  <div class="demo-no-padding">
+    没有 padding —— 文字紧贴边缘
+  </div>
+
+  <p>加了 padding: 25px：</p>
+  <div class="demo-with-padding">
+    有 padding: 25px —— 文字和边框之间有"泡沫层"，而且背景色也填满了 padding 区域！
+  </div>
+
+  <!-- ===== 第四层：border ===== -->
+  <h2>四、border（边框）—— 可见的盒壁</h2>
+
+  <p>没有 border：</p>
+  <div class="demo-no-border">
+    有 padding，但没有边框（边界模糊）
+  </div>
+
+  <p>加了 6px 黑色实线 border：</p>
+  <div class="demo-with-border">
+    有 6px 黑色边框 —— 边界清晰可见！
+  </div>
+
+  <!-- ===== 第五层：margin ===== -->
+  <h2>五、margin（外边距）—— 盒子之间的间距</h2>
+
+  <p>下面两个盒子在同一个容器（虚线框）里：</p>
+
+  <div class="margin-demo-container">
+    <div class="margin-box margin-tight">
+      这个盒子 margin: 5px —— 和虚线框、和下面的盒子都贴得很近
+    </div>
+    <div class="margin-box margin-loose">
+      这个盒子 margin: 40px —— 和周围的距离大了很多！
+    </div>
+  </div>
+
+  <!-- ===== margin: 0 auto ===== -->
+  <h2>六、margin: 0 auto —— 水平居中</h2>
+
+  <div class="center-box">
+    我水平居中了！<br>
+    关键 CSS：<code>width: 400px; margin: 20px auto;</code><br>
+    <span style="font-size:0.9em;color:#888;">（必须有固定宽度，auto 才能平分剩余空间）</span>
+  </div>
+
+  <!-- ===== 速查 ===== -->
+  <h2>padding / margin 值简写规则</h2>
+  <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+    <tr style="background: #f0f0f0;">
+      <th>写法</th><th>含义</th><th>记忆</th>
+    </tr>
+    <tr>
+      <td><code>padding: 20px;</code></td>
+      <td>上下左右都是 20px</td>
+      <td>1 个值管四边</td>
+    </tr>
+    <tr>
+      <td><code>padding: 20px 40px;</code></td>
+      <td>上下 20px, 左右 40px</td>
+      <td>2 个值：上下、左右</td>
+    </tr>
+    <tr>
+      <td><code>padding: 10px 20px 30px;</code></td>
+      <td>上 10, 左右 20, 下 30</td>
+      <td>3 个值：上、左右、下</td>
+    </tr>
+    <tr>
+      <td><code>padding: 10px 20px 30px 40px;</code></td>
+      <td>上 10, 右 20, 下 30, 左 40</td>
+      <td>4 个值：顺时针（上右下左）</td>
+    </tr>
+  </table>
+  <p>margin 的简写规则和 padding 一模一样。</p>
+
+</body>
+</html>

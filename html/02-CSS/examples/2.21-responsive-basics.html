@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <!-- ====== 这行至关重要！没有它，手机上字会像蚂蚁 ====== -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2.21 响应式设计基础</title>
+  <style>
+    /* ========== 公共样式 ========== */
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      line-height: 1.8;
+      margin: 0;
+      padding: 0 1rem;
+    }
+    h2 {
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 5px;
+      margin-top: 40px;
+    }
+    .note {
+      color: #888;
+      font-size: 14px;
+      margin: 8px 0;
+    }
+
+    /* ========== 一、rem 单位演示 ========== */
+    .rem-demo {
+      background: #eaf2fd;
+      border: 2px dashed #3498db;
+      padding: 1.5rem;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+    .rem-demo h3 {
+      font-size: 1.5rem;      /* 1.5倍根字号 */
+      margin: 0 0 0.5rem 0;
+    }
+    .rem-demo p {
+      font-size: 1rem;        /* 等于根字号 */
+      margin: 0 0 0.75rem 0;
+    }
+    .rem-demo .small {
+      font-size: 0.875rem;    /* 比根字号略小 */
+      color: #888;
+    }
+    .rem-demo .big {
+      font-size: 1.25rem;     /* 比根字号略大 */
+      font-weight: bold;
+    }
+
+    /* ========== 二、em 单位演示（对比） ========== */
+    .em-parent {
+      font-size: 20px;           /* 父元素字号 20px */
+      background: #fef9e7;
+      border: 2px dashed #f39c12;
+      padding: 1em;              /* 1em = 20px（父元素字号） */
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+    .em-parent p {
+      font-size: 0.8em;          /* 0.8 * 20px = 16px */
+    }
+    .em-child {
+      font-size: 1.5em;          /* 1.5 * 20px = 30px */
+      background: #fdecea;
+      padding: 0.5em;            /* 0.5 * 30px = 15px —— 注意！padding 参照的是自身字号 */
+    }
+    .em-grandchild {
+      font-size: 1.5em;          /* 1.5 * 30px = 45px —— em 会层层叠加！ */
+      background: #eaf2fd;
+      padding: 0.5em;
+    }
+
+    /* ========== 三、百分比 + max-width ========== */
+    .fluid-box {
+      width: 90%;                /* 占父元素宽度的 90% */
+      max-width: 700px;          /* 但不超过 700px */
+      min-width: 280px;          /* 也不小于 280px */
+      margin: 20px auto;        /* 居中 */
+      background: #eafaf1;
+      border: 2px solid #27ae60;
+      padding: 1.5rem;
+      border-radius: 8px;
+    }
+    .fluid-box h3 {
+      margin-top: 0;
+    }
+
+    /* ========== 四、响应式图片 ========== */
+    .responsive-img-box {
+      border: 2px dashed #8e44ad;
+      padding: 15px;
+      margin: 10px 0;
+      background: #f4ecf7;
+      text-align: center;
+    }
+    .responsive-img {
+      max-width: 100%;           /* 图片不超过容器宽度 */
+      height: auto;              /* 保持比例 */
+      display: block;
+      background: linear-gradient(135deg, #8e44ad, #e74c3c);
+      color: #fff;
+      padding: 40px;
+      font-size: 1.2rem;
+      border-radius: 8px;
+    }
+
+    /* ========== 五、流体布局 vs 固定布局 ========== */
+    .fixed-layout {
+      width: 800px;                     /* 固定宽度——窄屏上会溢出！ */
+      margin: 10px auto;
+      background: #fdecea;
+      border: 2px solid #e74c3c;
+      border-radius: 8px;
+      overflow: hidden;                 /* 隐藏溢出部分 */
+    }
+    .fixed-layout .col {
+      float: left;
+      width: 380px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .fixed-layout::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+
+    .fluid-layout {
+      display: flex;                    /* Flexbox 自动弹性 */
+      gap: 1.5rem;
+      max-width: 800px;                 /* 桌面端上限 */
+      margin: 10px auto;
+      background: #eafaf1;
+      border: 2px solid #27ae60;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+    .fluid-layout .col {
+      flex: 1;                          /* 均分 */
+    }
+
+    /* ========== 六、vw/vh 视口单位 ========== */
+    .vw-demo {
+      width: 80vw;                      /* 视口宽度的 80% */
+      max-width: 700px;
+      margin: 10px auto;
+      background: #e8f8f5;
+      border: 2px solid #1abc9c;
+      padding: 1.5rem;
+      border-radius: 8px;
+    }
+    .vh-bar {
+      height: 15vh;                     /* 视口高度的 15% */
+      background: linear-gradient(90deg, #1abc9c, #3498db);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>响应式设计基础 —— 同一网页，不同屏幕都好看</h1>
+
+  <!-- ============ 一、rem 单位 ============ -->
+  <h2>一、rem 单位 —— 统一参照根字号</h2>
+  <div class="rem-demo">
+    <h3>这个标题用 1.5rem</h3>
+    <p>这段正文用 1rem。所有 rem 都参照 html 元素的字号（浏览器默认 16px）。</p>
+    <p class="small">这段小字用 0.875rem（约 14px），用来做注释文字。</p>
+    <p class="big">这段大字用 1.25rem（约 20px），用来强调。</p>
+    <p class="note">试着修改浏览器的最小字号设置，或者未来用媒体查询改 html 的 font-size——所有 rem 会自动跟随缩放！</p>
+  </div>
+
+  <!-- ============ 二、em 单位（对比） ============ -->
+  <h2>二、em vs rem —— 为什么推荐 rem</h2>
+  <div class="em-parent">
+    父元素：font-size: 20px（1em = 20px）
+    <p>我是子段落，font-size: 0.8em = 16px</p>
+    <div class="em-child">
+      我是孙 div，font-size: 1.5em = 30px（1.5 * 父20px）
+      <div class="em-grandchild">
+        我是曾孙 div，font-size: 1.5em = 45px（1.5 * 父30px）<br>
+        <strong>看到没？em 层层叠加，越套越离谱！</strong>
+      </div>
+    </div>
+  </div>
+  <p class="note">这就是 em 的"祖传染色体"效应。rem 只看根元素，不存在这个问题，所以推荐用 rem。</p>
+
+  <!-- ============ 三、百分比 + max-width ============ -->
+  <h2>三、百分比宽度 + max-width —— 弹性但有上限</h2>
+  <div class="fluid-box">
+    <h3>width: 90%; max-width: 700px; min-width: 280px;</h3>
+    <p>试着拖动浏览器窗口从很窄到很宽：</p>
+    <ul>
+      <li>窄屏（比如 320px 手机宽度）：我占 90%，约 288px，大于 min-width 280px</li>
+      <li>中屏（比如 768px 平板）：我占 90%，约 691px</li>
+      <li>宽屏（比如 1440px 桌面）：90% = 1296px，但 max-width 限制我为 700px</li>
+    </ul>
+  </div>
+
+  <!-- ============ 四、响应式图片 ============ -->
+  <h2>四、响应式图片 —— 永不撑破布局</h2>
+  <div class="responsive-img-box">
+    <div class="responsive-img">
+      max-width: 100%; height: auto;<br>
+      （这是一个模拟图片的色块）<br>
+      不管容器多宽多窄，我都不会撑破布局
+    </div>
+  </div>
+
+  <!-- ============ 五、固定 vs 流体布局 ============ -->
+  <h2>五、固定布局 vs 流体布局</h2>
+
+  <h3>固定宽度（老做法）—— 窄屏上会爆</h3>
+  <div class="fixed-layout">
+    <div class="col" style="background:#f9cdcd;">
+      <strong>左列：380px 固定</strong>
+      <p style="font-size:13px;">在小于 800px 的屏幕上，这个布局会溢出。</p>
+    </div>
+    <div class="col" style="background:#fde4c3;">
+      <strong>右列：380px 固定</strong>
+      <p style="font-size:13px;">手机上根本看不全。</p>
+    </div>
+  </div>
+
+  <h3>流体布局（Flexbox）—— 弹性适应</h3>
+  <div class="fluid-layout">
+    <div class="col" style="background:#d5f5e3; padding:15px; border-radius:5px;">
+      <strong>左列：flex: 1（自动伸缩）</strong>
+      <p style="font-size:13px;">不管屏幕多宽多窄，我和右列始终平分空间。</p>
+    </div>
+    <div class="col" style="background:#d6eaf8; padding:15px; border-radius:5px;">
+      <strong>右列：flex: 1（自动伸缩）</strong>
+      <p style="font-size:13px;">拖一拖浏览器窗口试试！</p>
+    </div>
+  </div>
+
+  <!-- ============ 六、vw/vh 单位 ============ -->
+  <h2>六、vw/vh 视口单位</h2>
+  <div class="vw-demo">
+    <p>这个盒子的宽度是 <strong>80vw</strong>（视口宽度的 80%），max-width: 700px。</p>
+  </div>
+  <div class="vh-bar">这个色条高度 = 15vh（视口高度的 15%）</div>
+
+  <h2>总结</h2>
+  <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; margin-bottom: 30px;">
+    <tr style="background: #f0f0f0;">
+      <th>技术</th>
+      <th>作用</th>
+      <th>写法</th>
+    </tr>
+    <tr>
+      <td>viewport meta</td>
+      <td>手机端正确缩放</td>
+      <td>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</td>
+    </tr>
+    <tr>
+      <td>rem</td>
+      <td>统一参照根字号</td>
+      <td>font-size: 1.5rem;</td>
+    </tr>
+    <tr>
+      <td>百分比宽度</td>
+      <td>随父容器弹性</td>
+      <td>width: 90%;</td>
+    </tr>
+    <tr>
+      <td>max-width</td>
+      <td>宽度上限</td>
+      <td>max-width: 800px;</td>
+    </tr>
+    <tr>
+      <td>min-width</td>
+      <td>宽度下限</td>
+      <td>min-width: 280px;</td>
+    </tr>
+    <tr>
+      <td>max-width: 100%</td>
+      <td>图片不溢出</td>
+      <td>img { max-width: 100%; height: auto; }</td>
+    </tr>
+  </table>
+
+</body>
+</html>

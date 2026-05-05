@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2.12 盒模型（下）—— box-sizing 与 margin 合并</title>
+  <style>
+    /* ===== 全局 border-box（推荐！新项目必备） ===== */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 16px;
+      line-height: 1.8;
+      color: #333;
+      padding: 20px;
+      background-color: #fdfdfd;
+    }
+
+    h1 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+
+    h2 {
+      margin-top: 35px;
+      color: #34495e;
+    }
+
+    /* ===== 1. content-box vs border-box 对比 ===== */
+
+    /* 两个盒子的共同属性（除了 box-sizing） */
+    .box-compare {
+      width: 300px;
+      height: 100px;
+      padding: 25px;
+      border: 5px solid #333;
+      background-color: #e8f4f8;
+      margin: 15px 0;
+      text-align: center;
+      line-height: 40px;
+      font-size: 14px;
+    }
+
+    /* 标准盒模型：width 只管 content */
+    .content-box-demo {
+      box-sizing: content-box;
+      /* width: 300px 只管 content
+         实际宽度 = 300 + 25*2 + 5*2 = 360px */
+      border-color: #e74c3c;
+      background-color: #fdedec;
+    }
+
+    /* 替代盒模型：width 管到 border */
+    .border-box-demo {
+      box-sizing: border-box;
+      /* width: 300px 含 content + padding + border
+         实际宽度 = 300px（content 被压缩到 240px） */
+      border-color: #27ae60;
+      background-color: #eafaf1;
+    }
+
+    /* 标注尺寸的辅助元素 */
+    .size-annotation {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #888;
+      margin-top: 2px;
+    }
+
+    /* ===== 2. 要不要 border-box（直观对比） ===== */
+    .layout-demo {
+      display: flex;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .layout-demo .col {
+      flex: 1;
+      background-color: #e8f4f8;
+      padding: 20px;
+      border: 2px solid #3498db;
+      border-radius: 6px;
+    }
+
+    .layout-demo-alt .col {
+      box-sizing: content-box;  /* 临时覆盖 border-box */
+      flex: 0 0 33%; /* 强行三等分 */
+    }
+
+    /* ===== 3. margin 合并演示 ===== */
+
+    .margin-collapse-demo {
+      border: 2px dashed #999;
+      margin: 15px 0;
+      padding: 0 15px;
+      background: #fafafa;
+    }
+
+    .margin-box-item {
+      background-color: #a8d8ea;
+      padding: 15px;
+      text-align: center;
+      border: 2px solid #3498db;
+      font-size: 14px;
+    }
+
+    .mb-30 { margin-bottom: 30px; }
+    .mt-20 { margin-top: 20px; }
+
+    /* 用背景色标记 margin 区域 */
+    .gap-indicator {
+      position: relative;
+    }
+
+    .gap-label {
+      font-size: 12px;
+      color: #e74c3c;
+      text-align: center;
+      margin: 0;
+      padding: 2px 0;
+      font-weight: bold;
+    }
+
+    /* ===== 4. 父子 margin 合并 ===== */
+    .parent-collapse {
+      background-color: #fce4b8;
+      margin: 15px 0;
+      /* 没有 border, 没有 padding-top, 没有 overflow — 条件成立了 */
+    }
+
+    .parent-collapse .child {
+      background-color: #a8d8ea;
+      margin-top: 40px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    /* 阻止合并的方式：加透明的边框 */
+    .parent-no-collapse {
+      background-color: #fce4b8;
+      margin: 15px 0;
+      border-top: 1px solid transparent;  /* 阻断！ */
+    }
+
+    .parent-no-collapse .child {
+      background-color: #a8d8ea;
+      margin-top: 40px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    /* ===== 辅助 ===== */
+    code {
+      background-color: #f0f0f0;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>盒模型（下）—— box-sizing 与 margin 合并</h1>
+
+  <!-- ===== content-box vs border-box ===== -->
+  <h2>一、content-box（标准） vs border-box（替代）</h2>
+
+  <p>两个盒子都有 <code>width: 300px; padding: 25px; border: 5px</code>，但 box-sizing 不同：</p>
+
+  <h3>content-box（默认）—— width 只管内容区</h3>
+  <div class="box-compare content-box-demo">
+    content-box<br>
+    设 width=300px, padding=25, border=5<br>
+    <strong>实际宽度 = 300 + 50 + 10 = 360px</strong>
+  </div>
+  <div class="size-annotation" style="width:360px;">
+    <span>300px content</span>
+    <span>360px 实际</span>
+  </div>
+
+  <h3>border-box（推荐）—— width 包含到边框</h3>
+  <div class="box-compare border-box-demo">
+    border-box<br>
+    设 width=300px, padding=25, border=5<br>
+    <strong>实际宽度 = 300px（content 自动缩到 240px）</strong>
+  </div>
+  <div class="size-annotation" style="width:300px;">
+    <span>300px 就是你看到的</span>
+  </div>
+
+  <div style="background:#f0f7fb;padding:12px 15px;border-radius:6px;margin:10px 0;">
+    <strong>提示：</strong>按 F12 打开开发者工具，分别点选上面两个盒子，在 Styles 面板底部的盒模型图中看实际尺寸——直观感受两者的区别。
+  </div>
+
+  <!-- ===== 全局 border-box ===== -->
+  <h2>二、为什么要全局设置 border-box</h2>
+
+  <p>本页面的 CSS 开头写了：</p>
+  <pre style="background:#f5f5f5;padding:10px;border-radius:4px;"><code>*, *::before, *::after {
+  box-sizing: border-box;
+}</code></pre>
+
+  <p>这意味着你设置的 <code>width</code> 就是最终看到的宽度，不用心算。下面两列布局因为有了 border-box，padding 和 border 不会让列撑破容器：</p>
+
+  <div class="layout-demo">
+    <div class="col">第一列：padding 和 border 包含在宽度内，不会溢出。</div>
+    <div class="col">第二列：同样舒服地待在容器里。</div>
+    <div class="col">第三列：所有列总宽正好等于容器。</div>
+  </div>
+
+  <!-- ===== margin 合并 ===== -->
+  <h2>三、margin 合并（垂直方向，取最大值）</h2>
+
+  <p>下面两个盒子：第一个 <code>margin-bottom: 30px</code>，第二个 <code>margin-top: 20px</code>。</p>
+  <p>直觉上间距 = 30 + 20 = 50px。实际是 <strong>max(30, 20) = 30px</strong>！</p>
+
+  <div class="margin-collapse-demo">
+    <div class="margin-box-item mb-30">
+      盒子 A：margin-bottom: 30px
+    </div>
+    <div class="gap-label">实际间距只有 30px（取最大值），不是 50px！</div>
+    <div class="margin-box-item mt-20">
+      盒子 B：margin-top: 20px
+    </div>
+  </div>
+
+  <!-- ===== 父子 margin 合并 ===== -->
+  <h2>四、父子 margin 合并（子元素的 margin "穿透"父元素）</h2>
+
+  <h3>发生合并的情况：</h3>
+  <div class="parent-collapse">
+    <div class="child">
+      我的 margin-top: 40px<br>
+      但父 div 没有 border/padding/overflow 来阻断<br>
+      结果我的 margin-top 把父元素也带下去了！
+    </div>
+  </div>
+  <p style="font-size:14px;color:#888;">注意上面这个区块：父 div 的顶部没有留白，子元素的 margin-top 直接"渗透"到父元素外面了。</p>
+
+  <h3>阻止合并：给父元素加 border-top</h3>
+  <div class="parent-no-collapse">
+    <div class="child">
+      我的 margin-top: 40px<br>
+      父 div 有 border-top: 1px solid transparent<br>
+      合并被阻断，margin 正常表现在父元素内部！
+    </div>
+  </div>
+  <p style="font-size:14px;color:#888;">注意区别：父元素顶部留白了（有边界阻断），子元素 margin-top 正常表现为内部间距。</p>
+
+  <h2>margin 合并关键点总结</h2>
+  <ul>
+    <li>只发生在<strong>垂直方向</strong>（上下），水平方向不合并</li>
+    <li>间距取<strong>最大值</strong>，不是相加</li>
+    <li>可以通过 <code>border</code>、<code>padding</code>、<code>overflow: hidden</code> 阻断</li>
+    <li>Flexbox 和 Grid 布局中不存在 margin 合并</li>
+  </ul>
+
+</body>
+</html>

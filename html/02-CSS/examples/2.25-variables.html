@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2.25 CSS 变量 - 自定义属性演示</title>
+  <style>
+    /* ================================================================ */
+    /* 全局变量定义 —— 改这里，全站生效！                                */
+    /* ================================================================ */
+    :root {
+      /* 品牌色 */
+      --primary-color: #2c3e50;
+      --primary-light: #34495e;
+      --accent-color: #3498db;
+      --accent-hover: #2980b9;
+      --danger-color: #e74c3c;
+
+      /* 背景色 */
+      --bg-color: #f8f9fa;
+      --card-bg: #fff;
+      --text-color: #333;
+      --text-light: #888;
+
+      /* 间距 */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+
+      /* 其他 */
+      --border-radius: 8px;
+      --border-color: #e0e0e0;
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+      --font-size-base: 16px;
+    }
+
+    /* ================================================================ */
+    /* 暗色模式 —— 在媒体查询中覆盖变量                                  */
+    /* ================================================================ */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary-color: #ecf0f1;
+        --primary-light: #bdc3c7;
+        --accent-color: #5dade2;
+        --accent-hover: #85c1e9;
+
+        --bg-color: #1a1a2e;
+        --card-bg: #16213e;
+        --text-color: #eee;
+        --text-light: #aaa;
+        --border-color: #2a2a4a;
+        --shadow: 0 2px 8px rgba(0,0,0,0.3);
+      }
+    }
+
+    /* ========== 公共样式 —— 全部使用变量 ========== */
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      margin: 20px auto;
+      padding: 0 15px 50px 15px;
+      max-width: 750px;
+      line-height: 1.8;
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+    h2 {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: var(--spacing-sm);
+      margin-top: 40px;
+    }
+    .note {
+      color: var(--text-light);
+      font-size: 0.875rem;
+      margin: 8px 0;
+    }
+
+    /* ========== 一、按钮使用变量 ========== */
+    .btn-primary {
+      display: inline-block;
+      padding: var(--spacing-sm) var(--spacing-lg);
+      background: var(--accent-color);
+      color: #fff;
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+    .btn-danger {
+      display: inline-block;
+      padding: var(--spacing-sm) var(--spacing-lg);
+      background: var(--danger-color);
+      color: #fff;
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* ========== 二、卡片使用变量 ========== */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: var(--spacing-lg);
+      margin: var(--spacing-md) 0;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    .card h3 {
+      margin: 0 0 var(--spacing-sm) 0;
+      color: var(--primary-color);
+    }
+    .card p {
+      margin: 0;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    /* ========== 三、局部覆盖变量 ========== */
+    .theme-box {
+      /* 局部覆盖！这个盒子里面的 --box-bg 和上级不一样 */
+      --box-bg: #eaf2fd;
+      --box-text: var(--primary-color);
+      background: var(--box-bg);
+      color: var(--box-text);
+      border: 2px solid var(--accent-color);
+      border-radius: var(--border-radius);
+      padding: var(--spacing-lg);
+      margin: var(--spacing-md) 0;
+    }
+
+    .theme-box.alt {
+      --box-bg: #fdecea;      /* 另一个变体：粉色背景 */
+      --box-text: var(--danger-color);
+      border-color: var(--danger-color);
+    }
+
+    /* ========== 四、calc 配合变量 ========== */
+    .space-demo {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: calc(var(--spacing-md) * 2);    /* 16px * 2 = 32px */
+      margin: var(--spacing-md) 0;
+    }
+    .space-demo .spaced-item {
+      padding: var(--spacing-sm) var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+      background: var(--bg-color);
+      border-radius: calc(var(--border-radius) / 2);  /* 圆角减半 */
+    }
+    .space-demo .spaced-item:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ========== 五、变量作为颜色通道 ========== */
+    .color-blocks {
+      display: flex;
+      gap: var(--spacing-md);
+      margin: var(--spacing-md) 0;
+    }
+    .color-block {
+      flex: 1;
+      height: 80px;
+      border-radius: var(--border-radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 0.8rem;
+    }
+
+    /* ========== 导航（使用变量） ========== */
+    .navbar {
+      background: var(--primary-color);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border-radius: var(--border-radius);
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+    .navbar a {
+      color: #fff;
+      text-decoration: none;
+      padding: var(--spacing-xs) var(--spacing-md);
+      border-radius: calc(var(--border-radius) / 2);
+      font-size: 0.9rem;
+      transition: background 0.3s ease;
+    }
+    .navbar a:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    /* ========== JS 交互区 ========== */
+    .theme-switcher {
+      margin: var(--spacing-md) 0;
+      padding: var(--spacing-md);
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+    }
+    .theme-switcher button {
+      margin-right: var(--spacing-sm);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CSS 变量演示 —— 改一处，全站生效</h1>
+
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <a href="#">首页</a>
+    <a href="#">产品</a>
+    <a href="#">服务</a>
+    <a href="#">关于</a>
+  </nav>
+
+  <!-- ============ 一、按钮 ============ -->
+  <h2>一、按钮使用 CSS 变量</h2>
+  <p>
+    <a href="#" class="btn-primary">主要按钮（--accent-color）</a>
+    <a href="#" class="btn-danger" style="margin-left:10px;">危险按钮（--danger-color）</a>
+  </p>
+  <p class="note">按钮的颜色、圆角、内边距全都来自 CSS 变量。改 :root 里的 --accent-color，所有蓝色按钮同时变色。</p>
+
+  <!-- ============ 二、卡片 ============ -->
+  <h2>二、卡片使用 CSS 变量</h2>
+  <div class="card">
+    <h3>卡片标题</h3>
+    <p>卡片的背景色、边框、圆角、阴影、内边距全部来自变量。在 :root 里改一个 --card-bg，所有卡片背景同时变。</p>
+  </div>
+
+  <!-- ============ 三、局部覆盖 ============ -->
+  <h2>三、局部覆盖 —— 变量的层叠</h2>
+  <div class="theme-box">
+    <strong>蓝色主题盒子</strong>
+    <p>这个盒子用 <code>--box-bg: #eaf2fd</code> 覆盖了全局背景色。里面的文字颜色用了局部 <code>--box-text</code>。</p>
+  </div>
+  <div class="theme-box alt">
+    <strong>红色主题盒子</strong>
+    <p>同样的 HTML 结构，不同的局部变量。这就是 CSS 变量的层叠——"地方规定"覆盖"国家法律"。</p>
+  </div>
+
+  <!-- ============ 四、calc 配合变量 ============ -->
+  <h2>四、calc() 配合 CSS 变量</h2>
+  <div class="space-demo">
+    <div class="spaced-item">这个项目的 padding 是 var(--spacing-sm) var(--spacing-md)</div>
+    <div class="spaced-item">整个盒子 padding 是 calc(var(--spacing-md) * 2) = 32px</div>
+    <div class="spaced-item">圆角是 calc(var(--border-radius) / 2) = 4px</div>
+  </div>
+  <p class="note">CSS 变量可以在 calc() 里做加减乘除。间距变量统一管理后，所有间距保持节奏一致——这就是设计系统的基础。</p>
+
+  <!-- ============ 五、暗色模式提示 ============ -->
+  <h2>五、暗色模式</h2>
+  <p>这个页面支持系统暗色模式。如果你的操作系统设置了深色主题，页面会自动切换配色。</p>
+  <p>原理：在 <code>@media (prefers-color-scheme: dark)</code> 里重新定义 <code>:root</code> 的变量。</p>
+  <p class="note">切换系统深色/浅色模式后刷新本页面，你会发现 —— CSS 一行不改，颜色全换了。这就是 CSS 变量的威力。</p>
+
+  <h2>CSS 变量速查</h2>
+  <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; margin-bottom: 30px;">
+    <tr style="background: var(--card-bg);">
+      <th>语法</th>
+      <th>作用</th>
+      <th>示例</th>
+    </tr>
+    <tr>
+      <td><code>--name: value</code></td>
+      <td>定义变量</td>
+      <td>--primary: #333;</td>
+    </tr>
+    <tr>
+      <td><code>var(--name)</code></td>
+      <td>使用变量</td>
+      <td>color: var(--primary);</td>
+    </tr>
+    <tr>
+      <td><code>var(--name, fallback)</code></td>
+      <td>带默认值</td>
+      <td>var(--primary, #333)</td>
+    </tr>
+    <tr>
+      <td><code>:root { }</code></td>
+      <td>全局变量</td>
+      <td>:root { --main: blue; }</td>
+    </tr>
+    <tr>
+      <td><code>.local { --x: red }</code></td>
+      <td>局部覆盖</td>
+      <td>某个元素内覆盖</td>
+    </tr>
+    <tr>
+      <td><code>calc() + var()</code></td>
+      <td>数学运算</td>
+      <td>calc(var(--spacing) * 2)</td>
+    </tr>
+    <tr>
+      <td><code>@media 中改 :root</code></td>
+      <td>主题切换</td>
+      <td>暗色模式</td>
+    </tr>
+  </table>
+
+</body>
+</html>

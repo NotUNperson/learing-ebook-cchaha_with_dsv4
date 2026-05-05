@@ -1,0 +1,155 @@
+<!--
+  =====================================================
+  示例文件：1.3 head 中的元信息
+  对应教程：1.3-head中的元信息.md
+
+  这个文件展示了 head 中常用的元信息标签的作用。
+  打开浏览器的"开发者工具"（F12）——你其实可以在 Elements
+  面板看到 head 里的所有内容，虽然它们不显示在页面上。
+  =====================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <!--
+    1. 字符编码：必须放最前面！
+    没有它，中文、日文、阿拉伯文可能全乱码。
+    UTF-8 是"万国码"，几乎支持地球上所有文字。
+  -->
+  <meta charset="UTF-8">
+
+  <!--
+    2. 视口设置：手机端适配的关键！
+    没有这一行，页面在手机上会缩成很小，用户得放大才能看清。
+    width=device-width: 页面宽度 = 手机屏幕宽度
+    initial-scale=1.0: 初始缩放比例 100%，不放大不缩小
+  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!--
+    3. IE 兼容模式：
+    告诉老版本 IE 浏览器用最高的渲染引擎解析页面。
+    现在 IE 已经退役，但有些企业内网还在用，留着无害。
+  -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--
+    4. 页面标题：
+    - 显示在浏览器标签页上
+    - 收藏夹里的默认名称
+    - 搜索引擎结果里的蓝色大标题
+    起一个好标题至关重要！
+  -->
+  <title>1.3 head 中的元信息——示例</title>
+
+  <!--
+    5. 页面描述：
+    不会显示在页面上，但搜索引擎会读它。
+    搜索结果里标题下方两行灰色小字通常就来自 description。
+    用大约 150 字准确概括页面内容，包含相关关键词。
+  -->
+  <meta name="description" content="HTML 教程第 1.3 节，讲解 head 标签中的元信息：title、charset、viewport、description 等。面向零基础新手，通俗易懂。">
+
+  <!--
+    6. 页面作者：可选，写了搜索引擎会收录。
+  -->
+  <meta name="author" content="HTML 教程">
+
+  <!--
+    7. keywords（关键词）：曾经很重要，现在搜索引擎基本忽略。
+    写了无害，不写也没关系。
+  -->
+  <meta name="keywords" content="HTML, 教程, 前端, 零基础, meta, head, viewport">
+
+  <!--
+    8. Open Graph 标签：分享到微信/QQ/微博时显示的预览卡片。
+    试试把本页面的链接发到微信上，看看预览长什么样！
+  -->
+  <meta property="og:title" content="HTML 入门：head 中的元信息">
+  <meta property="og:description" content="了解 title、charset、viewport 等元信息标签的作用。">
+  <meta property="og:type" content="website">
+
+  <!--
+    页面样式（暂时不用管，后面 CSS 章节会讲）
+  -->
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 650px;
+      margin: 30px auto;
+      padding: 0 15px;
+      line-height: 1.8;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 15px 0;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>head 中的元信息</h1>
+
+  <p>这个页面本身的内容没什么特别的，重点是 <strong>head 部分</strong>。</p>
+  <p>请右键点击页面，选择"查看页面源代码"（或按 Ctrl+U），你会看到 head 里写了各种 meta 标签。</p>
+  <p>你也可以按 F12 打开开发者工具，在 Elements 面板查看完整的 HTML 结构。</p>
+
+  <hr>
+
+  <h2>head 中常见元信息速查表</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>标签</th>
+        <th>作用</th>
+        <th>必须？</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>&lt;meta charset="UTF-8"&gt;</td>
+        <td>声明编码，防止乱码</td>
+        <td>强烈推荐</td>
+      </tr>
+      <tr>
+        <td>&lt;title&gt;</td>
+        <td>浏览器标签页文字、搜索结果显示</td>
+        <td>必须</td>
+      </tr>
+      <tr>
+        <td>&lt;meta name="viewport" ...&gt;</td>
+        <td>手机端适配，控制缩放</td>
+        <td>强烈推荐</td>
+      </tr>
+      <tr>
+        <td>&lt;meta name="description" ...&gt;</td>
+        <td>搜索引擎结果摘要</td>
+        <td>推荐</td>
+      </tr>
+      <tr>
+        <td>&lt;meta name="keywords" ...&gt;</td>
+        <td>关键词（搜索引擎基本忽略）</td>
+        <td>可选</td>
+      </tr>
+      <tr>
+        <td>&lt;meta property="og:title" ...&gt;</td>
+        <td>社交平台分享标题</td>
+        <td>推荐</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>这些小标签虽然不直接显示在页面上，但它们决定了用户<strong>在点进你的页面之前</strong>看到什么——比如搜索结果、社交分享卡片。它们是页面的"门面"。</p>
+
+</body>
+</html>

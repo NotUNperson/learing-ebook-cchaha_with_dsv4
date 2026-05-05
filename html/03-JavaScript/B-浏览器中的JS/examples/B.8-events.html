@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.8 事件模型</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    button { margin: 4px; padding: 6px 14px; cursor: pointer; }
+    .box { border: 2px solid #333; padding: 12px; margin: 10px 0; border-radius: 4px; }
+    .log-area {
+      background: #1e1e1e; color: #d4d4d4; padding: 12px;
+      border-radius: 4px; max-height: 200px; overflow-y: auto;
+      font-family: Consolas, monospace; font-size: 13px;
+    }
+    .log-entry { margin: 2px 0; }
+    .log-capture { color: #569cd6; }
+    .log-bubble { color: #ce9178; }
+    .log-target { color: #4ec9b0; }
+
+    /* 嵌套方块的样式 */
+    #level1 {
+      background: #cfe2ff; padding: 30px; border-radius: 8px;
+      text-align: center; cursor: pointer; user-select: none;
+    }
+    #level2 {
+      background: #b3d9ff; padding: 25px; border-radius: 8px;
+    }
+    #level3 {
+      background: #99ccff; padding: 20px; border-radius: 8px;
+    }
+
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; }
+
+    .highlight-demo { padding: 8px 16px; background: #4a90d9; color: white; border-radius: 4px; }
+    .btn-remove { background: #f8d7da; }
+  </style>
+</head>
+<body>
+
+  <h1>B.8 事件模型</h1>
+
+  <!-- ===== 基本 addEventListener 演示 ===== -->
+  <h2>一、基本 addEventListener</h2>
+  <div class="box">
+    <button id="basic-btn" class="highlight-demo">点我</button>
+    <button id="remove-btn" class="btn-remove">解除监听</button>
+    <p id="basic-counter">点击次数：0</p>
+  </div>
+
+  <!-- ===== 事件流三阶段演示 ===== -->
+  <h2>二、事件流三阶段（捕获 → 目标 → 冒泡）</h2>
+  <p>点击下面的嵌套方块，观察控制台输出。方块从外到内是蓝→蓝→蓝。</p>
+
+  <div id="level1">
+    Level 1（最外层 div）
+    <div id="level2">
+      Level 2（中间层 div）
+      <div id="level3">
+        Level 3（最内层 div —— 点这里！）
+      </div>
+    </div>
+  </div>
+
+  <h3>控制台输出日志（页面版）：</h3>
+  <div id="event-log" class="log-area">
+    <p style="color:#888;">等待点击...</p>
+  </div>
+  <button onclick="clearLog()">清除日志</button>
+
+  <!-- ===== onclick 对比演示 ===== -->
+  <h2>三、onclick 属性 vs addEventListener</h2>
+  <div class="box">
+    <button id="onclick-demo">用 onclick 绑的按钮</button>
+    <p id="onclick-result">还没点击</p>
+    <button onclick="testOnclickOverwrite()">尝试覆盖 onclick 属性</button>
+    <p><strong>注意：</strong>onclick 属性只能绑一个处理函数——再次赋值会覆盖前一个。</p>
+  </div>
+
+  <!-- ===== 对比表 ===== -->
+  <h2>四、onclick 属性 vs addEventListener</h2>
+  <table>
+    <thead>
+      <tr><th>特性</th><th>onclick 属性</th><th>addEventListener</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>同一事件绑多个处理函数</td><td>不支持（后者覆盖前者）</td><td>支持</td></tr>
+      <tr><td>控制触发阶段</td><td>只有冒泡</td><td>可选择捕获/冒泡</td></tr>
+      <tr><td>移除监听</td><td>赋 null</td><td>removeEventListener</td></tr>
+      <tr><td>写在 HTML 属性里</td><td>支持</td><td>不支持</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    // ===== 基本 addEventListener =====
+    var counter = 0;
+    var basicBtn = document.getElementById("basic-btn");
+    var counterDisplay = document.getElementById("basic-counter");
+
+    // 定义事件处理函数（有名字，方便后面移除）
+    function handleClick() {
+      counter++;
+      counterDisplay.textContent = "点击次数：" + counter;
+      console.log("按钮被点击了！当前次数：" + counter);
+    }
+
+    // 绑定事件监听器
+    basicBtn.addEventListener("click", handleClick);
+
+    // 解除监听
+    document.getElementById("remove-btn").addEventListener("click", function() {
+      basicBtn.removeEventListener("click", handleClick);
+      console.log("监听器已解除！再点按钮不会有反应了");
+      alert("监听器已解除！再点上面的蓝色按钮试试——没反应了");
+    });
+
+    // ===== 事件流三阶段演示 =====
+    var level1 = document.getElementById("level1");
+    var level2 = document.getElementById("level2");
+    var level3 = document.getElementById("level3");
+    var logArea = document.getElementById("event-log");
+
+    function addLog(message, cssClass) {
+      var entry = document.createElement("div");
+      entry.className = "log-entry " + (cssClass || "");
+      entry.textContent = message;
+      logArea.append(entry);
+      logArea.scrollTop = logArea.scrollHeight;
+    }
+
+    // 捕获阶段监听器 —— 第三个参数为 true
+    level1.addEventListener("click", function(e) {
+      console.log("捕获阶段 - Level 1（最外层）");
+      addLog("[捕获] Level 1（最外层）", "log-capture");
+    }, true);  // true = 捕获阶段
+
+    level2.addEventListener("click", function(e) {
+      console.log("捕获阶段 - Level 2（中间层）");
+      addLog("[捕获] Level 2（中间层）", "log-capture");
+    }, true);
+
+    level3.addEventListener("click", function(e) {
+      console.log("捕获阶段 - Level 3（最内层）");
+      addLog("[捕获] Level 3（最内层）到目标了！", "log-target");
+    }, true);
+
+    // 冒泡阶段监听器 —— 第三个参数为 false（或不写，默认）
+    level3.addEventListener("click", function(e) {
+      console.log("冒泡阶段 - Level 3（最内层）");
+      addLog("[冒泡] Level 3（最内层）", "log-bubble");
+    });  // 默认 false = 冒泡阶段
+
+    level2.addEventListener("click", function(e) {
+      console.log("冒泡阶段 - Level 2（中间层）");
+      addLog("[冒泡] Level 2（中间层）", "log-bubble");
+    });
+
+    level1.addEventListener("click", function(e) {
+      console.log("冒泡阶段 - Level 1（最外层）");
+      addLog("[冒泡] Level 1（最外层）", "log-bubble");
+    });
+
+    // 额外：在 document 上监听冒泡
+    document.addEventListener("click", function(e) {
+      console.log("冒泡阶段 - document（最终）");
+      addLog("[冒泡] document（事件一直冒到这里！）", "log-bubble");
+    });
+
+    function clearLog() {
+      logArea.innerHTML = '<p style="color:#888;">日志已清除。请点击嵌套方块。</p>';
+    }
+
+    // ===== onclick 对比演示 =====
+    var onclickBtn = document.getElementById("onclick-demo");
+    var onclickResult = document.getElementById("onclick-result");
+
+    // 用 onclick 属性绑定
+    onclickBtn.onclick = function() {
+      onclickResult.textContent = "第一次绑定的 onclick 处理函数被触发了！";
+      console.log("第 1 个 onclick 处理函数");
+    };
+
+    function testOnclickOverwrite() {
+      // 覆盖 onclick 属性
+      onclickBtn.onclick = function() {
+        onclickResult.textContent = "第二次绑定的 onclick 处理函数被触发了！（前一个被覆盖了）";
+        console.log("第 2 个 onclick 处理函数 —— 前一个被覆盖了");
+      };
+      alert("onclick 已被覆盖！点击按钮看看——第一次的处理函数不会再触发了。");
+    }
+
+    // 启动日志
+    console.log("===== B.8 事件模型 =====");
+    console.log("请点击页面上的嵌套方块，观察捕获→冒泡的顺序");
+  </script>
+
+</body>
+</html>

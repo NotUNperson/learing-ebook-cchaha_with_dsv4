@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2.20 Grid（下）—— 项目放置与布局选用</title>
+  <style>
+    /* ========== 公共样式 ========== */
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      max-width: 850px;
+      margin: 20px auto;
+      padding: 0 15px 50px 15px;
+      line-height: 1.8;
+    }
+    h2 {
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 5px;
+      margin-top: 40px;
+    }
+    .note {
+      color: #888;
+      font-size: 14px;
+      margin: 8px 0;
+    }
+
+    /* ========== 一、grid-column / grid-row ========== */
+    .grid-lines {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(3, 80px);
+      gap: 10px;
+      border: 2px dashed #e74c3c;
+      padding: 10px;
+      background: #fdecea;
+      margin: 10px 0;
+    }
+    .g-item {
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+      border-radius: 5px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* 用网格线精确放置 */
+    .item1 { background: #e74c3c; grid-column: 1 / span 2; grid-row: 1 / 2; }
+    /* 从第1条列线起跨2列，第一行 */
+    .item2 { background: #3498db; grid-column: 3 / 5; grid-row: 1 / 2; }
+    /* 从第3条列线到第5条，也跨两列，第一行 */
+    .item3 { background: #27ae60; grid-column: 1 / 2; grid-row: 2 / 4; }
+    /* 从第1列线到第2列线（一列宽），从第2行线到第4行线（跨两行） */
+    .item4 { background: #f39c12; grid-column: 2 / 4; grid-row: 2 / 3; }
+    /* 第2列到第4列（跨两列），第2行 */
+    .item5 { background: #8e44ad; grid-column: 4 / 5; grid-row: 2 / 3; }
+    /* 第4列，第2行（一列一格） */
+    .item6 { background: #1abc9c; grid-column: 2 / 5; grid-row: 3 / 4; }
+    /* 第2列到第5列（跨三列），第3行 */
+
+    /* ========== 二、grid-template-areas ========== */
+    .grid-areas {
+      display: grid;
+      grid-template-areas:
+        "header  header  header"
+        "banner  banner  banner"
+        "sidebar content content"
+        "sidebar content content"
+        "footer  footer  footer";
+      grid-template-columns: 180px 1fr 1fr;
+      grid-template-rows: 60px 100px 1fr 1fr 60px;
+      gap: 10px;
+      min-height: 500px;
+      border: 2px dashed #3498db;
+      padding: 10px;
+      background: #eaf2fd;
+      margin: 10px 0;
+    }
+    .area-item {
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+      border-radius: 5px;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .area-header  { grid-area: header;  background: #2c3e50; }
+    .area-banner  { grid-area: banner;  background: #e74c3c; }
+    .area-sidebar { grid-area: sidebar; background: #8e44ad; }
+    .area-content { grid-area: content; background: #27ae60; }
+    .area-footer  { grid-area: footer;  background: #2c3e50; }
+
+    /* ========== 三、Flexbox + Grid 嵌套 ========== */
+    .nested-page {
+      display: grid;
+      grid-template-areas:
+        "nav     nav"
+        "sidebar main"
+        "footer  footer";
+      grid-template-columns: 200px 1fr;
+      grid-template-rows: 50px 1fr 50px;
+      gap: 10px;
+      min-height: 350px;
+      border: 2px solid #333;
+      margin: 10px 0;
+    }
+    .nest-nav {
+      grid-area: nav;
+      background: #2c3e50;
+      padding: 0;
+      /* 导航内部用 Flexbox 排列链接项 */
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0 15px;
+    }
+    .nest-nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 5px 15px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .nest-nav a:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    .nest-sidebar {
+      grid-area: sidebar;
+      background: #ecf0f1;
+      padding: 15px;
+      font-size: 14px;
+    }
+    .nest-main {
+      grid-area: main;
+      background: #fff;
+      padding: 15px;
+      /* 内容区的卡片用 Flexbox 排列 */
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .nest-card {
+      flex: 1 1 180px;   /* 基础 180px，可伸缩 */
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .nest-card h4 {
+      margin: 0 0 8px 0;
+      color: #2c3e50;
+    }
+    .nest-card p {
+      margin: 0;
+      color: #666;
+      font-size: 13px;
+    }
+    .nest-footer {
+      grid-area: footer;
+      background: #2c3e50;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+
+    /* ========== 对比表 ========== */
+    .compare-box {
+      display: flex;
+      gap: 20px;
+      margin: 15px 0;
+    }
+    .compare-col {
+      flex: 1;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .compare-flex {
+      background: #eaf2fd;
+      border: 2px solid #3498db;
+    }
+    .compare-grid {
+      background: #eafaf1;
+      border: 2px solid #27ae60;
+    }
+    .compare-col h3 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Grid 项目放置与布局选用</h1>
+
+  <!-- ============ 一、grid-column / grid-row ============ -->
+  <h2>一、grid-column / grid-row —— 精确落子</h2>
+  <p>下面是一个 4列x3行 的网格，每个项目都手动指定了位置和跨格：</p>
+  <div class="grid-lines">
+    <div class="g-item item1">1 跨两列（线1→线3）</div>
+    <div class="g-item item2">2 跨两列（线3→线5）</div>
+    <div class="g-item item3">3 跨两行（行2→行4）</div>
+    <div class="g-item item4">4 跨两列</div>
+    <div class="g-item item5">5 一个格</div>
+    <div class="g-item item6">6 跨三列（线2→线5）</div>
+  </div>
+  <p class="note">每个项目通过 grid-column 和 grid-row 精确指定了起点线和终点线。和围棋落子一样精确。</p>
+
+  <!-- ============ 二、grid-template-areas ============ -->
+  <h2>二、grid-template-areas —— "画地图"式布局</h2>
+  <p>下面这个布局完全是用文字"画"出来的：</p>
+  <div class="grid-areas">
+    <div class="area-item area-header">Header（页头）</div>
+    <div class="area-item area-banner">Banner（横幅）</div>
+    <div class="area-item area-sidebar">Sidebar<br>（侧边栏）</div>
+    <div class="area-item area-content">Main Content（主内容区）<br><br>这是页面最主要的内容区域。</div>
+    <div class="area-item area-footer">Footer（页脚）</div>
+  </div>
+  <p class="note">看 CSS 里的 grid-template-areas——"header header header" 就是第一行，"sidebar content content" 就是中间。就像在纸上画草图一样直观。</p>
+
+  <!-- ============ 三、嵌套 ============ -->
+  <h2>三、嵌套使用 —— Grid 搭骨架，Flexbox 管细节</h2>
+  <div class="nested-page">
+    <nav class="nest-nav">
+      <a href="#">首页</a>
+      <a href="#">产品</a>
+      <a href="#">关于</a>
+      <a href="#">联系</a>
+    </nav>
+    <aside class="nest-sidebar">
+      <strong>侧边栏</strong>
+      <p style="color:#666; font-size:13px;">这一块是 Grid 的 sidebar 区域。</p>
+    </aside>
+    <main class="nest-main">
+      <div class="nest-card">
+        <h4>卡片 1</h4>
+        <p>卡片用 Flexbox 排列，自动换行。</p>
+      </div>
+      <div class="nest-card">
+        <h4>卡片 2</h4>
+        <p>不管有多少张卡片，都能自动排好。</p>
+      </div>
+      <div class="nest-card">
+        <h4>卡片 3</h4>
+        <p>Grid 管大局，Flexbox 管小排队。</p>
+      </div>
+    </main>
+    <footer class="nest-footer">页脚 Footer — Grid 负责整体结构</footer>
+  </div>
+  <p class="note">外层用 Grid 搭出 导航-侧边栏-内容-页脚 的骨架，导航栏和卡片列表内部各用 Flexbox 排列。各司其职！</p>
+
+  <!-- ============ Flexbox vs Grid 对比 ============ -->
+  <h2>四、Flexbox vs Grid —— 选用原则</h2>
+  <div class="compare-box">
+    <div class="compare-col compare-flex">
+      <h3>用 Flexbox 当...</h3>
+      <ul style="font-size:14px; line-height:2;">
+        <li>导航栏（一排链接）</li>
+        <li>居中对齐一个元素</li>
+        <li>卡片自动换行列表</li>
+        <li>表单里的输入框+按钮</li>
+        <li>不确定数量的项目</li>
+        <li>只需要一维排列</li>
+      </ul>
+    </div>
+    <div class="compare-col compare-grid">
+      <h3>用 Grid 当...</h3>
+      <ul style="font-size:14px; line-height:2;">
+        <li>整页布局（页头+侧栏+内容）</li>
+        <li>照片墙/产品网格</li>
+        <li>仪表盘（不规则格子）</li>
+        <li>表单的多列布局</li>
+        <li>行列需要精确对齐</li>
+        <li>需要在行列两个维度控制</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">核心原则：<strong>一维用 Flexbox，二维用 Grid。</strong>两者可以嵌套，没有排他性。</p>
+
+</body>
+</html>

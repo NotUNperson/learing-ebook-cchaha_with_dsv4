@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.1 JS 如何接入页面</title>
+
+  <!--
+  ========================================
+  script 标签的三种使用方式 + defer/async 演示
+  ========================================
+  -->
+
+  <!--
+    defer 演示：后台下载，等 HTML 解析完再执行
+    打开控制台会看到这条消息在页面内容之后才输出
+  -->
+  <!-- 由于是本地文件，为了演示效果用一个简单的 defer 内联脚本 -->
+  <script defer>
+    console.log("[defer] HTML 解析完毕后我才执行（虽然我写在 head 里）");
+  </script>
+
+  <!-- async 概念说明（本地文件无法真实演示网络下载差异，这里写注释说明） -->
+  <!--
+    如果把上面的 defer 换成 async：
+    <script async>
+      console.log("[async] 我下载完就执行，可能比页面内容还早");
+    </script>
+    async 不保证执行顺序，适合独立的统计脚本、广告脚本。
+  -->
+</head>
+<body>
+
+  <h1>B.1 JS 如何接入页面 —— 三种方式演示</h1>
+
+  <!-- ===== 方式一：内联 script 块 ===== -->
+  <h2>方式一：内联 script 块（写在标签内部）</h2>
+  <p id="inline-output">等待 JS 填充...</p>
+
+  <script>
+    // 内联 script：直接写在 HTML 文件的 script 标签里
+    // 浏览器解析到这里时，立即执行这段代码
+    var el = document.getElementById("inline-output");
+    el.textContent = "这行文字由【内联 script 块】生成！—— script 标签直接写在 HTML 里。";
+    console.log("[内联 script] 我在 body 中间，浏览器解析到我就立即执行");
+  </script>
+
+  <!-- ===== 方式二：行内事件处理器（不推荐，但你要认识它） ===== -->
+  <h2>方式二：行内事件处理器（不推荐，仅供了解）</h2>
+  <p>点击下面的按钮，会弹出一个 alert 对话框：</p>
+  <!--
+    onclick 属性直接写 JS 代码——这就是行内事件处理器
+    代码很短时勉强能看，代码一多就变成灾难
+    现代项目都改用 addEventListener（B.8 会讲）
+  -->
+  <button onclick="alert('你好！这是行内事件处理器弹出的对话框！'); console.log('[行内事件] 按钮被点击了');">
+    点我试试
+  </button>
+
+  <hr>
+
+  <!-- ===== 三种模式对比说明 ===== -->
+  <h2>script 的位置与加载模式</h2>
+
+  <p>打开浏览器控制台（F12），观察 console.log 的输出先后顺序：</p>
+  <ol>
+    <li><strong>默认 script</strong>：写在 body 里，浏览器解析到就立即执行（阻塞 HTML 解析）</li>
+    <li><strong>defer</strong>：写在 head 里但加了 defer，等 HTML 全部解析完才执行（控制台最后输出）</li>
+    <li><strong>行内事件</strong>：不自动执行，只有用户点击按钮时才触发</li>
+  </ol>
+
+  <h3>一张表对比</h3>
+  <table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+      <tr>
+        <th>属性</th>
+        <th>下载是否阻塞 HTML</th>
+        <th>执行时机</th>
+        <th>是否保证顺序</th>
+        <th>适用场景</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>无（默认）</td>
+        <td>阻塞</td>
+        <td>立即执行</td>
+        <td>保证</td>
+        <td>了解即可，避免用</td>
+      </tr>
+      <tr>
+        <td>defer</td>
+        <td>不阻塞（后台下载）</td>
+        <td>HTML 解析完后</td>
+        <td>保证</td>
+        <td>需要操作 DOM 的脚本（推荐！）</td>
+      </tr>
+      <tr>
+        <td>async</td>
+        <td>不阻塞（后台下载）</td>
+        <td>下载完立即</td>
+        <td>不保证</td>
+        <td>独立脚本（如统计、广告）</td>
+      </tr>
+      <tr>
+        <td>body 底部</td>
+        <td>页面先渲染</td>
+        <td>HTML 解析完后</td>
+        <td>保证</td>
+        <td>简单可靠的小项目</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>推荐写法</h3>
+  <pre>
+&lt;!-- 现代方案（推荐）：head + defer --&gt;
+&lt;head&gt;
+  &lt;script src="app.js" <strong>defer</strong>&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;!-- 传统方案（也 OK）：body 底部 --&gt;
+&lt;body&gt;
+  ...页面内容...
+  &lt;script src="app.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+  </pre>
+
+  <hr>
+
+  <!-- ===== 方式三：外部 src 引用概念演示 ===== -->
+  <h2>方式三：外部 src 引用</h2>
+  <p>
+    外部引用的写法是 <code>&lt;script src="app.js"&gt;&lt;/script&gt;</code>，
+    但由于本地文件跨域限制，这里不好做完整演示。你学过的知识已经够了：
+  </p>
+  <ul>
+    <li>独立的 <code>.js</code> 文件只写 JS 代码，不用写 script 标签</li>
+    <li>HTML 通过 <code>&lt;script src="..."&gt;</code> 引入</li>
+    <li>用了 <code>src</code> 属性后，标签内部的代码会被忽略</li>
+    <li>这是生产环境最常用的方式</li>
+  </ul>
+
+  <!--
+    ===== 这是本页面最后一个 script，演示"默认位置"的执行 =====
+    因为放在 body 末尾，所以它执行时所有 DOM 都已就绪
+  -->
+  <script>
+    console.log("[body 底部 script] 我最后执行——此时页面上所有元素都已加载完毕");
+    console.log("=== 输出顺序：内联 script → [行内事件不自动执行] → defer 脚本 → body 底部脚本 ===");
+    console.log("实际上由于 defer 的内联脚本也会等 HTML 解析完，所以 defer 和本脚本的先后取决于具体实现");
+  </script>
+
+</body>
+</html>

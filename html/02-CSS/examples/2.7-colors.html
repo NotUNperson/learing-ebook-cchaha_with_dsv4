@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2.7 颜色</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      padding: 20px;
+      line-height: 1.8;
+      color: #333;
+    }
+
+    h1 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+
+    h2 {
+      margin-top: 30px;
+      color: #34495e;
+    }
+
+    /* 通用：颜色色块 */
+    .swatch {
+      display: inline-block;
+      width: 80px;
+      height: 40px;
+      margin: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      vertical-align: middle;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0;
+      flex-wrap: wrap;
+    }
+
+    /* ===== 一、颜色关键字 ===== */
+    .color-keyword      { background-color: red; }
+    .color-tomato       { background-color: tomato; }
+    .color-dodgerblue   { background-color: dodgerblue; }
+    .color-gold         { background-color: gold; }
+    .color-transparent  {
+      background-color: transparent;
+      border: 2px dashed #aaa;
+    }
+
+    /* ===== 二、十六进制 ===== */
+    .hex-red    { background-color: #ff0000; }
+    .hex-green  { background-color: #00ff00; }
+    .hex-blue   { background-color: #0000ff; }
+    .hex-black  { background-color: #000000; }
+    .hex-white  { background-color: #ffffff; }
+    .hex-gray   { background-color: #cccccc; }
+    .hex-short  { background-color: #f0f; }  /* #ff00ff 的缩写 */
+
+    /* ===== 三、RGB / RGBA ===== */
+    .rgb-red    { background-color: rgb(255, 0, 0); }
+    .rgb-green  { background-color: rgb(0, 255, 0); }
+    .rgb-blue   { background-color: rgb(0, 0, 255); }
+    .rgb-gray   { background-color: rgb(100, 100, 100); }
+    .rgba-red   { background-color: rgba(255, 0, 0, 0.3); }
+
+    /* ===== 四、HSL / HSLA ===== */
+    /*
+      色相(Hue): 0~360, 0=红, 120=绿, 240=蓝
+      饱和度(Saturation): 0%~100%, 0=灰
+      亮度(Lightness): 0%~100%, 0=黑, 100%=白, 50%=纯色
+    */
+    .hsl-red    { background-color: hsl(0, 100%, 50%); }
+    .hsl-green  { background-color: hsl(120, 100%, 50%); }
+    .hsl-blue   { background-color: hsl(240, 100%, 50%); }
+    .hsl-light  { background-color: hsl(240, 100%, 90%); }
+    .hsl-dark   { background-color: hsl(240, 100%, 20%); }
+    .hsl-desat  { background-color: hsl(240, 30%, 50%); }  /* 饱和度降低 */
+    .hsla-blue  { background-color: hsla(240, 100%, 50%, 0.3); }
+
+    /* ===== 五、currentColor ===== */
+    .current-color-box {
+      color: #3498db;            /* 主导颜色 */
+      border: 3px solid currentColor;  /* 边框跟着 color 走 */
+      padding: 15px;
+      border-radius: 8px;
+      max-width: 400px;
+      transition: color 0.3s;
+    }
+
+    .current-color-box:hover {
+      color: #e74c3c;  /* 修改 color 即可，边框自动跟着变 */
+    }
+
+    /* ===== 六、opacity vs rgba ===== */
+    .opacity-demo {
+      position: relative;
+      width: 300px;
+      height: 80px;
+      margin: 10px 0;
+    }
+
+    /* 底层：虚线的"参考底"，帮助我们看清透明效果 */
+    .opacity-bg {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        #eee,
+        #eee 10px,
+        #ddd 10px,
+        #ddd 20px
+      );
+      border-radius: 4px;
+    }
+
+    .opacity-box {
+      position: absolute;
+      top: 15px; left: 20px; right: 20px; bottom: 15px;
+      background-color: red;
+      padding: 10px 15px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .use-opacity {
+      opacity: 0.5;
+    }
+
+    .use-rgba {
+      background-color: rgba(255, 0, 0, 0.5);
+    }
+
+    /* 色相渐变条：展示 HSL 的色相变化 */
+    .hue-strip {
+      height: 30px;
+      border-radius: 4px;
+      background: linear-gradient(
+        to right,
+        hsl(0, 100%, 50%),
+        hsl(60, 100%, 50%),
+        hsl(120, 100%, 50%),
+        hsl(180, 100%, 50%),
+        hsl(240, 100%, 50%),
+        hsl(300, 100%, 50%),
+        hsl(360, 100%, 50%)
+      );
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CSS 颜色表示法演示</h1>
+
+  <!-- ===== 一、颜色关键字 ===== -->
+  <h2>一、颜色关键字</h2>
+  <div class="row">
+    <span class="swatch color-keyword"></span> red
+    <span class="swatch color-tomato"></span> tomato
+    <span class="swatch color-dodgerblue"></span> dodgerblue
+    <span class="swatch color-gold"></span> gold
+    <span class="swatch color-transparent"></span> transparent
+  </div>
+  <p>CSS 支持约 140 种颜色关键字。简单直观，但不够精细。</p>
+
+  <!-- ===== 二、十六进制 ===== -->
+  <h2>二、十六进制颜色（#RRGGBB）</h2>
+  <div class="row">
+    <span class="swatch hex-red"></span> #ff0000 纯红
+    <span class="swatch hex-green"></span> #00ff00 纯绿
+    <span class="swatch hex-blue"></span> #0000ff 纯蓝
+    <span class="swatch hex-gray"></span> #cccccc 灰
+    <span class="swatch hex-short"></span> #f0f (缩写)
+  </div>
+  <p>最常用的颜色表示法。每两位十六进制数代表一个通道（红绿蓝），00 最暗 FF 最亮。</p>
+  <p>缩写规则：当每通道两位相同时可缩写成一位。#ff00ff → #f0f</p>
+
+  <!-- ===== 三、RGB / RGBA ===== -->
+  <h2>三、RGB / RGBA</h2>
+  <div class="row">
+    <span class="swatch rgb-red"></span> rgb(255, 0, 0)
+    <span class="swatch rgb-green"></span> rgb(0, 255, 0)
+    <span class="swatch rgb-blue"></span> rgb(0, 0, 255)
+    <span class="swatch rgb-gray"></span> rgb(100,100,100)
+  </div>
+  <div class="row">
+    <span class="swatch rgba-red"></span> rgba(255, 0, 0, 0.3) —— 半透明红色
+  </div>
+  <p>像操控三盏灯：R 红灯、G 绿灯、B 蓝灯，每盏 0~255。A 是透明度，0 全透明 ~ 1 不透明。</p>
+
+  <!-- ===== 四、HSL / HSLA ===== -->
+  <h2>四、HSL / HSLA —— 更符合直觉的调色</h2>
+
+  <p>色相条（0~360，在色环上转一圈）：</p>
+  <div class="hue-strip"></div>
+  <p style="font-size:0.85em;color:#888;">红(0) → 黄(60) → 绿(120) → 青(180) → 蓝(240) → 洋红(300) → 红(360)</p>
+
+  <div class="row">
+    <span class="swatch hsl-red"></span> hsl(0, 100%, 50%) 纯红
+    <span class="swatch hsl-green"></span> hsl(120, 100%, 50%) 纯绿
+    <span class="swatch hsl-blue"></span> hsl(240, 100%, 50%) 纯蓝
+  </div>
+  <div class="row">
+    <span class="swatch hsl-light"></span> hsl(240, 100%, 90%) 浅蓝 —— 只调亮度
+    <span class="swatch hsl-dark"></span> hsl(240, 100%, 20%) 深蓝 —— 降亮度
+    <span class="swatch hsl-desat"></span> hsl(240, 30%, 50%) 灰蓝 —— 降饱和度
+  </div>
+  <div class="row">
+    <span class="swatch hsla-blue"></span> hsla(240, 100%, 50%, 0.3) 半透明蓝
+  </div>
+  <p>HSL 优势：想调"亮一点的蓝"？改 L。想调"灰一点的绿"？降 S。直觉操作。</p>
+
+  <!-- ===== 五、currentColor ===== -->
+  <h2>五、currentColor —— 跟随当前文字颜色</h2>
+  <div class="current-color-box">
+    我的边框颜色用的是 <code>currentColor</code>！<br>
+    把鼠标移到我上面——文字变红，边框自动跟着变红。
+  </div>
+  <p><code>currentColor</code> 让其他属性能跟随 <code>color</code> 属性变化，统一配色超方便。</p>
+
+  <!-- ===== 六、opacity vs rgba ===== -->
+  <h2>六、opacity 属性 vs rgba 颜色透明 —— 重要区别！</h2>
+
+  <h3>使用 opacity: 0.5（整体透明）</h3>
+  <div class="opacity-demo">
+    <div class="opacity-bg"></div>
+    <div class="opacity-box use-opacity">
+      <span style="color:white;">文字也变透明了</span>
+    </div>
+  </div>
+  <p style="margin-left:20px;">注意：文字也变模糊了！opacity 把<strong>整个元素</strong>（包括里面的文字）都变透明。</p>
+
+  <h3>使用 rgba(255,0,0,0.5)（只背景透明）</h3>
+  <div class="opacity-demo">
+    <div class="opacity-bg"></div>
+    <div class="opacity-box use-rgba">
+      <span style="color:white;">文字依然清晰！</span>
+    </div>
+  </div>
+  <p style="margin-left:20px;">注意：背景半透明但文字仍然清晰！rgba 只影响<strong>这一个颜色属性</strong>。</p>
+
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2.10 字体与图标</title>
+
+  <!-- ===== Google Fonts 引入 ===== -->
+  <!-- 引入三款字体：Roboto(英文), Noto Sans SC(中文), Noto Serif SC(中文衬线) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&family=Noto+Serif+SC:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- ===== Font Awesome 图标字体引入 ===== -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    /* ===== 全局基础 ===== */
+    body {
+      font-family: "Roboto", "Noto Sans SC", sans-serif;
+      font-size: 16px;
+      line-height: 1.8;
+      color: #333;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: #34495e;
+      margin-top: 35px;
+    }
+
+    /* ===== 1. Google Fonts 字体效果 ===== */
+    .font-roboto {
+      font-family: "Roboto", sans-serif;
+    }
+
+    .font-noto-sans {
+      font-family: "Noto Sans SC", sans-serif;
+    }
+
+    .font-noto-serif {
+      font-family: "Noto Serif SC", "SimSun", serif;
+    }
+
+    .font-light {
+      font-weight: 300;
+    }
+
+    .font-regular {
+      font-weight: 400;
+    }
+
+    .font-bold {
+      font-weight: 700;
+    }
+
+    /* ===== 2. @font-face 本地字体演示 ===== */
+    /* 因为本地没有字体文件，这里演示 @font-face 的语法结构 */
+    /* 实际使用时要确保字体文件路径正确 */
+    /*
+    @font-face {
+      font-family: "MyLocalFont";
+      src: url("fonts/MyLocalFont.woff2") format("woff2"),
+           url("fonts/MyLocalFont.woff") format("woff");
+      font-weight: normal;
+      font-style: normal;
+    }
+    */
+
+    /* ===== 3. Font Awesome 图标样式 ===== */
+    .icon-demo {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .icon-item {
+      text-align: center;
+      padding: 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      min-width: 100px;
+    }
+
+    .icon-item i {
+      display: block;
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .icon-red i {
+      color: #e74c3c;
+    }
+
+    .icon-blue i {
+      color: #3498db;
+    }
+
+    .icon-green i {
+      color: #27ae60;
+    }
+
+    .icon-large i {
+      font-size: 48px;
+    }
+
+    /* 按钮中使用图标 */
+    .btn-with-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .btn-with-icon:hover {
+      background-color: #2980b9;
+    }
+
+    .btn-with-icon i {
+      font-size: 14px;
+    }
+
+    /* 图标文字混合排版 */
+    .feature-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .feature-list li {
+      padding: 8px 0;
+    }
+
+    .feature-list li i {
+      margin-right: 10px;
+      width: 20px;   /* 固定宽度让文字对齐 */
+      text-align: center;
+    }
+
+    .fa-check-circle {
+      color: #27ae60;
+    }
+
+    .fa-times-circle {
+      color: #e74c3c;
+    }
+
+    .fa-exclamation-triangle {
+      color: #f39c12;
+    }
+
+    /* ===== 4. 旋转图标 ===== */
+    .fa-spin-slow {
+      animation: fa-spin 3s linear infinite;  /* 比默认慢的旋转 */
+    }
+
+    /* 辅助样式 */
+    .demo-card {
+      border: 1px solid #e0e0e0;
+      padding: 20px;
+      margin: 12px 0;
+      border-radius: 8px;
+    }
+
+    /* @font-face 语法展示 */
+    pre {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>字体与图标演示</h1>
+
+  <p>本页面使用了 <strong>Google Fonts</strong>（Roboto + Noto Sans/Serif SC）和 <strong>Font Awesome 6</strong> 图标字体。</p>
+
+  <!-- ===== Google Fonts 效果 ===== -->
+  <h2>一、Google Fonts 自定义字体</h2>
+
+  <h3>Roboto（英文字体）</h3>
+  <div class="demo-card font-roboto">
+    <p class="font-light">Light 300: The quick brown fox jumps over the lazy dog.</p>
+    <p class="font-regular">Regular 400: The quick brown fox jumps over the lazy dog.</p>
+    <p class="font-bold">Bold 700: The quick brown fox jumps over the lazy dog.</p>
+  </div>
+
+  <h3>Noto Sans SC（中文字体，无衬线）</h3>
+  <div class="demo-card font-noto-sans">
+    <p class="font-regular">Regular 400: 网页设计是一门将美学与功能结合的技艺。</p>
+    <p class="font-bold">Bold 700: 网页设计是一门将美学与功能结合的技艺。</p>
+  </div>
+
+  <h3>Noto Serif SC（中文字体，衬线/宋体风格）</h3>
+  <div class="demo-card font-noto-serif">
+    <p class="font-regular">Regular 400: 衬线字体更适合长篇阅读，笔划有装饰性的"小脚"。</p>
+    <p class="font-bold">Bold 700: 衬线字体更适合长篇阅读，笔划有装饰性的"小脚"。</p>
+  </div>
+
+  <!-- ===== @font-face 演示 ===== -->
+  <h2>二、@font-face 自定义字体（语法演示）</h2>
+  <p>如果你的项目需要用到自己下载的字体文件（不用 Google Fonts），可以这样写：</p>
+  <pre><code>@font-face {
+  font-family: "MyCustomFont";          /* 给字体起名 */
+  src: url("fonts/MyCustomFont.woff2")  /* 字体文件路径 */
+       format("woff2"),
+       url("fonts/MyCustomFont.woff")   /* 备选格式 */
+       format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* 用起来和普通字体一样 */
+body {
+  font-family: "MyCustomFont", sans-serif;
+}</code></pre>
+  <p>本示例没有自带字体文件，所以这里只是展示语法。实际使用时把 <code>url()</code> 里的路径换成你真实的字体文件即可。</p>
+
+  <!-- ===== Font Awesome 图标 ===== -->
+  <h2>三、Font Awesome 图标字体</h2>
+
+  <p>图标本质上就是一种特殊的字体——每个图标对应一个 Unicode 字符。所以你可以像控制文字一样控制图标的大小、颜色！</p>
+
+  <div class="icon-demo">
+    <div class="icon-item">
+      <i class="fa-solid fa-house"></i>
+      房子
+    </div>
+    <div class="icon-item icon-blue">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      搜索
+    </div>
+    <div class="icon-item icon-red">
+      <i class="fa-solid fa-heart"></i>
+      爱心
+    </div>
+    <div class="icon-item icon-green">
+      <i class="fa-solid fa-check"></i>
+      对勾
+    </div>
+    <div class="icon-item">
+      <i class="fa-brands fa-github"></i>
+      GitHub
+    </div>
+    <div class="icon-item icon-large icon-blue">
+      <i class="fa-solid fa-star"></i>
+      星星(48px)
+    </div>
+  </div>
+
+  <h3>图标在按钮里</h3>
+  <p>
+    <span class="btn-with-icon">
+      <i class="fa-solid fa-download"></i> 下载文件
+    </span>
+    &nbsp;
+    <span class="btn-with-icon">
+      <i class="fa-solid fa-paper-plane"></i> 发送消息
+    </span>
+  </p>
+
+  <h3>图标在列表里（功能对比）</h3>
+  <ul class="feature-list">
+    <li><i class="fa-solid fa-check-circle"></i> 支持自定义字体</li>
+    <li><i class="fa-solid fa-check-circle"></i> 支持图标字体</li>
+    <li><i class="fa-solid fa-check-circle"></i> 响应式设计</li>
+    <li><i class="fa-solid fa-times-circle"></i> 不支持 IE6（开玩笑的）</li>
+    <li><i class="fa-solid fa-exclamation-triangle"></i> 需要网络加载 CDN 资源</li>
+  </ul>
+
+  <h3>旋转的加载图标</h3>
+  <p>
+    <i class="fa-solid fa-spinner fa-spin"></i> 默认速度旋转 &nbsp;&nbsp;
+    <i class="fa-solid fa-circle-notch fa-spin-slow"></i> 慢速旋转
+  </p>
+
+  <h2>小提示</h2>
+  <p>
+    图标字体的 class 命名有两种风格（Font Awesome 6）：
+    <code>fa-solid fa-xxx</code>（实心风格）、<code>fa-regular fa-xxx</code>（线框风格）、
+    <code>fa-brands fa-xxx</code>（品牌 logo）。
+  </p>
+  <p>去 <a href="https://fontawesome.com/icons" target="_blank">Font Awesome 图标库</a> 搜索你需要的图标吧！</p>
+
+</body>
+</html>

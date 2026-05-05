@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2.22 媒体查询 - @media 演示</title>
+  <style>
+    /* ========== 移动优先：基础样式（手机端） ========== */
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      line-height: 1.8;
+      margin: 0;
+      padding: 1rem;
+      background: #f5f5f5;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      margin-top: 0;
+    }
+    h2 {
+      font-size: 1.2rem;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 5px;
+      margin-top: 30px;
+    }
+    .note {
+      color: #888;
+      font-size: 0.875rem;
+      margin: 8px 0;
+    }
+
+    /* ========== 导航栏：移动端竖排 ========== */
+    .navbar {
+      background: #2c3e50;
+      padding: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .navbar a {
+      display: block;               /* 手机端：竖排，每个链接占一整行 */
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .navbar a:last-child {
+      border-bottom: none;
+    }
+    .navbar a:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* 平板及以上（>=600px）：导航变横排 */
+    @media (min-width: 600px) {
+      .navbar {
+        display: flex;             /* Flexbox 横排 */
+      }
+      .navbar a {
+        border-bottom: none;
+        border-right: 1px solid rgba(255,255,255,0.1);
+      }
+      .navbar a:last-child {
+        border-right: none;
+      }
+    }
+
+    /* ========== 卡片列表：核心响应式演示 ========== */
+    .card-list {
+      display: grid;
+      gap: 15px;
+      grid-template-columns: 1fr;         /* 手机端：单列 */
+      margin: 15px 0;
+    }
+
+    /* 平板（>=600px）：两列 */
+    @media (min-width: 600px) {
+      .card-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* 桌面（>=900px）：三列 */
+    @media (min-width: 900px) {
+      .card-list {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .card h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1rem;
+      color: #2c3e50;
+    }
+    .card p {
+      margin: 0;
+      font-size: 0.875rem;
+      color: #666;
+    }
+
+    /* ========== 排版：不同屏幕的字号 ========== */
+    @media (min-width: 600px) {
+      h1 { font-size: 1.8rem; }
+      h2 { font-size: 1.4rem; }
+    }
+    @media (min-width: 900px) {
+      body { padding: 2rem; max-width: 1100px; margin: 0 auto; }
+      h1 { font-size: 2rem; }
+    }
+
+    /* ========== 侧边栏演示（仅桌面端显示） ========== */
+    .layout-with-sidebar {
+      margin: 20px 0;
+    }
+    .sidebar {
+      background: #ecf0f1;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+    .sidebar h3 {
+      margin-top: 0;
+      font-size: 1rem;
+    }
+    .sidebar ul {
+      margin: 0;
+      padding-left: 1.2rem;
+      font-size: 0.875rem;
+    }
+
+    /* 桌面端：侧边栏和内容区横排 */
+    @media (min-width: 900px) {
+      .layout-with-sidebar {
+        display: grid;
+        grid-template-columns: 1fr 250px;
+        gap: 20px;
+      }
+      .sidebar {
+        margin-top: 0;
+      }
+    }
+
+    /* ========== 打印样式 ========== */
+    @media print {
+      .navbar { display: none; }        /* 打印时隐藏导航 */
+      .sidebar { display: none; }       /* 打印时隐藏侧边栏 */
+      body {
+        font-size: 12pt;
+        background: #fff;
+        padding: 0;
+      }
+      .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        break-inside: avoid;            /* 避免卡片被分页截断 */
+      }
+    }
+
+    /* ========== 暗色模式（可选） ========== */
+    @media (prefers-color-scheme: dark) {
+      /* 如果用户系统开启了暗色模式 */
+      /* 这里只是简单示意，不做完整的暗色主题 */
+      body {
+        background: #1a1a2e;
+        color: #eee;
+      }
+      .card {
+        background: #16213e;
+        border-color: #2a2a4a;
+      }
+      .card h3 { color: #e0e0e0; }
+      .card p { color: #aaa; }
+      .sidebar { background: #16213e; }
+      h2 { border-bottom-color: #333; }
+    }
+
+    /* ========== 断点指示器（教学用） ========== */
+    .breakpoint-indicator {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: #333;
+      color: #fff;
+      padding: 5px 12px;
+      border-radius: 15px;
+      font-size: 0.75rem;
+      z-index: 999;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>媒体查询演示 —— 拖拽浏览器窗口宽度试试</h1>
+
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <a href="#">首页</a>
+    <a href="#">产品</a>
+    <a href="#">服务</a>
+    <a href="#">关于</a>
+    <a href="#">联系</a>
+  </nav>
+
+  <!-- 卡片列表：核心演示 -->
+  <h2>卡片列表：手机单列 -> 平板两列 -> 桌面三列</h2>
+  <div class="card-list">
+    <div class="card">
+      <h3>卡片 1 —— Grid 入门</h3>
+      <p>Grid 是二维布局工具，适合做表格、照片墙等行列排版。</p>
+    </div>
+    <div class="card">
+      <h3>卡片 2 —— Flexbox 弹性布局</h3>
+      <p>Flexbox 擅长一维排列，导航栏、居中对齐最方便。</p>
+    </div>
+    <div class="card">
+      <h3>卡片 3 —— 响应式设计</h3>
+      <p>用 rem、百分比和媒体查询让网页在手机和桌面上都好看。</p>
+    </div>
+    <div class="card">
+      <h3>卡片 4 —— CSS 变量</h3>
+      <p>用 -- 前缀定义变量，统一管理颜色和间距。</p>
+    </div>
+    <div class="card">
+      <h3>卡片 5 —— 过渡与动画</h3>
+      <p>transition 让变化平滑，@keyframes 让动画自动运行。</p>
+    </div>
+    <div class="card">
+      <h3>卡片 6 —— 综合实战</h3>
+      <p>把所有知识组合起来，做一个完整的作品。</p>
+    </div>
+  </div>
+
+  <!-- 侧边栏演示 -->
+  <h2>侧边栏：手机/平板竖排，桌面端横排</h2>
+  <div class="layout-with-sidebar">
+    <div style="background:#fff; border:1px solid #ddd; border-radius:8px; padding:1.25rem;">
+      <h3 style="margin-top:0;">主要内容区</h3>
+      <p>在手机和平板上，侧边栏显示在内容下方。在桌面端（>=900px），侧边栏显示在右侧。</p>
+      <p>这就是 Grid + 媒体查询的典型用法：通过改变 grid-template-columns 来切换横竖布局。</p>
+    </div>
+    <aside class="sidebar">
+      <h3>侧边栏</h3>
+      <ul>
+        <li>热门文章</li>
+        <li>最新评论</li>
+        <li>标签云</li>
+        <li>友情链接</li>
+      </ul>
+    </aside>
+  </div>
+
+  <!-- 断点指示器 -->
+  <div class="breakpoint-indicator" id="indicator">
+    当前：手机端（< 600px）
+  </div>
+
+  <script>
+    /* 简单脚本：根据窗口宽度更新断点指示器 */
+    function updateIndicator() {
+      var w = window.innerWidth;
+      var indicator = document.getElementById('indicator');
+      if (w >= 900) {
+        indicator.textContent = '当前：桌面端（>= 900px）';
+      } else if (w >= 600) {
+        indicator.textContent = '当前：平板端（600px ~ 899px）';
+      } else {
+        indicator.textContent = '当前：手机端（< 600px）';
+      }
+    }
+    window.addEventListener('resize', updateIndicator);
+    updateIndicator();
+  </script>
+
+</body>
+</html>

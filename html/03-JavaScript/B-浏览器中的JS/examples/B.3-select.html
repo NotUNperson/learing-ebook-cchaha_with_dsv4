@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.3 选择 DOM 元素</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    table { border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; }
+    .highlight { background: #ffff80; padding: 2px 6px; border-radius: 3px; }
+    .box { border: 2px solid #333; padding: 12px; margin: 10px 0; border-radius: 4px; }
+    .selected { outline: 3px solid red; }
+  </style>
+</head>
+<body>
+
+  <h1>B.3 选择 DOM 元素</h1>
+
+  <!-- ===== 老牌方法演示区 ===== -->
+  <h2>一、老牌方法</h2>
+
+  <div id="old-methods" class="box">
+    <p id="pid">我的 id 是 "pid"</p>
+    <p class="item">我是 item-1</p>
+    <p class="item">我是 item-2</p>
+    <p class="item">我是 item-3</p>
+  </div>
+
+  <p>点击下面的按钮，用老牌方法选择元素（你会看到被选中的元素出现红色边框）：</p>
+
+  <button onclick="selectById()">getElementById("pid")</button>
+  <button onclick="selectByClass()">getElementsByClassName("item")</button>
+  <button onclick="selectByTag()">getElementsByTagName("p")</button>
+
+  <!-- ===== 现代方法演示区 ===== -->
+  <h2>二、现代方法（推荐）</h2>
+
+  <div id="modern-demo" class="box">
+    <ul>
+      <li class="fruit">苹果</li>
+      <li class="fruit">香蕉</li>
+      <li class="fruit highlight">橙子（自带 highlight class）</li>
+      <li class="vegetable">白菜</li>
+      <li class="vegetable">萝卜</li>
+    </ul>
+  </div>
+
+  <button onclick="selectQS()">querySelector(".highlight")</button>
+  <button onclick="selectQSA()">querySelectorAll(".fruit")</button>
+  <button onclick="selectCombo()">querySelector("ul > li:last-child")</button>
+  <button onclick="selectAttr()">querySelector("li.highlight")</button>
+
+  <!-- ===== 动态集合 vs 静态列表演示 ===== -->
+  <h2>三、动态集合 vs 静态列表</h2>
+
+  <div id="dynamic-demo" class="box">
+    <p class="dyn-item">第一项</p>
+    <p class="dyn-item">第二项</p>
+  </div>
+
+  <p>当前页面中 class="dyn-item" 的元素数量：</p>
+  <ul>
+    <li>动态集合（getElementsByClassName）：<strong id="dynamic-count">?</strong></li>
+    <li>静态列表（querySelectorAll）：<strong id="static-count">?</strong></li>
+  </ul>
+
+  <button onclick="addDynamicItem()">新增一个 dyn-item</button>
+  <button onclick="checkCounts()">再次检查数量</button>
+  <p id="count-result"></p>
+
+  <script>
+    // ===== 公用工具函数：清除之前的高亮 =====
+    function clearHighlight() {
+      var all = document.querySelectorAll(".selected");
+      for (var i = 0; i < all.length; i++) {
+        all[i].classList.remove("selected");
+      }
+    }
+
+    // ===== 老牌方法演示 =====
+    function selectById() {
+      clearHighlight();
+      var el = document.getElementById("pid");
+      if (el) {
+        el.classList.add("selected");
+        console.log("getElementById('pid') 找到了：", el);
+      } else {
+        console.log("getElementById('pid') 没找到");
+      }
+    }
+
+    function selectByClass() {
+      clearHighlight();
+      var items = document.getElementsByClassName("item");
+      console.log("getElementsByClassName('item') 找到了 " + items.length + " 个元素：", items);
+      for (var i = 0; i < items.length; i++) {
+        items[i].classList.add("selected");
+      }
+    }
+
+    function selectByTag() {
+      clearHighlight();
+      // 小心：这会选中页面上的所有 p 元素，包括按钮外那些！
+      var paragraphs = document.getElementsByTagName("p");
+      console.log("getElementsByTagName('p') 找到了 " + paragraphs.length + " 个 p 元素");
+      // 只高亮 old-methods 区域里的 p
+      var container = document.getElementById("old-methods");
+      var innerPs = container.getElementsByTagName("p");
+      for (var i = 0; i < innerPs.length; i++) {
+        innerPs[i].classList.add("selected");
+      }
+    }
+
+    // ===== 现代方法演示 =====
+    function selectQS() {
+      clearHighlight();
+      var el = document.querySelector(".highlight");
+      if (el) {
+        el.classList.add("selected");
+        console.log("querySelector('.highlight') 找到了：", el);
+        console.log("  注意：即使页面有多个 .highlight，querySelector 也只返回第一个！");
+      }
+    }
+
+    function selectQSA() {
+      clearHighlight();
+      var fruits = document.querySelectorAll(".fruit");
+      console.log("querySelectorAll('.fruit') 找到了 " + fruits.length + " 个元素：", fruits);
+      for (var i = 0; i < fruits.length; i++) {
+        fruits[i].classList.add("selected");
+      }
+    }
+
+    function selectCombo() {
+      clearHighlight();
+      // CSS 组合选择器：ul 的直接子元素 li 中的最后一个
+      var el = document.querySelector("ul > li:last-child");
+      if (el) {
+        el.classList.add("selected");
+        console.log("querySelector('ul > li:last-child') 找到了：", el);
+      }
+    }
+
+    function selectAttr() {
+      clearHighlight();
+      // 同时用 class 和另一个 class 来限定 —— CSS 选择器的组合能力
+      var el = document.querySelector("li.highlight");
+      if (el) {
+        el.classList.add("selected");
+        console.log("querySelector('li.highlight') 找到了：", el);
+        console.log("  这等价于：选同时具有 li 标签和 highlight 类的元素");
+      }
+    }
+
+    // ===== 动态集合 vs 静态列表 =====
+    // 先获取两个集合
+    var dynamicCollection = document.getElementsByClassName("dyn-item");
+    var staticNodeList = document.querySelectorAll(".dyn-item");
+
+    // 初始显示
+    document.getElementById("dynamic-count").textContent = dynamicCollection.length;
+    document.getElementById("static-count").textContent = staticNodeList.length;
+
+    function addDynamicItem() {
+      var newP = document.createElement("p");
+      newP.className = "dyn-item";
+      newP.textContent = "新增的第 " + (document.querySelectorAll(".dyn-item").length + 1) + " 项";
+      document.getElementById("dynamic-demo").appendChild(newP);
+      console.log("新增了一个 dyn-item！");
+    }
+
+    function checkCounts() {
+      document.getElementById("dynamic-count").textContent = dynamicCollection.length;
+      document.getElementById("static-count").textContent = staticNodeList.length;
+
+      var resultEl = document.getElementById("count-result");
+      if (dynamicCollection.length !== staticNodeList.length) {
+        resultEl.innerHTML = "<strong>看到了吗？</strong>动态集合（getElementsByClassName）已经变成了 " +
+          dynamicCollection.length + " 个，但静态列表（querySelectorAll）还是 " +
+          staticNodeList.length + " 个。静态列表是创建时的快照，不会自动更新！";
+        resultEl.style.color = "#d63384";
+      } else {
+        resultEl.textContent = "数量一样：" + dynamicCollection.length + " 个。还没新增？点上面按钮试试。";
+        resultEl.style.color = "inherit";
+      }
+    }
+
+    // 页面加载完时的初始日志
+    console.log("===== B.3 选择 DOM 元素 =====");
+    console.log("试试在控制台手动输入：");
+    console.log("  document.querySelectorAll('li')  —— 选所有 li");
+    console.log("  document.querySelector('li')     —— 选第一个 li");
+    console.log("  document.getElementById('old-methods') —— 按 id 选");
+    console.log("CSS 选择器所有的语法，querySelector 系列都能用！");
+  </script>
+
+</body>
+</html>

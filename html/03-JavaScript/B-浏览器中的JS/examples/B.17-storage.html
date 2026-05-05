@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B.17 存储方案</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    button { margin: 4px; padding: 6px 14px; cursor: pointer; }
+    .box { border: 2px solid #333; padding: 12px; margin: 10px 0; border-radius: 4px; }
+    .result-area {
+      background: #f5f5f5; padding: 12px; border-radius: 4px;
+      font-family: Consolas, monospace; font-size: 13px; margin-top: 8px;
+      white-space: pre-wrap; max-height: 200px; overflow-y: auto;
+    }
+    .info { color: #666; font-size: 14px; }
+    label { display: block; margin: 6px 0 2px; font-weight: bold; }
+    input[type="text"] {
+      padding: 6px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;
+      width: 250px;
+    }
+    table { border-collapse: collapse; margin: 8px 0; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; font-size: 14px; }
+    .theme-demo {
+      padding: 20px; border-radius: 8px; transition: all 0.3s ease;
+      margin: 10px 0;
+    }
+    .theme-demo.light {
+      background: #ffffff; color: #333; border: 2px solid #ccc;
+    }
+    .theme-demo.dark {
+      background: #1e1e1e; color: #e0e0e0; border: 2px solid #555;
+    }
+    .storage-table { font-family: monospace; font-size: 13px; }
+  </style>
+</head>
+<body>
+
+  <h1>B.17 存储方案</h1>
+
+  <!-- ===== localStorage 基本操作 ===== -->
+  <h2>一、localStorage —— 持久化存储</h2>
+  <div class="box">
+    <label for="storage-key">键（key）：</label>
+    <input type="text" id="storage-key" placeholder="例如 username" value="username">
+    <label for="storage-value">值（value）：</label>
+    <input type="text" id="storage-value" placeholder="例如 张三" value="张三">
+    <p>
+      <button onclick="saveToLocal()">localStorage.setItem()</button>
+      <button onclick="loadFromLocal()">localStorage.getItem()</button>
+      <button onclick="removeFromLocal()">localStorage.removeItem()</button>
+      <button onclick="clearLocal()">localStorage.clear()</button>
+      <button onclick="showAllLocal()">显示全部 localStorage 数据</button>
+    </p>
+    <div id="local-result" class="result-area">等待操作...</div>
+  </div>
+
+  <!-- ===== 存储对象 ===== -->
+  <h2>二、存储 JS 对象（需要 JSON 转换）</h2>
+  <div class="box">
+    <p>localStorage 只能存字符串。存对象要先用 JSON.stringify 转换：</p>
+    <button onclick="saveObject()">存入一个对象</button>
+    <button onclick="loadObject()">读取对象</button>
+    <div id="object-result" class="result-area">等待操作...</div>
+  </div>
+
+  <!-- ===== 主题偏好演示 ===== -->
+  <h2>三、实战演示：localStorage 保存主题偏好</h2>
+  <div class="box">
+    <p>切换主题后<strong>刷新页面</strong>，你会发现主题偏好被记住了！</p>
+    <div id="theme-demo-area" class="theme-demo light">
+      <p>这是主题演示区域。</p>
+      <p>当前主题：<strong id="current-theme">light</strong></p>
+      <button onclick="toggleTheme()">切换主题</button>
+    </div>
+  </div>
+
+  <!-- ===== sessionStorage 演示 ===== -->
+  <h2>四、sessionStorage —— 会话级别存储</h2>
+  <div class="box">
+    <p>API 和 localStorage 完全一样，但<strong>关闭标签页后数据消失</strong>。</p>
+    <button onclick="saveToSession()">sessionStorage.setItem()</button>
+    <button onclick="loadFromSession()">sessionStorage.getItem()</button>
+    <button onclick="showAllSession()">显示全部 sessionStorage 数据</button>
+    <div id="session-result" class="result-area">等待操作...</div>
+    <p class="info">
+      试试：存入数据 → 刷新页面（数据还在）→ 关闭标签页 → 重新打开（数据消失）
+    </p>
+  </div>
+
+  <!-- ===== cookie 演示 ===== -->
+  <h2>五、cookie —— 老式存储（每次请求都发送）</h2>
+  <div class="box">
+    <p>cookie 操作比较麻烦，需要手动解析字符串：</p>
+    <button onclick="setCookieDemo()">设置一个 cookie</button>
+    <button onclick="readAllCookies()">读取全部 cookie</button>
+    <button onclick="deleteCookieDemo()">删除 cookie</button>
+    <div id="cookie-result" class="result-area">等待操作...</div>
+    <p class="info">
+      打开 F12 → Application → Cookies 可以看到 cookie 列表。<br>
+      cookie 的独特之处：每次 HTTP 请求都会自动带上（localStorage 不会）。
+    </p>
+  </div>
+
+  <!-- ===== 三者对比表 ===== -->
+  <h2>六、三者对比</h2>
+  <table>
+    <thead>
+      <tr><th>特性</th><th>localStorage</th><th>sessionStorage</th><th>cookie</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>容量</td><td>~5MB</td><td>~5MB</td><td>~4KB</td></tr>
+      <tr><td>生命周期</td><td>永久</td><td>关闭标签页即清除</td><td>可设过期时间</td></tr>
+      <tr><td>随请求发送</td><td>不发送</td><td>不发送</td><td>每次都发送</td></tr>
+      <tr><td>API 易用性</td><td>简单</td><td>简单</td><td>麻烦</td></tr>
+      <tr><td>跨标签页共享</td><td>同域名共享</td><td>不共享</td><td>共享</td></tr>
+      <tr><td>典型用途</td><td>应用数据、用户偏好</td><td>临时状态</td><td>身份认证令牌</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    // ===== localStorage =====
+    function saveToLocal() {
+      var key = document.getElementById("storage-key").value.trim();
+      var value = document.getElementById("storage-value").value.trim();
+      if (!key) { alert("请输入键名！"); return; }
+
+      localStorage.setItem(key, value);
+      document.getElementById("local-result").textContent =
+        "已存入 localStorage！\n" +
+        "key: " + key + "\n" +
+        "value: " + value + "\n\n" +
+        "打开 F12 → Application → Local Storage 查看";
+      console.log("localStorage.setItem('" + key + "', '" + value + "')");
+    }
+
+    function loadFromLocal() {
+      var key = document.getElementById("storage-key").value.trim();
+      if (!key) { alert("请输入键名！"); return; }
+
+      var value = localStorage.getItem(key);
+      document.getElementById("local-result").textContent =
+        "localStorage.getItem('" + key + "') = " +
+        (value === null ? "null（键不存在）" : "\"" + value + "\"");
+    }
+
+    function removeFromLocal() {
+      var key = document.getElementById("storage-key").value.trim();
+      if (!key) { alert("请输入键名！"); return; }
+
+      localStorage.removeItem(key);
+      document.getElementById("local-result").textContent =
+        "已删除 localStorage 中的 '" + key + "'";
+    }
+
+    function clearLocal() {
+      if (confirm("确定要清空所有 localStorage 数据吗？")) {
+        localStorage.clear();
+        document.getElementById("local-result").textContent =
+          "localStorage 已全部清空！";
+      }
+    }
+
+    function showAllLocal() {
+      var result = "localStorage 全部数据（" + localStorage.length + " 条）：\n";
+      if (localStorage.length === 0) {
+        result += "(空)";
+      }
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        var value = localStorage.getItem(key);
+        // 截断过长的值
+        var displayValue = value.length > 60 ? value.substring(0, 60) + "..." : value;
+        result += "  " + key + " = " + displayValue + "\n";
+      }
+      document.getElementById("local-result").textContent = result;
+    }
+
+    // ===== 存储对象 =====
+    function saveObject() {
+      var user = {
+        name: "张三",
+        age: 28,
+        role: "admin",
+        hobbies: ["编程", "篮球", "阅读"],
+        loginTime: new Date().toLocaleString()
+      };
+
+      // 必须 JSON.stringify 转字符串
+      localStorage.setItem("saved-user", JSON.stringify(user));
+
+      document.getElementById("object-result").textContent =
+        "对象已存入 localStorage！\n\n" +
+        "原始对象：\n" + JSON.stringify(user, null, 2) + "\n\n" +
+        "存入的字符串（JSON.stringify 后）：\n" +
+        JSON.stringify(user) + "\n\n" +
+        "秘诀：存对象 → JSON.stringify(obj)\n" +
+        "      取对象 → JSON.parse(str)";
+      console.log("存入对象：", user);
+    }
+
+    function loadObject() {
+      var str = localStorage.getItem("saved-user");
+      var resultEl = document.getElementById("object-result");
+
+      if (!str) {
+        resultEl.textContent = "尚未存入对象数据。请先点击"存入一个对象"。";
+        return;
+      }
+
+      var user = JSON.parse(str);  // JSON.parse 转回对象
+      resultEl.textContent =
+        "从 localStorage 读取的对象：\n\n" +
+        "  name: " + user.name + "\n" +
+        "  age: " + user.age + "\n" +
+        "  role: " + user.role + "\n" +
+        "  hobbies: " + user.hobbies.join(", ") + "\n" +
+        "  loginTime: " + user.loginTime + "\n\n" +
+        "注意：如果没有 JSON.parse，读出来的只是一个字符串！";
+      console.log("读取对象：", user);
+    }
+
+    // ===== 主题切换演示 =====
+    var themeArea = document.getElementById("theme-demo-area");
+
+    // 页面加载时读取保存的主题
+    function applyTheme(theme) {
+      themeArea.className = "theme-demo " + theme;
+      document.getElementById("current-theme").textContent = theme;
+    }
+
+    // 初始化：读取 localStorage 中的主题（如果没有则默认 light）
+    var savedTheme = localStorage.getItem("theme") || "light";
+    applyTheme(savedTheme);
+
+    function toggleTheme() {
+      var currentTheme = localStorage.getItem("theme") || "light";
+      var newTheme = currentTheme === "light" ? "dark" : "light";
+      localStorage.setItem("theme", newTheme);
+      applyTheme(newTheme);
+      console.log("主题切换为：" + newTheme + "（已保存到 localStorage）");
+    }
+
+    // ===== sessionStorage =====
+    function saveToSession() {
+      sessionStorage.setItem("demo-session", "会话数据 — " + new Date().toLocaleTimeString());
+      document.getElementById("session-result").textContent =
+        "已存入 sessionStorage！\nkey: demo-session\n\n" +
+        "刷新页面后还在，但关闭此标签页后就会消失。";
+    }
+
+    function loadFromSession() {
+      var value = sessionStorage.getItem("demo-session");
+      document.getElementById("session-result").textContent =
+        "sessionStorage.getItem('demo-session') = " +
+        (value === null ? "null（已消失或未设置）" : "\"" + value + "\"");
+    }
+
+    function showAllSession() {
+      var result = "sessionStorage 全部数据（" + sessionStorage.length + " 条）：\n";
+      if (sessionStorage.length === 0) {
+        result += "(空)";
+      }
+      for (var i = 0; i < sessionStorage.length; i++) {
+        var key = sessionStorage.key(i);
+        result += "  " + key + " = " + sessionStorage.getItem(key) + "\n";
+      }
+      document.getElementById("session-result").textContent = result;
+    }
+
+    // ===== cookie =====
+    function setCookieDemo() {
+      var name = "test-cookie";
+      var value = "cookie-value-" + new Date().toLocaleTimeString();
+      // 设置 cookie，有效期 1 天
+      document.cookie = name + "=" + encodeURIComponent(value) + "; max-age=86400; path=/";
+      document.getElementById("cookie-result").textContent =
+        "cookie 已设置！\n" +
+        "name: " + name + "\n" +
+        "value: " + value + "\n\n" +
+        "打开 F12 → Application → Cookies 查看";
+    }
+
+    function readAllCookies() {
+      var cookies = document.cookie;
+      var resultEl = document.getElementById("cookie-result");
+
+      if (!cookies) {
+        resultEl.textContent = "当前没有 cookie（document.cookie 返回空字符串）";
+        return;
+      }
+
+      // cookie 字符串格式：key1=value1; key2=value2
+      var pairs = cookies.split("; ");
+      var result = "全部 cookie（" + pairs.length + " 条）：\n";
+      pairs.forEach(function(pair) {
+        var parts = pair.split("=");
+        result += "  " + parts[0] + " = " + decodeURIComponent(parts[1] || "") + "\n";
+      });
+      resultEl.textContent = result;
+    }
+
+    function deleteCookieDemo() {
+      // 删除 cookie：设置 max-age=0
+      document.cookie = "test-cookie=; max-age=0; path=/";
+      document.getElementById("cookie-result").textContent =
+        "cookie 'test-cookie' 已删除！\n（设置 max-age=0 即删除）";
+    }
+  </script>
+
+</body>
+</html>

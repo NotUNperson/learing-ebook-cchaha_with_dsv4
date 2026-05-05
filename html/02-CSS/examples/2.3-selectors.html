@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2.3 基本选择器</title>
+  <style>
+    /* ===== 1. 通配符选择器 —— 选中所有元素 ===== */
+    /* 权重为 0，任何选择器都能覆盖它 */
+    * {
+      margin: 0;
+      padding: 0;
+      /* 全局去掉默认间距，让所有元素从同一起跑线出发 */
+    }
+
+    /* ===== 2. 类型选择器 —— 按标签名选中 ===== */
+    /* 权重: (0,0,0,1) */
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      padding: 20px;
+      line-height: 1.8;
+      color: #333;
+    }
+
+    h1 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+
+    a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* ===== 3. class 选择器 —— 可复用的标签 ===== */
+    /* 权重: (0,0,1,0) */
+    .highlight {
+      background-color: #fff9c4;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .important {
+      font-weight: bold;
+      color: #e74c3c;
+    }
+
+    .box {
+      border: 1px solid #bdc3c7;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 5px;
+    }
+
+    /* 一个元素可以同时匹配多个 class */
+    .box.highlight {
+      /* 同时有 box 和 highlight 两个类的元素 */
+      border-color: #f39c12;
+      border-width: 2px;
+    }
+
+    /* ===== 4. id 选择器 —— 唯一标识 ===== */
+    /* 权重: (0,1,0,0) = 100 分，比 class 高！ */
+    #special-box {
+      background-color: #e8f5e9;
+      border-left: 4px solid #4caf50;
+    }
+
+    /* ===== 5. 属性选择器 —— 按属性特征筛选 ===== */
+
+    /* 有 type 属性的 input */
+    input[type] {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    /* type 正好等于 text */
+    input[type="text"] {
+      background-color: #f9f9f9;
+    }
+
+    /* type 正好等于 email */
+    input[type="email"] {
+      background-color: #e3f2fd;
+    }
+
+    /* href 以 https 开头 —— 安全的链接 */
+    a[href^="https"] {
+      /* 在安全链接后面加一个小标记 */
+      /* color 已在上面 a 选择器里定义了，这里只做演示 */
+    }
+
+    /* href 以 .pdf 结尾 */
+    a[href$=".pdf"] {
+      color: #e67e22;
+      font-style: italic;
+    }
+
+    /* class 属性里包含 "btn" 的元素 */
+    *[class*="btn"] {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CSS 基本选择器演示</h1>
+
+  <!-- ===== 类型选择器效果 ===== -->
+  <p>类型选择器（标签选择器）：所有 p 元素的字体、行高都由 p { } 统一设置。</p>
+  <p>
+    这个链接用了类型选择器 a { } 定义颜色为蓝色，去掉下划线：
+    <a href="https://www.example.com">一个 https 链接</a>
+  </p>
+
+  <!-- ===== class 选择器效果 ===== -->
+  <h2>class 选择器</h2>
+
+  <p>
+    这是一段普通文字，但里面有一个
+    <span class="highlight">被高亮标记</span> 的词语，
+    还有一个 <span class="important">重要的强调</span>。
+  </p>
+
+  <p class="highlight important">
+    我同时拥有 highlight 和 important 两个 class——背景是黄色，文字是红色粗体。
+    class 就像贴标签贴纸，想贴几张贴几张。
+  </p>
+
+  <div class="box">
+    这是一个普通的 box（class="box"），有边框、内边距和圆角。
+  </div>
+
+  <div class="box highlight">
+    我是同时有 box 和 highlight 两个类的元素——边框变成了橙色加粗。
+    在 CSS 中用 .box.highlight（两个 class 连写，中间没空格）来选中我。
+  </div>
+
+  <!-- ===== id 选择器效果 ===== -->
+  <h2>id 选择器</h2>
+
+  <div id="special-box" class="box">
+    我的 id 是 special-box。id 选择器权重=100，即使 class 里写了其他背景色，id 的背景色也会胜出。
+    注意：同一个 id 在页面里只能出现一次，就像身份证号。
+  </div>
+
+  <!-- ===== 属性选择器效果 ===== -->
+  <h2>属性选择器</h2>
+
+  <p>下面是一些 input 元素，根据 type 属性的不同有了不同的背景色：</p>
+
+  <div>
+    <label>文本输入框（type="text"）：</label>
+    <input type="text" placeholder="背景是浅灰色"><br><br>
+
+    <label>邮箱输入框（type="email"）：</label>
+    <input type="email" placeholder="背景是浅蓝色"><br><br>
+
+    <label>普通按钮（无 type 属性匹配）：</label>
+    <input type="submit" value="提交（无特殊背景）">
+  </div>
+
+  <p>属性选择器还支持匹配模式：</p>
+  <ul>
+    <li>[attr="val"] — 精确等于</li>
+    <li>[attr^="val"] — 以 val 开头</li>
+    <li>[attr$="val"] — 以 val 结尾</li>
+    <li>[attr*="val"] — 包含 val</li>
+  </ul>
+
+  <p>
+    例子：
+    <a href="https://example.com">https 开头的链接</a> |
+    <a href="/files/report.pdf">以 .pdf 结尾的链接（橙色斜体）</a> |
+    <a href="http://example.com">普通 http 链接</a>
+  </p>
+
+</body>
+</html>

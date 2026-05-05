@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>2.5 伪类</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      padding: 20px;
+      line-height: 1.8;
+      color: #333;
+    }
+
+    h1 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+
+    h2 {
+      margin-top: 30px;
+      color: #34495e;
+    }
+
+    /* ===== 1. 动态伪类 ===== */
+
+    /* 链接的基础状态 */
+    a {
+      color: #2980b9;
+      text-decoration: none;
+      padding: 2px 4px;
+      transition: all 0.2s;  /* 平滑过渡，后面章节会讲 */
+    }
+
+    /* :hover — 鼠标悬停时 */
+    a:hover {
+      color: #e74c3c;
+      text-decoration: underline;
+      background-color: #fdedec;
+      border-radius: 2px;
+    }
+
+    /* :active — 点击的瞬间 */
+    a:active {
+      color: #a93226;
+      transform: scale(0.98);  /* 按下时微微缩小 */
+    }
+
+    /* 按钮的伪类效果 */
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);  /* 悬停时加阴影 */
+    }
+
+    .btn:active {
+      background-color: #1a5276;
+      box-shadow: none;
+      transform: translateY(1px);  /* 按下时往下移一点 */
+    }
+
+    /* :focus — 表单获得焦点时 */
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      width: 250px;
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: #3498db;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+      background-color: #f8fbff;
+    }
+
+    /* ===== 2. 结构伪类 ===== */
+
+    /* 列表结构伪类演示 */
+    .structure-demo {
+      list-style: none;
+      padding: 0;
+      max-width: 400px;
+    }
+
+    .structure-demo li {
+      padding: 10px 15px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    /* :first-child — 第一个子元素 */
+    .structure-demo li:first-child {
+      font-weight: bold;
+      border-top: 2px solid #3498db;
+    }
+
+    /* :last-child — 最后一个子元素 */
+    .structure-demo li:last-child {
+      border-bottom: 2px solid #3498db;
+    }
+
+    /* :nth-child(even) — 偶数项（斑马纹） */
+    .structure-demo li:nth-child(even) {
+      background-color: #f5f5f5;
+    }
+
+    /* 单独标出第 3 项 */
+    .structure-demo li:nth-child(3) {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+
+    /* ===== 3. 斑马纹表格 ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #3498db;
+      color: white;
+    }
+
+    /* 表格偶数行加浅灰背景——经典斑马纹 */
+    tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tbody tr:hover {
+      background-color: #e8f4fd;  /* 鼠标悬停行高亮 */
+    }
+
+    /* ===== 4. :not() 否定伪类 ===== */
+    /* 所有段落都加字间距，除了第一个 */
+    .not-demo p:not(:first-of-type) {
+      margin-top: 15px;
+      color: #555;
+    }
+
+    /* ===== 5. :checked —— 选中状态的复选框效果 ===== */
+    .check-demo label {
+      display: block;
+      padding: 5px 0;
+      cursor: pointer;
+    }
+
+    .check-demo input[type="checkbox"]:checked + span {
+      /* 当复选框被选中时，它后面紧邻的 span 变样式 */
+      color: #27ae60;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CSS 伪类演示</h1>
+
+  <!-- ===== 动态伪类 ===== -->
+  <h2>一、动态伪类（:hover / :active / :focus）</h2>
+
+  <p>
+    把鼠标移到这个
+    <a href="#">链接</a>
+    上试试——它会变红并出现下划线。点击时还会微微缩小。
+  </p>
+
+  <p>
+    <span class="btn">我是一个按钮</span>
+    （悬停我，我会浮起来；点击我，我会沉下去）
+  </p>
+
+  <p>点击下面的输入框，观察聚焦效果：</p>
+  <div>
+    <input type="text" placeholder="点击我，我会有蓝框"><br><br>
+    <input type="email" placeholder="输入邮箱地址"><br><br>
+    <textarea placeholder="写点什么吧..." rows="3"></textarea>
+  </div>
+
+  <!-- ===== 结构伪类 ===== -->
+  <h2>二、结构伪类（:first-child / :last-child / :nth-child）</h2>
+
+  <p>观察下面列表各项的样式：第一项加粗，偶数项灰背景，第三项是红色</p>
+
+  <ul class="structure-demo">
+    <li>第 1 项：大儿子（first-child）—— 加粗了</li>
+    <li>第 2 项：二儿子 —— 偶数行有灰背景</li>
+    <li>第 3 项：三儿子 —— 偶数行灰背景 + 特殊红色</li>
+    <li>第 4 项：四儿子 —— 偶数行灰背景</li>
+    <li>第 5 项：五儿子 —— 奇数行无灰背景</li>
+    <li>第 6 项：六儿子（last-child）—— 偶数行灰背景</li>
+  </ul>
+
+  <!-- ===== 斑马纹表格 ===== -->
+  <h2>三、斑马纹表格（:nth-child 最经典应用）</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>姓名</th>
+        <th>科目</th>
+        <th>成绩</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>张三</td><td>数据结构</td><td>92</td></tr>
+      <tr><td>张三</td><td>操作系统</td><td>85</td></tr>
+      <tr><td>李四</td><td>数据结构</td><td>88</td></tr>
+      <tr><td>李四</td><td>操作系统</td><td>91</td></tr>
+      <tr><td>王五</td><td>数据结构</td><td>76</td></tr>
+      <tr><td>王五</td><td>操作系统</td><td>83</td></tr>
+    </tbody>
+  </table>
+
+  <p>偶数行有浅灰背景——就像斑马的黑白条纹，帮你眼睛不串行。</p>
+
+  <!-- ===== :not() 否定伪类 ===== -->
+  <h2>四、:not() 否定伪类</h2>
+
+  <div class="not-demo">
+    <p>我是一般段落（第一个 p）。</p>
+    <p>我是第二个段落——:not(:first-of-type) 选中了我，所以我有上边距和浅灰色。</p>
+    <p>我也是后续段落，同样被选中。</p>
+  </div>
+
+  <!-- ===== :checked ===== -->
+  <h2>五、:checked 伪类</h2>
+
+  <div class="check-demo">
+    <label>
+      <input type="checkbox">
+      <span>选中我，这段文字会变色加粗——纯 CSS 实现，不需要 JS！</span>
+    </label>
+    <label>
+      <input type="checkbox">
+      <span>选项二：同样可以观察效果</span>
+    </label>
+  </div>
+
+</body>
+</html>
