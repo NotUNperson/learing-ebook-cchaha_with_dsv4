@@ -1,0 +1,155 @@
+/* style.css - 待办事项应用样式 */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    padding-top: 50px;
+    min-height: 100vh;
+}
+
+.container {
+    background: white;
+    width: 550px;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* ============================================================
+   输入区域
+   ============================================================ */
+.input-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#todo-input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+#todo-input:focus {
+    border-color: #4a90d9;
+}
+
+#add-btn {
+    padding: 12px 24px;
+    background: #4a90d9;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#add-btn:hover {
+    background: #357abd;
+}
+
+/* ============================================================
+   待办列表
+   ============================================================ */
+.todo-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: #fafafa;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: background 0.2s;
+}
+
+.todo-item:hover {
+    background: #f0f0f0;
+}
+
+.todo-text {
+    flex: 1;
+    font-size: 16px;
+}
+
+/* 已完成的待办：文字加删除线并变灰 */
+.todo-item.completed .todo-text {
+    text-decoration: line-through;
+    color: #999;
+}
+
+.toggle-btn,
+.edit-btn,
+.delete-btn {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: background 0.2s, opacity 0.2s;
+}
+
+.toggle-btn {
+    background: #f0ad4e;
+    color: white;
+}
+
+.toggle-btn:hover {
+    background: #ec971f;
+}
+
+.edit-btn {
+    background: #5cb85c;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #449d44;
+}
+
+.delete-btn {
+    background: #d9534f;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #c9302c;
+}
+
+/* ============================================================
+   底部统计
+   ============================================================ */
+.stats {
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* 空列表提示 */
+.empty-hint {
+    text-align: center;
+    color: #aaa;
+    padding: 40px 0;
+    list-style: none;
+}

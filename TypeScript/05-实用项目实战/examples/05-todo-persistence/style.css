@@ -1,0 +1,215 @@
+/* style.css - 待办事项应用样式 (持久化版) */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    padding-top: 50px;
+    min-height: 100vh;
+}
+
+.container {
+    background: white;
+    width: 550px;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* ============================================================
+   输入区域
+   ============================================================ */
+.input-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+#todo-input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+#todo-input:focus {
+    border-color: #4a90d9;
+}
+
+#add-btn {
+    padding: 12px 24px;
+    background: #4a90d9;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#add-btn:hover {
+    background: #357abd;
+}
+
+/* ============================================================
+   筛选区域
+   ============================================================ */
+.filter-area {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.filter-btn {
+    padding: 6px 16px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background: white;
+    color: #666;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-btn:hover {
+    background: #f5f5f5;
+}
+
+.filter-btn.active {
+    background: #4a90d9;
+    color: white;
+    border-color: #4a90d9;
+}
+
+.clear-btn {
+    margin-left: auto; /* 推到最右边 */
+    padding: 6px 16px;
+    border: 1px solid #d9534f;
+    border-radius: 20px;
+    background: white;
+    color: #d9534f;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.clear-btn:hover {
+    background: #d9534f;
+    color: white;
+}
+
+/* ============================================================
+   待办列表
+   ============================================================ */
+.todo-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: #fafafa;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: background 0.2s;
+    animation: slideIn 0.2s ease-out;
+}
+
+/* 新添加的待办有一个滑入动画 */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.todo-item:hover {
+    background: #f0f0f0;
+}
+
+.todo-text {
+    flex: 1;
+    font-size: 16px;
+}
+
+.todo-item.completed .todo-text {
+    text-decoration: line-through;
+    color: #999;
+}
+
+.toggle-btn,
+.edit-btn,
+.delete-btn {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: background 0.2s, opacity 0.2s;
+}
+
+.toggle-btn {
+    background: #f0ad4e;
+    color: white;
+}
+
+.toggle-btn:hover {
+    background: #ec971f;
+}
+
+.edit-btn {
+    background: #5cb85c;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #449d44;
+}
+
+.delete-btn {
+    background: #d9534f;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #c9302c;
+}
+
+/* ============================================================
+   底部统计
+   ============================================================ */
+.stats {
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.empty-hint {
+    text-align: center;
+    color: #aaa;
+    padding: 40px 0;
+    list-style: none;
+}

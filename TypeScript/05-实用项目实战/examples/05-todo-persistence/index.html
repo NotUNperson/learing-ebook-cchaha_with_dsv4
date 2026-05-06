@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>待办事项 (持久化版)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>我的待办事项</h1>
+
+        <!-- 输入区域 -->
+        <div class="input-area">
+            <input type="text" id="todo-input" placeholder="输入新的待办事项..." />
+            <button id="add-btn">添加</button>
+        </div>
+
+        <!-- 筛选按钮组 -->
+        <div class="filter-area">
+            <button class="filter-btn active" data-filter="all">全部</button>
+            <button class="filter-btn" data-filter="active">未完成</button>
+            <button class="filter-btn" data-filter="completed">已完成</button>
+            <button id="clear-completed-btn" class="clear-btn">清空已完成</button>
+        </div>
+
+        <!-- 待办列表（由 TypeScript 动态生成） -->
+        <ul id="todo-list"></ul>
+
+        <!-- 底部统计 -->
+        <div id="stats" class="stats">
+            共 0 条待办，其中 0 条已完成
+        </div>
+    </div>
+
+    <!-- 引入编译后的 JavaScript -->
+    <script src="dist/main.js"></script>
+</body>
+</html>

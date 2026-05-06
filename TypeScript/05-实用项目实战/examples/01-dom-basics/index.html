@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeScript DOM 初体验</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #4a90d9;
+            padding-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4a90d9;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+        }
+        button:hover:not(:disabled) {
+            background-color: #357abd;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 250px;
+        }
+        #count-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4a90d9;
+            margin-left: 10px;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1 id="title">你好，世界</h1>
+
+    <div class="section">
+        <h2>按钮示例</h2>
+        <p>点击下方按钮来改变标题文字：</p>
+        <button id="change-btn">点击我换文字</button>
+
+        <button id="reset-btn">重置标题</button>
+    </div>
+
+    <div class="section">
+        <h2>键盘示例</h2>
+        <p>在输入框中输入文字，按回车键来设置标题：</p>
+        <input type="text" id="my-input" placeholder="输入新标题，按回车确认" />
+    </div>
+
+    <div class="section">
+        <h2>计数器</h2>
+        <button id="count-btn">点击计数</button>
+        <span id="count-display">0</span>
+        <button id="count-reset-btn">重置计数</button>
+    </div>
+
+    <!-- 引入编译后的 JavaScript -->
+    <script src="dist/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "07-ts-scaffold",
+  "version": "1.0.0",
+  "description": "TypeScript 工程模板 —— 综合练习",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc && node dist/index.js",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write src"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.0",
+    "typescript": "^5.4.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

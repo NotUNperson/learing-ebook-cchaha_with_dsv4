@@ -1,0 +1,20 @@
+{
+  "name": "04-npm-demo",
+  "version": "1.0.0",
+  "description": "npm 包管理练习项目",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/lodash": "^4.17.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
