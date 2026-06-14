@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTPS 全栈部署演示</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; padding: 40px; border-radius: 12px; text-align: center; margin-bottom: 30px; }
+        header h1 { font-size: 2.2em; margin-bottom: 10px; }
+        header p { opacity: 0.9; font-size: 1.1em; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: #fff; border-radius: 8px; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .card h2 { color: #667eea; font-size: 1.2em; margin-bottom: 12px; }
+        .card p { color: #666; line-height: 1.8; font-size: 0.95em; }
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 0.85em; font-weight: bold; }
+        .status-on { background: #e8f5e9; color: #2e7d32; }
+        footer { text-align: center; color: #bbb; margin-top: 40px; padding: 20px; }
+        #api-result { background: #263238; color: #aed581; padding: 15px; border-radius: 6px; font-family: monospace; font-size: 0.85em; min-height: 100px; white-space: pre-wrap; margin-top: 10px; }
+        button { background: #667eea; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; margin: 5px; }
+        button:hover { background: #5a6fd6; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HTTPS 全栈部署演示</h1>
+            <p>这是一个"生产级"配置演示 -- HTTPS + 反向代理 + 负载均衡 + Gzip + 缓存</p>
+        </header>
+
+        <div class="grid">
+            <div class="card">
+                <h2>HTTPS 加密</h2>
+                <p>TLSv1.2/TLSv1.3 协议，安全的加密套件，HSTS 强制加密。</p>
+                <p><span class="status-badge status-on">已启用</span></p>
+            </div>
+            <div class="card">
+                <h2>Gzip 压缩</h2>
+                <p>HTML/CSS/JS/JSON/SVG 启用 Gzip 压缩，压缩率 70%+。</p>
+                <p><span class="status-badge status-on">已启用</span></p>
+            </div>
+            <div class="card">
+                <h2>浏览器缓存</h2>
+                <p>静态资源长缓存（7-30 天），HTML 使用协商缓存。</p>
+                <p><span class="status-badge status-on">已启用</span></p>
+            </div>
+            <div class="card">
+                <h2>反向代理</h2>
+                <p>静态资源由 Nginx 直接处理，API 请求代理到后端集群。</p>
+                <p><span class="status-badge status-on">已启用</span></p>
+            </div>
+            <div class="card">
+                <h2>负载均衡</h2>
+                <p>2 个后端实例，least_conn 算法 + 健康检查自动摘除。</p>
+                <p><span class="status-badge status-on">已启用</span></p>
+            </div>
+            <div class="card">
+                <h2>安全头</h2>
+                <p>HSTS、X-Frame-Options、X-Content-Type-Options 等安全响应头。</p>
+                <p><span class="status-badge status-on">已启用</span></p>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:20px">
+            <h2>API 测试</h2>
+            <p>点击按钮调用后端 API，观察响应中显示的实例信息（多次点击看负载均衡效果）。</p>
+            <button onclick="callAPI()">GET /api/status</button>
+            <button onclick="callAPI5()">连续 5 次调用</button>
+            <div id="api-result">{ 点击按钮调用 API }</div>
+        </div>
+
+        <footer>
+            <p>Powered by Nginx + Node.js Backend Cluster | HTTPS 全栈部署综合实战</p>
+        </footer>
+    </div>
+
+    <script>
+        async function callAPI() {
+            const el = document.getElementById('api-result');
+            el.textContent = '正在请求...';
+            try {
+                const r = await fetch('/api/status');
+                const d = await r.json();
+                el.textContent = JSON.stringify(d, null, 2) + '\n\n响应头 X-Instance: ' + r.headers.get('X-Instance');
+            } catch(e) {
+                el.textContent = '错误: ' + e.message;
+            }
+        }
+        async function callAPI5() {
+            const el = document.getElementById('api-result');
+            el.textContent = '';
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const r = await fetch('/api/status');
+                    const d = await r.json();
+                    el.textContent += `请求 #${i+1}: ${d.instance} (${d.port})\n`;
+                } catch(e) {
+                    el.textContent += `请求 #${i+1}: 失败\n`;
+                }
+            }
+        }
+        callAPI();
+    </script>
+</body>
+</html>

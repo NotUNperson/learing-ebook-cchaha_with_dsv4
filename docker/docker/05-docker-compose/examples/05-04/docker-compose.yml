@@ -1,0 +1,20 @@
+services:
+  frontend:
+    image: nginx:alpine
+    networks:
+      - front-net
+
+  api:
+    build: ./api
+    networks:
+      - front-net
+      - back-net
+
+  db:
+    image: postgres:15
+    networks:
+      - back-net
+
+networks:
+  front-net:
+  back-net:

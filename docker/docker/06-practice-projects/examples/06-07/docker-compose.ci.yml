@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    image: myapp:test
+    environment:
+      DB_HOST: db
+      DB_USER: testuser
+      DB_PASSWORD: testpass
+      DB_NAME: testdb
+      REDIS_HOST: redis
+      NODE_ENV: test
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: ["npm", "test"]
+    networks:
+      - test-net
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass
+      POSTGRES_DB: testdb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U testuser -d testdb"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    networks:
+      - test-net
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    networks:
+      - test-net
+
+networks:
+  test-net:

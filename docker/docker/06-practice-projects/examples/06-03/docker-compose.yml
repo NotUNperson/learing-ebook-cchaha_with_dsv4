@@ -1,0 +1,81 @@
+version: "3.9"
+
+services:
+  # ===================== 数据库 =====================
+  db:
+    image: postgres:16-alpine
+    container_name: fullstack-db
+    environment:
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: apppassword
+      POSTGRES_DB: appdb
+    volumes:
+      # 持久化数据：即使容器被删除，数据还在
+      - pgdata:/var/lib/postgresql/data
+      # 数据库初始化脚本
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - backend-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U appuser -d appdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ===================== 缓存 =====================
+  redis:
+    image: redis:7-alpine
+    container_name: fullstack-redis
+    volumes:
+      - redisdata:/data
+    networks:
+      - backend-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  # ===================== API 后端 =====================
+  backend:
+    build: ./backend
+    container_name: fullstack-backend
+    environment:
+      DB_HOST: db
+      DB_USER: appuser
+      DB_PASSWORD: apppassword
+      DB_NAME: appdb
+      REDIS_HOST: redis
+      PORT: 3001
+    networks:
+      - backend-net
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ===================== 前端（对外暴露） =====================
+  frontend:
+    build: ./frontend
+    container_name: fullstack-frontend
+    ports:
+      - "8080:80"
+    networks:
+      - backend-net
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+# ===================== 卷 =====================
+volumes:
+  pgdata:
+  redisdata:
+
+# ===================== 网络 =====================
+networks:
+  backend-net:
+    driver: bridge

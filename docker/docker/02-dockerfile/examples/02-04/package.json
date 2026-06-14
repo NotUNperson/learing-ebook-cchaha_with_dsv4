@@ -1,0 +1,9 @@
+{
+  "name": "copy-demo",
+  "version": "1.0.0",
+  "description": "Demo for COPY order",
+  "main": "src/index.js",
+  "dependencies": {
+    "express": "^4.19.0"
+  }
+}

@@ -1,0 +1,54 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    networks:
+      - api-network
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    networks:
+      - api-network
+      - db-network
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_USER: appuser
+      DB_PASSWORD: apppass
+      DB_NAME: todoapp
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15-alpine
+    networks:
+      - db-network
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: apppass
+      POSTGRES_DB: todoapp
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U appuser -d todoapp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  api-network:
+  db-network:
+
+volumes:
+  pgdata:

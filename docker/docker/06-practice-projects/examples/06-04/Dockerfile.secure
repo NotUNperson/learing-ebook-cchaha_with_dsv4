@@ -1,0 +1,39 @@
+# Dockerfile 安全最佳实践示范
+# 这个文件展示了一个生产级别的安全 Dockerfile 应该怎么写
+
+# 1. 使用具体的镜像版本标签，不要用 latest
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+COPY package.json package-lock.json* ./
+
+# 2. npm ci 比 npm install 更安全（严格按 lock 文件安装）
+RUN npm ci --only=production && npm cache clean --force
+
+# ========== 运行阶段 ==========
+FROM node:18-alpine
+
+WORKDIR /app
+
+# 3. 创建非 root 用户，显式指定 UID/GID
+RUN addgroup -g 1001 -S appgroup && \
+    adduser -u 1001 -S appuser -G appgroup
+
+# 4. 只从 builder 复制生产依赖（不复制 devDependencies）
+COPY --from=builder /app/node_modules ./node_modules
+
+# 5. 复制应用代码并设置正确的所有权
+COPY --chown=appuser:appgroup . .
+
+# 6. 切换到非 root 用户
+USER appuser
+
+# 7. 不要暴露不必要的端口
+EXPOSE 3000
+
+# 8. 添加健康检查
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
+
+# 9. 使用 exec 形式的 CMD（避免 shell 注入）
+CMD ["node", "src/index.js"]

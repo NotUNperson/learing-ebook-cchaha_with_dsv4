@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的博客 - 首页</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #f5f5f5;
+            color: #333;
+        }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        .post { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .post h2 { margin-top: 0; color: #3498db; }
+        .post p { line-height: 1.6; color: #666; }
+        nav a { margin-right: 20px; color: #3498db; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">首页</a>
+        <a href="/about.html">关于</a>
+        <a href="/contact.html">联系</a>
+    </nav>
+    <h1>我的技术博客</h1>
+    <p>欢迎来到我的博客！这里记录了我的学习笔记和技术心得。</p>
+
+    <div class="post">
+        <h2>第一篇：Nginx 学习之路</h2>
+        <p>今天开始学习 Nginx，这是一款高性能的 Web 服务器和反向代理服务器。搭建静态文件服务器是学习 Nginx 的第一步...</p>
+    </div>
+
+    <div class="post">
+        <h2>第二篇：为什么选择 Nginx</h2>
+        <p>Nginx 的事件驱动模型让它在高并发场景下表现出色。相比传统的进程模型，Nginx 可以用更少的资源处理更多的连接...</p>
+    </div>
+
+    <div class="post">
+        <h2>第三篇：Docker 与 Nginx 的组合</h2>
+        <p>使用 Docker 部署 Nginx 可以让环境配置变得异常简单。通过挂载配置文件和静态资源目录，可以快速搭建开发环境...</p>
+    </div>
+
+    <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #999;">
+        <p>&copy; 2026 我的技术博客 | 由 Nginx 驱动</p>
+    </footer>
+</body>
+</html>

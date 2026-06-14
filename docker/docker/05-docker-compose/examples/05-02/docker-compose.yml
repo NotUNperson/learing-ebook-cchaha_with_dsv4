@@ -1,0 +1,35 @@
+services:
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    networks:
+      - frontend
+
+  api:
+    build: ./api
+    ports:
+      - "3000:3000"
+    networks:
+      - frontend
+      - backend
+    environment:
+      DATABASE_URL: postgres://user:pass@db:5432/mydb
+
+  db:
+    image: postgres:15
+    networks:
+      - backend
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: mydb
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  db-data:

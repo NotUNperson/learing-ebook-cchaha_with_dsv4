@@ -1,0 +1,10 @@
+services:
+  web:
+    image: nginx:${NGINX_TAG:-alpine}
+    ports:
+      - "${HOST_PORT:-8080}:80"
+
+  db:
+    image: postgres:${PG_VERSION:-15}
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?err}

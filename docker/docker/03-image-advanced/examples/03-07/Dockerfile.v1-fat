@@ -1,0 +1,6 @@
+# 第一版：不做任何优化的"胖"Dockerfile
+FROM python:3.12
+COPY . /app/
+WORKDIR /app
+RUN pip install flask
+CMD ["python", "app.py"]

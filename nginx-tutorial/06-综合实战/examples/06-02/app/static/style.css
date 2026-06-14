@@ -1,0 +1,79 @@
+/* 示例样式文件 - 由 Nginx 直接处理（不经过 Node.js） */
+/* 配合 06-02-反向代理Node应用.md 使用 */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+    background: #f0f2f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #2196F3;
+    font-size: 2.2em;
+    margin-bottom: 10px;
+}
+
+h2 {
+    color: #555;
+    font-size: 1.3em;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #2196F3;
+    padding-bottom: 6px;
+}
+
+.info {
+    text-align: center;
+    color: #888;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+button {
+    background: #2196F3;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px 10px 5px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.95em;
+    transition: background 0.2s;
+}
+button:hover { background: #1976D2; }
+
+pre {
+    background: #263238;
+    color: #aed581;
+    padding: 15px;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: "Courier New", monospace;
+    font-size: 0.9em;
+    margin-top: 15px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.note {
+    margin-top: 10px;
+    color: #888;
+    font-size: 0.9em;
+    font-style: italic;
+}

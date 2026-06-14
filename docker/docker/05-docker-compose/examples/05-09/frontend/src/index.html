@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docker 全栈示例 -- 待办事项</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>待办事项</h1>
+    <div class="input-group">
+      <input type="text" id="todo-input" placeholder="输入新任务..." />
+      <button onclick="addTodo()">添加</button>
+    </div>
+    <ul id="todo-list"></ul>
+    <p class="status">状态: <span id="status-text">就绪</span></p>
+  </div>
+  <script src="App.js"></script>
+</body>
+</html>

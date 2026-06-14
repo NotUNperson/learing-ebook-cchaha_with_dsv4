@@ -1,0 +1,13 @@
+{
+  "name": "compose-watch-demo",
+  "version": "1.0.0",
+  "description": "Demo for Docker Compose Watch mode",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

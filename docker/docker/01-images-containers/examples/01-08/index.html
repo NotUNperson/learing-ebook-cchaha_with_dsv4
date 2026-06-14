@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的 Docker 网站</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 0 20px;
+            background: #f5f5f5;
+            color: #333;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #0db7ed;
+            margin-top: 0;
+        }
+        .info {
+            background: #e8f4fd;
+            border-left: 4px solid #0db7ed;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        code {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: "Courier New", monospace;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #999;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>恭喜！你的自定义网站通过 Docker 成功部署了！</h1>
+        <p>这个页面正在一个 Docker 容器中运行。</p>
+
+        <div class="info">
+            <strong>你刚才完成的操作为：</strong><br>
+            1. 拉取了 <code>nginx:alpine</code> 镜像<br>
+            2. 用 <code>docker run</code> 启动了一个容器<br>
+            3. 用 <code>-v</code> 把这个 HTML 文件挂载进了容器<br>
+            4. 用 <code>-p 8080:80</code> 把容器端口映射到了宿主机<br>
+            5. 现在你正在浏览器里看到这个页面！
+        </div>
+
+        <h2>试一试改动这个页面</h2>
+        <ol>
+            <li>用文本编辑器打开 <code>index.html</code> 文件</li>
+            <li>修改上面的标题或任何文字</li>
+            <li>保存文件</li>
+            <li>刷新浏览器 —— 改动立即可见！</li>
+        </ol>
+
+        <h2>你还学会了什么？</h2>
+        <p>在这个模块 01 里，你已经掌握了：</p>
+        <ul>
+            <li><code>docker pull</code> —— 从 Docker Hub 拉取镜像</li>
+            <li><code>docker run</code> —— 启动容器（后台运行、命名、端口映射、环境变量）</li>
+            <li><code>docker ps</code> —— 查看容器列表和状态</li>
+            <li><code>docker stop / start / restart / rm</code> —— 管理容器生命周期</li>
+            <li><code>docker exec -it</code> —— 进入容器内部</li>
+            <li><code>docker logs / inspect</code> —— 查看日志和诊断</li>
+        </ul>
+
+        <div class="footer">
+            模块 01 完成！下一步：学习编写 Dockerfile，构建你自己的镜像。
+        </div>
+    </div>
+</body>
+</html>

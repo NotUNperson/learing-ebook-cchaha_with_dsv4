@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nginx 从入门到实践</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            color: #333;
+            background: #fafafa;
+        }
+        header {
+            padding: 30px 0 10px;
+            border-bottom: 4px solid #27ae60;
+            margin-bottom: 30px;
+        }
+        header h1 { color: #27ae60; font-size: 28px; }
+        header p { color: #666; margin-top: 8px; font-size: 15px; }
+        .toc { list-style: none; padding: 0; }
+        .toc li {
+            background: white;
+            margin: 10px 0;
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            border-left: 4px solid #27ae60;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .toc li:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .toc li a {
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 17px;
+        }
+        .toc li span {
+            color: #95a5a6;
+            font-size: 13px;
+            display: block;
+            margin-top: 4px;
+        }
+        .status {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+        .status.pending {
+            background: #f39c12;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Nginx 从入门到实践</h1>
+        <p>一份面向零基础读者的 Nginx 自学教程，涵盖从安装到生产部署的全过程。</p>
+    </header>
+
+    <h2 style="color: #27ae60; margin-bottom: 16px;">教程目录</h2>
+    <ul class="toc">
+        <li>
+            <a href="#">第一章：导论 <span class="status">已完成</span></a>
+            <span>什么是 Nginx、C10K 问题、安装、第一个服务器、进程模型</span>
+        </li>
+        <li>
+            <a href="#">第二章：核心配置 <span class="status">已完成</span></a>
+            <span>配置文件结构、静态文件、虚拟主机、location 匹配、错误页面</span>
+        </li>
+        <li>
+            <a href="#">第三章：反向代理 <span class="status pending">进行中</span></a>
+            <span>正向/反向代理、proxy_pass、请求头转发、超时与重试</span>
+        </li>
+        <li>
+            <a href="#">第四章：负载均衡 <span class="status pending">待学习</span></a>
+            <span>upstream 配置、加权轮询、会话保持、健康检查</span>
+        </li>
+        <li>
+            <a href="#">第五章：HTTPS 与安全 <span class="status pending">待学习</span></a>
+            <span>SSL 证书、HTTPS 配置、安全头、访问控制</span>
+        </li>
+        <li>
+            <a href="#">第六章：综合实战 <span class="status pending">待学习</span></a>
+            <span>完整的生产环境部署方案</span>
+        </li>
+    </ul>
+</body>
+</html>

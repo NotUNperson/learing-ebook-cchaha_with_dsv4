@@ -1,0 +1,11 @@
+services:
+  redis:
+    image: redis:alpine
+
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"

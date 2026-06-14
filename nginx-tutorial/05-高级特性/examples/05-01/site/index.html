@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gzip 压缩测试页面</title>
+    <style>
+        /* 这段 CSS 大约 1KB，用来模拟真实的样式文件 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; background: #f5f5f5; color: #333; line-height: 1.8; }
+        .container { max-width: 800px; margin: 40px auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        header { text-align: center; padding: 30px 0; border-bottom: 2px solid #4CAF50; margin-bottom: 30px; }
+        h1 { color: #4CAF50; font-size: 2em; margin-bottom: 10px; }
+        h2 { color: #555; font-size: 1.4em; margin: 25px 0 10px; padding-left: 10px; border-left: 4px solid #4CAF50; }
+        h3 { color: #666; font-size: 1.1em; margin: 20px 0 8px; }
+        p { margin-bottom: 15px; text-indent: 2em; }
+        .highlight { background: #e8f5e9; padding: 15px; border-radius: 4px; margin: 15px 0; }
+        code { background: #eee; padding: 2px 6px; border-radius: 3px; font-family: "Courier New", monospace; }
+        ul, ol { margin: 10px 0 15px 30px; }
+        li { margin-bottom: 8px; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #4CAF50; color: #fff; }
+        footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #999; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Nginx Gzip 压缩测试页面</h1>
+            <p>这个页面大约有 15KB，用于验证 Gzip 压缩的效果。</p>
+        </header>
+
+        <section>
+            <h2>1. 什么是 Gzip 压缩</h2>
+            <p>Gzip 是一种通用的数据压缩算法，由 Jean-loup Gailly 和 Mark Adler 在 1992 年开发。它的核心思想是找出数据中的重复模式，用更短的编码来表示它们。在 Web 领域，Gzip 已经成为了最广泛使用的 HTTP 压缩方式，几乎所有现代浏览器和服务器都支持它。</p>
+            <p>对于 HTML、CSS 和 JavaScript 这些文本文件，Gzip 的压缩率通常能达到 70% 到 80%。也就是说，一个 100KB 的 HTML 文件，经过 Gzip 压缩后可能只剩下 20KB 到 30KB。</p>
+        </section>
+
+        <section>
+            <h2>2. 压缩的原理（简述）</h2>
+            <p>Gzip 使用了两种核心算法。第一种是 LZ77 算法，它会寻找数据中重复出现的字符串。比如在一段文本中，"nginx" 这个词出现了 20 次，LZ77 就会用类似"往回看 5 个字符，复制 5 个字符"这样的短指令来替代重复的部分。</p>
+            <p>第二种是哈夫曼编码。统计每个字符出现的频率，出现频率越高的字符，给它分配的编码越短。比如在英文中字母 'e' 最常见，在 HTML 中 '<' 和 '>' 最常见，这些高频字符都会得到短编码。两种算法结合，达到了惊人的压缩效果。</p>
+        </section>
+
+        <section>
+            <h2>3. 哪些文件适合压缩</h2>
+            <table>
+                <tr><th>文件类型</th><th>压缩比</th><th>说明</th></tr>
+                <tr><td>HTML</td><td>70-80%</td><td>充满重复的标签和属性，压缩效果极好</td></tr>
+                <tr><td>CSS</td><td>70-80%</td><td>选择器和属性名重复度高</td></tr>
+                <tr><td>JavaScript</td><td>60-75%</td><td>代码中有大量重复的关键字和模式</td></tr>
+                <tr><td>JSON</td><td>70-80%</td><td>键名重复，结构规整</td></tr>
+                <tr><td>SVG</td><td>60-70%</td><td>本质是 XML，压缩效果好</td></tr>
+                <tr><td>图片 (JPG/PNG)</td><td>几乎无</td><td>已经是压缩格式，再压缩没用还浪费 CPU</td></tr>
+                <tr><td>视频/音频</td><td>几乎无</td><td>已经是高度压缩的格式</td></tr>
+                <tr><td>PDF</td><td>极少</td><td>内部已经压缩过</td></tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>4. 压缩的代价</h2>
+            <div class="highlight">
+                <p><strong>收益：</strong>节省带宽 70%+，网页加载更快，用户体验更好，用户流量消耗更少（移动端尤其重要）。</p>
+                <p><strong>代价：</strong>服务器需要 CPU 时间来压缩，客户端需要 CPU 时间来解压。但好在现代 CPU 处理 Gzip 非常快，这点开销相对于节省下来的传输时间来说，完全值得。</p>
+                <p><strong>权衡：</strong>压缩级别越高，文件越小，但 CPU 消耗越大。级别 6 通常是一个很好的平衡点——压缩率接近最高，但 CPU 开销仍然可控。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>5. Nginx Gzip 配置示例</h2>
+            <p>以下是推荐的 Nginx Gzip 配置，适合大多数场景：</p>
+            <div class="highlight">
+                <code>
+                gzip on;<br>
+                gzip_types text/plain text/css application/json application/javascript text/xml application/xml text/javascript;<br>
+                gzip_min_length 1000;<br>
+                gzip_comp_level 6;<br>
+                gzip_vary on;
+                </code>
+            </div>
+            <p>这个配置的含义是：开启 Gzip，对指定的 MIME 类型进行压缩，只压缩大于 1000 字节的文件（太小的文件压缩反而可能变大），压缩级别设为 6。</p>
+        </section>
+
+        <section>
+            <h2>6. 如何验证 Gzip 是否生效</h2>
+            <p>在浏览器开发者工具的 Network 标签中，查看响应头是否包含 <code>Content-Encoding: gzip</code>。也可以对比文件的实际大小和传输大小，传输大小应该明显更小。</p>
+            <p>或者用 curl 命令：<code>curl -H "Accept-Encoding: gzip" -I http://your-server/</code>，查看响应头中的 <code>Content-Encoding</code> 字段。</p>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Nginx 学习教程 - Gzip 压缩测试页 | 本文件大小约 15KB（含大量重复文本用于测试压缩效果）</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        </footer>
+    </div>
+</body>
+</html>

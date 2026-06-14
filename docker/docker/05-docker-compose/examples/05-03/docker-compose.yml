@@ -1,0 +1,28 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: my-api
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - db
+    environment:
+      REDIS_HOST: redis
+      DB_HOST: db
+    command: node server.js
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: myapp

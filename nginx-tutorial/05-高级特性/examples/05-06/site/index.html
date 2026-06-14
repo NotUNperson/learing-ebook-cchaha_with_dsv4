@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nginx 高级特性综合演示</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Nginx 高级特性综合练习</h1>
+            <p class="subtitle">本页面同时启用了 Gzip 压缩、浏览器缓存、访问控制和限流</p>
+        </header>
+
+        <main>
+            <section class="card" id="gzip-demo">
+                <h2>Gzip 压缩</h2>
+                <p>本页面（HTML）、CSS 和 JS 文件都启用了 Gzip 压缩。打开浏览器开发者工具的 Network 标签，查看 <code>Content-Encoding: gzip</code> 响应头，对比"传输大小"和"实际大小"的巨大差异。</p>
+                <p>这段文字是重复内容，用来让 Gzip 有更多的压缩空间。这段文字是重复内容，用来让 Gzip 有更多的压缩空间。这段文字是重复内容，用来让 Gzip 有更多的压缩空间。这段文字是重复内容，用来让 Gzip 有更多的压缩空间。这段文字是重复内容，用来让 Gzip 有更多的压缩空间。这段文字是重复内容，用来让 Gzip 有更多的压缩空间。</p>
+            </section>
+
+            <section class="card" id="cache-demo">
+                <h2>浏览器缓存</h2>
+                <p>CSS 和 JS 文件设置了 7 天强缓存，图片设置了 30 天强缓存。刷新页面，注意 Network 标签中静态资源的请求状态会变成 304 或 "from disk cache"。</p>
+                <p>而 HTML 页面使用的是协商缓存（<code>no-cache</code>），每次都会先向服务器验证是否有更新。</p>
+                <div class="demo-image">
+                    <img src="static/demo.png" alt="Demo Image" width="200" height="200">
+                    <p class="caption">这张图片缓存了 30 天（demo.png）</p>
+                </div>
+            </section>
+
+            <section class="card" id="access-demo">
+                <h2>访问控制</h2>
+                <p>管理后台 <code>/admin/</code> 启用了 IP 白名单 + HTTP Basic 认证。内网 IP 范围的用户可以免密码访问，外部用户需要输入用户名和密码。</p>
+                <p><a href="/admin/">访问管理后台（需要认证）</a></p>
+            </section>
+
+            <section class="card" id="ratelimit-demo">
+                <h2>限流保护</h2>
+                <p>API 接口 <code>/api/</code> 启用了请求频率限制：每个 IP 每秒最多 5 个请求（burst=10）。如果短时间内发送大量请求，会收到 503 错误。</p>
+                <div class="demo-controls">
+                    <button onclick="testRateLimit()">测试 API 限流（发送 20 个连续请求）</button>
+                    <pre id="ratelimit-result">点击按钮查看限流效果...</pre>
+                </div>
+            </section>
+
+            <section class="card" id="log-demo">
+                <h2>JSON 格式日志</h2>
+                <p>所有访问日志以 JSON 格式输出到 <code>/var/log/nginx/access.log</code>。API 请求额外记录到 <code>/var/log/nginx/api_access.log</code>。健康检查和静态资源请求不记录日志。</p>
+                <pre id="log-example">{
+  "timestamp": "2026-05-22T10:15:30+08:00",
+  "remote_addr": "127.0.0.1",
+  "request": "GET / HTTP/1.1",
+  "status": 200,
+  "body_bytes_sent": 1234,
+  "request_time": 0.005,
+  ...
+}</pre>
+            </section>
+        </main>
+
+        <footer>
+            <p>Nginx 高级特性模块 - 综合练习 | 把所有知识集成到一个配置里</p>
+            <p>Curabitur blandit tempus porttitor. Aenean lacinia bibendum nulla sed consectetur. Cras mattis consectetur purus sit amet fermentum.</p>
+            <p>Curabitur blandit tempus porttitor. Aenean lacinia bibendum nulla sed consectetur. Cras mattis consectetur purus sit amet fermentum.</p>
+        </footer>
+    </div>
+
+    <script>
+        // 限流测试函数
+        async function testRateLimit() {
+            const resultEl = document.getElementById('ratelimit-result');
+            resultEl.textContent = '正在发送 20 个连续请求...\n';
+            const results = [];
+
+            for (let i = 0; i < 20; i++) {
+                try {
+                    const resp = await fetch('/api/test');
+                    results.push(`请求 #${i+1}: HTTP ${resp.status}`);
+                } catch (e) {
+                    results.push(`请求 #${i+1}: 失败 - ${e.message}`);
+                }
+            }
+
+            resultEl.textContent = results.join('\n');
+
+            const successCount = results.filter(r => r.includes('200')).length;
+            const failCount = results.filter(r => r.includes('503') || r.includes('失败')).length;
+            resultEl.textContent += `\n\n---\n成功: ${successCount} | 被限流: ${failCount}`;
+        }
+    </script>
+</body>
+</html>

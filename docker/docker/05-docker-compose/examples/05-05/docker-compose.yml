@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:15
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: secret
+
+  api:
+    build: ./api
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./api/src:/app/src
+      - /app/node_modules
+    environment:
+      DB_HOST: db
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
